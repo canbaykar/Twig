@@ -1,2 +1,10 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+	import Viewport from "$lib/components/viewport/viewport.svelte";
+	import viewport from "$lib/state/viewport.svelte";
+</script>
+
+<Viewport {viewport} />
+
+<style global>
+	@import './global.css';
+</style>
