@@ -5,6 +5,10 @@ export default defineConfig({
 	plugins: [sveltekit()],
 
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
-	}
+		// include: ['src/**/*.{test,spec}.{js,ts}']
+		include: ['src/**/*.{js,ts}']
+	},
+	define: {
+		'import.meta.vitest': 'undefined',
+	},
 });
