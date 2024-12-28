@@ -17,13 +17,14 @@
 </script>
 
 <div class="panzoom w-full h-full overflow-hidden">
+    <div class="background w-full h-full cursor-grab"></div>
     <div class="origin w-[0] h-[0] absolute top-2/4 left-2/4">
         {@render children?.()}
     </div>
 </div>
 
 <style>
-    .panzoom {
+    .background {
         /* Temporary constants */
         --LINE-HEIGHT: 34.5;
         --UNIT: 2px;
