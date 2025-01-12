@@ -8,11 +8,10 @@ if (browser) {
 }
 
 export interface DraggableOptions {
-	allowFrom?: string | HTMLElement | HTMLElement[];
-	ignoreFrom?: string | HTMLElement | HTMLElement[];
 	start?(e: MouseEvent): void;
 	move?(e: MouseEvent & { dx: number; dy: number }): void;
 	cursor?: string;
+	checker?: (n: HTMLElement) => boolean;
 }
 
 // So that only one drag interaction activates at once
@@ -22,39 +21,22 @@ let x = 0, y = 0;
 
 export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	let {
-        allowFrom = [node],
-        ignoreFrom = [],
         start = () => {},
         move = () => {},
         cursor = 'grabbing',
+		checker = () => true,
     } = op ?? {};
-
-	let aFChecker = (_: HTMLElement) => true;
-	const iFChecker = resolveChecker(ignoreFrom, node);
-
-	if (allowFrom instanceof HTMLElement) allowFrom = [allowFrom];
-	if (Array.isArray(allowFrom)) {
-		allowFrom.forEach(n => n.addEventListener('mousedown', onDown));
-		return {
-			destroy() {
-				allowFrom.forEach(n => n.removeEventListener('mousedown', onDown));
-			}
-		}
-	}
-
-	// else allowFrom is string
-	aFChecker = n => stringChecker(allowFrom, node, n);
+	
 	node.addEventListener('mousedown', onDown);
 	return {
 		destroy() {
 			node.removeEventListener('mousedown', onDown);
 		}
-	};
+	}
 
 	// ---- Listeners ----
 	function onDown(e: MouseEvent) {
-		const t = e.target as HTMLElement;
-		if (active || !aFChecker(t) || iFChecker(t)) return;
+		if (active || !checker(e.target as HTMLElement)) return;
 		active = true;
 		x = e.screenX;
 		y = e.screenY;
@@ -84,18 +66,4 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 		x = e.screenX;
 		y = e.screenY;
 	}
-}
-
-function resolveChecker(op: string | HTMLElement | HTMLElement[], ctx: HTMLElement): (n: HTMLElement) => boolean {
-    if (typeof op === 'string') {
-        return n => stringChecker(op, ctx, n);
-    } else if (Array.isArray(op)) 
-		return n => op.some(el => el.contains(n));
-	else return n => op.contains(n);
-}
-
-function stringChecker(selector: string, ctx: HTMLElement, node: HTMLElement) {
-	// Is n in an element mathching selector that's inside node?
-	const match = node.closest(selector);
-	return !!match && ctx.contains(match);
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import draggable, { type DraggableOptions } from '$lib/utils/interact/draggable.svelte';
-	import { type Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 
     /** All properties has to be reactive! */
     interface Data {
@@ -16,22 +16,59 @@
 
 	let { data, children }: Props = $props();
     let element: HTMLElement;
+    let rect: DOMRect;
 
     const draggableOptions: DraggableOptions = {
         move(e) {
-            data.x += e.dx / data.scale;
-            data.y += e.dy / data.scale;
+            data.x += e.dx;
+            data.y += e.dy;
             updateCSS();
         }
     };
 
+    /** Client coords to world coords */
+	function client2worldPx(p: { x: number; y: number }) {
+        return {
+            x: (p.x - data.x - rect.left - rect.width / 2) / data.scale,
+            y: (p.y - data.y - rect.top - rect.height / 2) / data.scale,
+        };
+	}
+
+    let grid_scale = 1;
+	function zoom(factor: number, anchor: { x: number; y: number }) {
+		const world_anchor = client2worldPx(anchor);
+		const old_scale = data.scale;
+		data.scale = data.scale * factor; //clamp(data.scale * factor, MIN_SCALE, MAX_SCALE);
+        grid_scale = Math.pow(2, neg_floor(Math.log2(data.scale)));
+		const diff = old_scale - data.scale;
+		data.x += world_anchor.x * diff;
+		data.y += world_anchor.y * diff;
+	}
+	var clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
+    var neg_floor = (x: number) => x - Math.min(0, Math.floor(x));
+
+    function onwheel(e: WheelEvent) {
+		e.preventDefault(); // To block native scroll
+        zoom(Math.pow(0.8, e.deltaY / 100), { x: e.clientX, y: e.clientY });
+        updateCSS();
+	}
+
     function updateCSS() {
         element.style.setProperty('--panzoom-x', data.x + 'px');
         element.style.setProperty('--panzoom-y', data.y + 'px');
+        element.style.setProperty('--panzoom-scale', data.scale + '');
+        element.style.setProperty('--panzoom-gs', grid_scale + '');
     }
+    onMount(updateCSS);
 </script>
 
-<div bind:this={element} class="panzoom w-full h-full overflow-hidden" use:draggable={draggableOptions}>
+<div 
+    bind:this={element} 
+    bind:contentRect={null, (r: DOMRect) => rect = r}
+    {onwheel}
+    class="panzoom w-full h-full overflow-hidden" 
+    use:draggable={draggableOptions}
+>
     <div class="background w-full h-full cursor-grab"></div>
     <div class="origin w-[0] h-[0] absolute top-2/4 left-2/4">
         {@render children?.()} lorem ipsum
