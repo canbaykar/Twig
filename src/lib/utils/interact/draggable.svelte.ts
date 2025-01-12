@@ -42,12 +42,11 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 		y = e.screenY;
 		document.addEventListener('mouseup', onUp, { once: true });
 		document.addEventListener('mousemove', onDragStart, { once: true });
+		sheet.insertRule(`* { cursor: ${cursor} !important; user-select: none !important; }`);
 	}
 
 	function onDragStart(e: MouseEvent) {
 		document.addEventListener('mousemove', onMove);
-		// Set cursor
-		sheet.insertRule(`* { cursor: ${cursor} !important; user-select: none !important; }`);
 		start(e);
 	}
 
