@@ -52,6 +52,8 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	}
 
 	function onUp(e: MouseEvent) {
+		document.removeEventListener('mouseup', onUp);
+		document.removeEventListener('mousemove', onDragStart);
 		document.removeEventListener('mousemove', onMove);
 		// Reset cursor
 		sheet.replace('');
