@@ -85,12 +85,11 @@
     }
 
     .background {
-        /* Temporary constants */
-        --LINE-HEIGHT: 34.5;
+        /* Temporary constant */
         --UNIT: 2px;
 
         background: radial-gradient(circle, hsl(var(--border)) 1px, hsl(var(--background)) 1.5px);
-        --panzoom-bg-size: calc(var(--LINE-HEIGHT) * var(--panzoom-gs) * var(--UNIT));
+        --panzoom-bg-size: calc(var(--ROW-OFFSET) * var(--panzoom-gs) * var(--UNIT));
 		background-size: var(--panzoom-bg-size) var(--panzoom-bg-size);
         background-position: calc(50% + var(--panzoom-x)) calc(50% + var(--panzoom-y));
     }
