@@ -82,6 +82,7 @@
 		--panzoom-y: 0;
 		--panzoom-scale: 1;
 		--panzoom-gs: 1;
+        font-size: calc(16 * var(--U, 1px));
     }
 
     .background {
