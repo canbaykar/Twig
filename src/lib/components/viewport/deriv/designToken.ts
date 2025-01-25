@@ -2,7 +2,7 @@
 // so that both JS and CSS can use them.
 
 export const designToken = Object.freeze({
-    rowOffset: 34.5,
+    rowOffset: 69,
 });
 
 // --- CSS-in-JS Form ---
