@@ -1,6 +1,10 @@
 <script lang="ts">
 	import draggable, { type DraggableOptions } from '$lib/utils/interact/draggable.svelte';
 	import { onMount, type Snippet } from 'svelte';
+	import { UNIT } from '../unit.svelte';
+
+    const MIN_SCALE = 0.25 / UNIT;
+    const MAX_SCALE = 10 / UNIT;
 
     /** All properties has to be reactive! */
     interface Data {
@@ -38,7 +42,7 @@
 	function zoom(factor: number, anchor: { x: number; y: number }) {
 		const world_anchor = client2worldPx(anchor);
 		const old_scale = data.scale;
-		data.scale = data.scale * factor; //clamp(data.scale * factor, MIN_SCALE, MAX_SCALE);
+		data.scale = clamp(data.scale * factor, MIN_SCALE, MAX_SCALE);
         grid_scale = Math.pow(2, neg_floor(Math.log2(data.scale)));
 		const diff = old_scale - data.scale;
 		data.x += world_anchor.x * diff;
