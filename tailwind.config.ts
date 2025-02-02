@@ -1,7 +1,5 @@
 import { fontFamily } from "tailwindcss/defaultTheme";
 import type { Config } from "tailwindcss";
-import plugin from "tailwindcss/plugin";
-import { designTokenPlugin } from "./src/lib/components/viewport/deriv/designToken";
 
 const config: Config = {
 	darkMode: ["class"],
@@ -61,11 +59,6 @@ const config: Config = {
 			}
 		}
 	},
-	
-	plugins: [
-		// Make the tree rendering constants reachable from CSS
-		designTokenPlugin,
-	],
 };
 
 export default config;
