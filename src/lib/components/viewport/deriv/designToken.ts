@@ -17,6 +17,6 @@ let css: Record<string, string> = {};
 for (const key in designToken) {
     css[prepKey(key)] = prepVal((designToken as Record<string, unknown>)[key]);
 }
-export const designTokenPlugin = plugin(function({ addUtilities }) {
-    addUtilities({ ':root': css });
+export const designTokenPlugin = plugin(function({ addBase }) {
+    addBase({ ':root': css });
 });
