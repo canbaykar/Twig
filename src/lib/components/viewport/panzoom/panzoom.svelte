@@ -74,7 +74,7 @@
     use:draggable={draggableOptions}
 >
     <div class="background w-full h-full cursor-grab"></div>
-    <div class="origin w-[0] h-[0] absolute top-2/4 left-2/4">
+    <div class="origin w-0 h-0 absolute top-2/4 left-2/4">
         {@render children?.()} lorem ipsum
     </div>
 </div>
