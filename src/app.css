@@ -2,6 +2,59 @@
 
 @config '../tailwind.config.ts';
 
+@theme {
+  /* The theme design is heavily inspired by Github Primer */
+
+  /* --- FUNCTIONAL --- */
+  /* NEUTRAL */
+  /* Background */
+  --color-bg: hsl(222.2 84% 4.9%);
+  --color-bg-muted: hsl(217.2 32.6% 17.5%);
+  --color-bg-emphasis: black;
+  --color-bg-inset: black;
+
+  /* Foreground */
+  --color-fg: hsl(210 40% 98%);
+  --color-fg-muted: hsl(215 20.2% 65.1%);
+  --color-fg-onEmphasis: black;
+  --color-fg-link: black;
+
+  /* Border */
+  --color-border: hsl(217.2 32.6% 17.5%);
+  --color-border-muted: black;
+  --color-border-emphasis: black;
+
+  /* SEMANTIC */
+  --color-fg-accent: black;
+  --color-bg-accent-emphasis: black;
+  --color-bg-accent-muted: black;
+  --color-bg-accent-emphasis: black;
+  --color-bg-accent-muted: black;
+
+  --color-fg-warning: black;
+  --color-bg-warning-emphasis: black;
+  --color-bg-warning-muted: black;
+  --color-border-warning-emphasis: black;
+  --color-border-warning-muted: black;
+
+  --color-fg-success: black;
+  --color-bg-success-emphasis: black;
+  --color-bg-success-muted: black;
+  --color-border-success-emphasis: black;
+  --color-border-success-muted: black;
+
+  --color-fg-danger: black;
+  --color-bg-danger-emphasis: black;
+  --color-bg-danger-muted: black;
+  --color-border-danger-emphasis: black;
+  --color-border-danger-muted: black;
+
+  /* --- PATTERN --- */
+  /* (Only universal patterns like focus are here.) */
+  /* Focus */
+  --color-focus-outline: black;
+}
+
 /* Inherited from shadcn */
 @utility container {
   margin-inline: auto;
@@ -13,26 +66,18 @@
     max-width: 1400px;
   }
 }
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+ 
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-bg text-fg;
   }
 }
 
-@layer base {
+/* Old shadcn palette */
+/* @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -96,13 +141,4 @@
  
     --ring: 212.7 26.8% 83.9%;
   }
-}
- 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
+} */
