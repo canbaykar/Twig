@@ -1,8 +1,8 @@
 import type { Config } from "tailwindcss";
-import { designTokenPlugin } from "./src/lib/components/viewport/deriv/designToken";
+import { DTPlugin } from './src/DT';
 
 const config: Config = {
-	plugins: [designTokenPlugin],
+	plugins: [DTPlugin],
 };
 
 export default config;
