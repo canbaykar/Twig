@@ -1,3 +1,4 @@
+@import '../static/fonts/MPLUS1p/MPLUS1p';
 @import 'tailwindcss';
 
 @config '../tailwind.config.ts';
@@ -53,6 +54,9 @@
   /* (Only universal patterns like focus are here.) */
   /* Focus */
   --color-focus-outline: black;
+
+  /* --- FONT --- */
+  --font-math: 'M PLUS 1p', var(--font-sans);
 }
 
 /* Inherited from shadcn */
