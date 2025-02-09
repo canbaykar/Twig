@@ -11,5 +11,5 @@
 </script>
 
 <Panzoom data={viewport}>
-
+    <span class="font-math">Lorem ipsum</span>
 </Panzoom>
