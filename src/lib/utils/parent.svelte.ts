@@ -2,8 +2,8 @@
 // For example a.append(b) immediately updates a.parent and b.children.
 
 export class Child {
-    /** ($state) */
-    readonly parent: Parent | null = $state(null);
+    /** ($state.raw) */
+    readonly parent: Parent | null = $state.raw(null);
 
     detach() {
         if (this.parent) this.parent.detachChild(this);
