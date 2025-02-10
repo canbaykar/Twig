@@ -28,6 +28,17 @@ export class Parent extends Child {
         child.parent = this;
     }
 
+    attachChildren(children: Child[], index?: number) {
+        for (const ch of children)
+            if (ch.parent)
+                ch.parent.detachChild(ch);
+        // @ts-expect-error
+        this.children = index === undefined
+            ? [...this.children, ...children]
+            : this.children.toSpliced(index, 0, ...children);
+        // @ts-expect-error
+        children.parent = this;
+    }
 
     detachChild(child: Child) {
         const index = this.children.indexOf(child);
