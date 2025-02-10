@@ -10,6 +10,6 @@
     let { viewport }: Props = $props();
 </script>
 
-<Panzoom data={viewport}>
+<Panzoom data={viewport.render}>
     <span class="font-math">Lorem ipsum</span>
 </Panzoom>

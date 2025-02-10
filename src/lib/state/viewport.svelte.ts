@@ -1,10 +1,11 @@
+import ViewportRenderData from "$lib/components/viewport/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 
 export type { Viewport };
+/** Works as the root element of everything in panzoom, like document in HTML */
 class Viewport extends Parent {
-    x = $state(0);
-    y = $state(0);
-    scale = $state(1);
+    /** Render data */
+    render = new ViewportRenderData();
 }
 
 const viewport = new Viewport();
