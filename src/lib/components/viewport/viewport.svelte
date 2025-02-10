@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { ViewportState } from "$lib/state/viewport.svelte";
+	import type { Viewport } from "$lib/state/viewport.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { UNIT } from "./unit.svelte"; UNIT;
     
     interface Props {
-        viewport: ViewportState;
+        viewport: Viewport;
     }
     
     let { viewport }: Props = $props();
