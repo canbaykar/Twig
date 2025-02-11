@@ -43,7 +43,7 @@ function updateDepth(target: Deriv, root: Parent | null, depth = 0) {
     target.depth = depth;
     if (!(target instanceof Parent)) return;
     if (target === root) throw new Error("Circularity: Parent is it's own descendant");
-    target.children.forEach(ch => updateDepth(ch, root, depth + 1));
+    target.children.forEach((ch) => updateDepth(ch, root, depth + 1));
 }
 
 
@@ -51,26 +51,26 @@ function updateDepth(target: Deriv, root: Parent | null, depth = 0) {
 if (import.meta.vitest) {
     const { it, expect } = import.meta.vitest;
     
-        it('Deriv Depth', () => {
-            const [A, B, C] = [0,0,0].map(n => new Deriv());
+    it('Deriv Depth', () => {
+        const [A, B, C] = [0,0,0].map(n => new Deriv());
 
-            expect(B.parent).toBe(null);
-            expect(A.depth).toBe(0);
-            expect(B.depth).toBe(0);
-            expect(C.depth).toBe(0);
+        expect(B.parent).toBe(null);
+        expect(A.depth).toBe(0);
+        expect(B.depth).toBe(0);
+        expect(C.depth).toBe(0);
 
-            A.attachChild(B);
-            C.attach(B);
+        A.attachChild(B);
+        C.attach(B);
 
-            expect(B.parent).toBe(A);
-            expect(A.depth).toBe(0);
-            expect(B.depth).toBe(1);
-            expect(C.depth).toBe(2);
+        expect(B.parent).toBe(A);
+        expect(A.depth).toBe(0);
+        expect(B.depth).toBe(1);
+        expect(C.depth).toBe(2);
 
-            B.detach();
+        B.detach();
 
-            expect(A.depth).toBe(0);
-            expect(B.depth).toBe(0);
-            expect(C.depth).toBe(1);
-        });
+        expect(A.depth).toBe(0);
+        expect(B.depth).toBe(0);
+        expect(C.depth).toBe(1);
+    });
 }
