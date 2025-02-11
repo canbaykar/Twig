@@ -4,8 +4,6 @@
 export class Child {
     /** ($state.raw, readonly) */
     readonly parent: Parent | null = $state.raw(null);
-    /** ($state, readonly) */
-    readonly depth: number = $state(0);
 
     detach() {
         if (this.parent) this.parent.detachChild(this);
@@ -14,6 +12,11 @@ export class Child {
     attach(parent: Parent, index?: number) {
         parent.attachChild(this, index);
     }
+
+    /** For advanced use! For immediate reactivity functionality where Svelte's
+     *  methods don't cut it (due to parent being $state.raw instead of $state),
+     *  like the depth property of Deriv. Override to use. */
+    protected onParentChange(newParent: Parent | null) {}
 }
 
 export class Parent extends Child {
@@ -27,8 +30,7 @@ export class Parent extends Child {
             ? [...this.children, child]
             : this.children.toSpliced(index, 0, child);
         // @ts-expect-error
-        child.parent = this;
-        updateDepth(child, this.depth + 1, this);
+        child.parent = this; child.onParentChange(this);
     }
 
     attachChildren(children: Child[], index?: number) {
@@ -40,11 +42,9 @@ export class Parent extends Child {
             ? [...this.children, ...children]
             : this.children.toSpliced(index, 0, ...children);
         
-        const childDepth = this.depth + 1;
         for (const ch of children) {
             // @ts-expect-error
-            ch.parent = this;
-            updateDepth(ch, childDepth, this);
+            ch.parent = this; ch.onParentChange(this);
         }
     }
 
@@ -54,20 +54,9 @@ export class Parent extends Child {
         // @ts-expect-error
         this.children = this.children.toSpliced(index, 1);
         // @ts-expect-error
-        child.parent = null;
-        updateDepth(child);
+        child.parent = null; child.onParentChange(null);
+        return true;
     }
-}
-
-// self is requested for circularity checks.
-// depth should be self.depth + 1. Requested to avoid unnecessary recalculation.
-// May throw RangeError (for stack overflow) if the tree is too deep :(
-function updateDepth(target: Child, depth = 0, self?: Parent) {
-    // @ts-expect-error
-    target.depth = depth;
-    if (!(target instanceof Parent)) return;
-    if (target === self) throw new Error("Circularity: Parent is it's own descendant");
-    target.children.forEach(ch => updateDepth(ch, depth + 1, self));
 }
 
 
@@ -101,28 +90,5 @@ if (import.meta.vitest) {
         expect(c1.parent).toBe(p1);
         expect(p0.children).toEqual([]);
         expect(p1.children).toEqual([c1, c0]);
-    });
-
-    it('Parent Depth', () => {
-        const [A, B, C] = [0,0,0].map(n => new Parent());
-
-        expect(B.parent).toBe(null);
-        expect(A.depth).toBe(0);
-        expect(B.depth).toBe(0);
-        expect(C.depth).toBe(0);
-
-        A.attachChild(B);
-        C.attach(B);
-
-        expect(B.parent).toBe(A);
-        expect(A.depth).toBe(0);
-        expect(B.depth).toBe(1);
-        expect(C.depth).toBe(2);
-
-        B.detach();
-
-        expect(A.depth).toBe(0);
-        expect(B.depth).toBe(0);
-        expect(C.depth).toBe(1);
     });
 }
