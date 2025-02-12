@@ -1,4 +1,5 @@
 /** Design tokens for deriv. See src/DT.ts */
 export const derivDT = Object.freeze({
-    rowOffset: 69,
+    /** Height of a row of deriv */
+    rowOffset: 23,
 });

@@ -38,18 +38,24 @@
         };
 	}
 
-    let grid_scale = 1;
+    // Helper functions for zoom(...) below
+	const clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
+    // Weird step function to determine how the grid acts
+    // Plot on desmos. The -1 is an arbitrary constant.
+    const modulo = (x: number) => x - Math.min(0, Math.floor(x - 1));
+    const updateGridScale = () => grid_scale = Math.pow(2, modulo(Math.log2(data.scale)));
+    
+    let grid_scale: number;
+    updateGridScale();
 	function zoom(factor: number, anchor: { x: number; y: number }) {
 		const world_anchor = client2worldPx(anchor);
 		const old_scale = data.scale;
 		data.scale = clamp(data.scale * factor, MIN_SCALE, MAX_SCALE);
-        grid_scale = Math.pow(2, neg_floor(Math.log2(data.scale)));
+        updateGridScale();
 		const diff = old_scale - data.scale;
 		data.x += world_anchor.x * diff;
 		data.y += world_anchor.y * diff;
 	}
-	var clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
-    var neg_floor = (x: number) => x - Math.min(0, Math.floor(x));
 
     function onwheel(e: WheelEvent) {
 		e.preventDefault(); // To block native scroll
