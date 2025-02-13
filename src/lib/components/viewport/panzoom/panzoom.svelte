@@ -91,7 +91,7 @@
 		--panzoom-x: 0;
 		--panzoom-y: 0;
 		--panzoom-scale: 1;
-		--panzoom-gs: 1;
+		--panzoom-gs: 100;
         font-size: calc(var(--DERIV-FS) * var(--U, 1px));
     }
 
