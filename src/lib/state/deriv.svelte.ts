@@ -11,11 +11,16 @@ export default class Deriv extends Parent {
     declare readonly children: Deriv[];
     /** ($state) */
     conc = $state('');
-    /** ($state, readonly) */
-    readonly depth: number = $state(0);
-   
+
     render = new DerivRenderData(this);
 
+    // Non Local
+    /** ($state, readonly) */
+    readonly depth: number = $state(0);
+    /** ($state, readonly) Is this a descendant of viewport? */
+    // This is not in DerivRenderData bc it's non-local
+    readonly displayed: boolean = $state(false);
+   
     /**
 	 * @param s Serialized Deriv
 	 * @param parent Initial parent (better to set here than later)
@@ -29,10 +34,12 @@ export default class Deriv extends Parent {
     }
 
     // See Child
-    onParentChange(newParent: Parent | null): void {
+    onParentChange(newParent: Parent | null) {
         if (newParent instanceof Deriv) 
             updateDepth(this, newParent, newParent.depth + 1) 
         else updateDepth(this, newParent);
+        // @ts-expect-error
+        this.displayed = !!newParent?.displayed;
     }
 }
 
