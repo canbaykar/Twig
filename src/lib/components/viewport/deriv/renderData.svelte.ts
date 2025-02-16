@@ -73,6 +73,7 @@ function unsafeRecurse<T>(f: (target: Deriv, res: T) => T, _: any, target: Deriv
     target.children.forEach((ch) => unsafeRecurse(f, null, ch, res));
 }
 
+
 // --- TESTS ---
 // @vitest-environment jsdom
 if (import.meta.vitest) {
