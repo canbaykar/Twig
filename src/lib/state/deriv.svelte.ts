@@ -40,7 +40,7 @@ export default class Deriv extends Parent {
 export function addExampleProof() {
     viewport.attachChild(
         new Deriv({
-            conc: '(A∧{Φ})→C',
+            conc: '(A∧B)→C',
             // rule: '→I',
             // label: '1',
             render: {
@@ -53,17 +53,17 @@ export function addExampleProof() {
                     // rule: '→E',
                     children: [
                         {
-                            conc: '{Φ}',
+                            conc: 'B',
                             // rule: '∧E',
                             children: [
                                 {
-                                    conc: 'A∧{Φ}',
+                                    conc: 'A∧B',
                                     // rule: '1',
                                 }
                             ]
                         },
                         {
-                            conc: '{Φ}→C',
+                            conc: 'B→C',
                             // rule: '→E',
                             children: [
                                 {
@@ -71,13 +71,13 @@ export function addExampleProof() {
                                     // rule: '∧E',
                                     children: [
                                         {
-                                            conc: 'A∧{Φ}',
+                                            conc: 'A∧B',
                                             // rule: '1'
                                         }
                                     ]
                                 },
                                 {
-                                    conc: 'A→({Φ}→C)'
+                                    conc: 'A→(B→C)'
                                 }
                             ]
                         }
