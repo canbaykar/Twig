@@ -3,6 +3,12 @@ import viewport from "$lib/state/viewport.svelte";
 import type { Parent } from "$lib/utils/parent.svelte";
 import { SvelteSet } from "svelte/reactivity";
 
+/** Serialized DerivRenderData */
+export interface SDerivRenderData {
+    x?: number;
+    y?: number;
+}
+
 const all = new SvelteSet<Deriv>();
 const add = all.add.bind(all);
 const del = all.delete.bind(all);
@@ -19,8 +25,10 @@ export default class DerivRenderData {
     /** ($state, readonly) Inherited. Doesn't matter if not displayed */
     readonly zIndex: number = $state(0);
 
-    constructor(deriv: Deriv) {
+    constructor(deriv: Deriv, s: SDerivRenderData = {}) {
         this.deriv = deriv;
+        if (s.x) this.x = s.x;
+        if (s.y) this.y = s.y;
     }
 
     /** Maintains .all and .zIndex. Call in Deriv! */

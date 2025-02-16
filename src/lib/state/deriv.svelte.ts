@@ -1,10 +1,11 @@
-import DerivRenderData from "$lib/components/viewport/deriv/renderData.svelte";
+import DerivRenderData, { type SDerivRenderData } from "$lib/components/viewport/deriv/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 
-/** Serialized SDeriv */
+/** Serialized Deriv */
 export declare interface SDeriv {
     conc?: string;
     children?: SDeriv[];
+    render?: SDerivRenderData;
 }
 
 export default class Deriv extends Parent {
@@ -12,7 +13,7 @@ export default class Deriv extends Parent {
     /** ($state) */
     conc = $state('');
 
-    render = new DerivRenderData(this);
+    render: DerivRenderData;
    
     /**
 	 * @param s Serialized Deriv
@@ -24,6 +25,7 @@ export default class Deriv extends Parent {
         if (s.conc) this.conc = s.conc;
         if (s.children)
             this.attachChildren(s.children.map(ch => new Deriv(ch)));
+        this.render = new DerivRenderData(this);
     }
 
     // See Child
