@@ -13,13 +13,6 @@ export default class Deriv extends Parent {
     conc = $state('');
 
     render = new DerivRenderData(this);
-
-    // Non Local
-    /** ($state, readonly) */
-    readonly depth: number = $state(0);
-    /** ($state, readonly) Is this a descendant of viewport? */
-    // This is not in DerivRenderData bc it's non-local
-    readonly displayed: boolean = $state(false);
    
     /**
 	 * @param s Serialized Deriv
@@ -35,49 +28,6 @@ export default class Deriv extends Parent {
 
     // See Child
     onParentChange(newParent: Parent | null) {
-        if (newParent instanceof Deriv) 
-            updateDepth(this, newParent, newParent.depth + 1) 
-        else updateDepth(this, newParent);
-        // @ts-expect-error
-        this.displayed = !!newParent?.displayed;
+        this.render.callOnParentChange(newParent);
     }
-}
-
-// May throw RangeError (for stack overflow) if the tree is too deep :(
-// root should be first target's parent, only for circularity checks
-function updateDepth(target: Deriv, root: Parent | null, depth = 0) {
-    // @ts-expect-error
-    target.depth = depth;
-    if (!(target instanceof Parent)) return;
-    if (target === root) throw new Error("Circularity: Parent is it's own descendant");
-    target.children.forEach((ch) => updateDepth(ch, root, depth + 1));
-}
-
-
-// --- TESTS ---
-if (import.meta.vitest) {
-    const { it, expect } = import.meta.vitest;
-    
-    it('Deriv Depth', () => {
-        const [A, B, C] = [0,0,0].map(n => new Deriv());
-
-        expect(B.parent).toBe(null);
-        expect(A.depth).toBe(0);
-        expect(B.depth).toBe(0);
-        expect(C.depth).toBe(0);
-
-        A.attachChild(B);
-        C.attach(B);
-
-        expect(B.parent).toBe(A);
-        expect(A.depth).toBe(0);
-        expect(B.depth).toBe(1);
-        expect(C.depth).toBe(2);
-
-        B.detach();
-
-        expect(A.depth).toBe(0);
-        expect(B.depth).toBe(0);
-        expect(C.depth).toBe(1);
-    });
 }
