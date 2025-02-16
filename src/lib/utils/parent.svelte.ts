@@ -57,6 +57,18 @@ export class Parent extends Child {
         child.parent = null; child.onParentChange(null);
         return true;
     }
+
+    detachAll() {
+        const old = this.children;
+        if (old.length === 0) return false;
+        // @ts-expect-error
+        this.children = [];
+        for (const ch of old) {
+            // @ts-expect-error
+            ch.parent = null; ch.onParentChange(null);
+        }
+        return true;
+    }
 }
 
 
