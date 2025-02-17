@@ -33,18 +33,17 @@ export default class DerivRenderData {
 
     /** Maintains .all and .zIndex. Call in Deriv! */
     callOnParentChange(newPar: Parent | null) {
-        const rec = newPar ? recurse : unsafeRecurse;
         const zid0 = newPar instanceof Deriv 
             ? newPar.render.zIndex 
             : newPar === viewport ? newZID() : 0;
         const displayAction = zid0 ? add : del;
 
         // Apply this function to yourself and to all your children
-        rec((target: Deriv, zid: number) => { // @ts-expect-error
+        this.deriv.recurse((target: Deriv, zid: number) => { // @ts-expect-error
             target.render.zIndex = zid;
             displayAction(target);
             return zid;
-        }, newPar, this.deriv, zid0);
+        }, zid0);
     }
 }
 
@@ -53,24 +52,6 @@ function newZID() {
     // TO DO: Maybe add a script here to reduce indexes
     // of 2 other items so indexes don't go to infinity...
     return ++lastZID;
-}
-
-// Helpers
-function recurse<T>(f: (target: Deriv) => T, root: Parent | null, target: Deriv, _?: T): void;
-function recurse<T>(f: (target: Deriv, res: T) => T, root: Parent | null, target: Deriv, res: T): void;
-function recurse<T>(f: (target: Deriv, res: T) => T, root: Parent | null, target: Deriv, res: T) {
-    res = f(target, res);
-    if (target === root) {
-        root.detach();
-        console.error("Circularity: Parent is it's own descendant! Detached Parent.");
-    }
-    target.children.forEach((ch) => recurse(f, root, ch, res));
-}
-function unsafeRecurse<T>(f: (target: Deriv) => T, _: any, target: Deriv, __?: T): void;
-function unsafeRecurse<T>(f: (target: Deriv, res: T) => T, _: any, target: Deriv, res: T): void;
-function unsafeRecurse<T>(f: (target: Deriv, res: T) => T, _: any, target: Deriv, res: T) {
-    res = f(target, res);
-    target.children.forEach((ch) => unsafeRecurse(f, null, ch, res));
 }
 
 
