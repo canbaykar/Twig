@@ -33,6 +33,34 @@ export default class Deriv extends Parent {
     onParentChange(newParent: Parent | null) {
         this.render.callOnParentChange(newParent);
     }
+
+    /** Recursively runs f on itself and all descendents.
+     *  f mustn't use a 2nd argument unless using the 2nd overload of this. */
+    recurse<T>(f: (target: Deriv) => T): void;
+    recurse<T>(f: (target: Deriv, res: T) => T, res: T): void;
+    recurse<T>(f: (target: Deriv, res: T) => T, res?: T) {
+        const par = this.parent;
+        if (par instanceof Deriv) safeRecurse(this, f, par, res as T);
+        else unsafeRecurse(this, f, res as T);
+    }
+}
+
+// Recurse utils
+function safeRecurse<T>(target: Deriv, f: (target: Deriv) => T        , root: Parent): void;
+function safeRecurse<T>(target: Deriv, f: (target: Deriv, res: T) => T, root: Parent, res: T): void;
+function safeRecurse<T>(target: Deriv, f: (target: Deriv, res: T) => T, root: Parent, res: T = undefined as T) {
+    res = f(target, res);
+    if (target === root) {
+        root.detach();
+        console.error("Circularity: Parent is it's own descendant! Detached Parent.");
+    }
+    target.children.forEach((ch) => safeRecurse(ch, f, root, res));
+}
+function unsafeRecurse<T>(target: Deriv, f: (target: Deriv) => T): void;
+function unsafeRecurse<T>(target: Deriv, f: (target: Deriv, res: T) => T, res: T): void;
+function unsafeRecurse<T>(target: Deriv, f: (target: Deriv, res: T) => T, res: T = undefined as T) {
+    res = f(target, res);
+    target.children.forEach((ch) => unsafeRecurse(ch, f, res));
 }
 
 
