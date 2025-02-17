@@ -2,8 +2,8 @@
 // For example a.append(b) immediately updates a.parent and b.children.
 
 export class Child {
-    /** ($state.raw, readonly) */
-    readonly parent: Parent | null = $state.raw(null);
+    /** ($state, readonly) */
+    readonly parent: Parent | null = $state(null);
 
     detach() {
         if (this.parent) this.parent.detachChild(this);
@@ -12,16 +12,11 @@ export class Child {
     attach(parent: Parent, index?: number) {
         parent.attachChild(this, index);
     }
-
-    /** For advanced use! For immediate reactivity functionality where Svelte's
-     *  methods don't cut it (due to parent being $state.raw instead of $state),
-     *  like the depth property of Deriv. Override to use. */
-    protected onParentChange(newParent: Parent | null) {}
 }
 
 export class Parent extends Child {
-    /** ($state.raw, readonly) */
-    readonly children: Child[] = $state.raw([]);
+    /** ($state, readonly) */
+    readonly children: Child[] = $state([]);
 
     attachChild(child: Child, index?: number) {
         if (child.parent) child.parent.detachChild(child);
@@ -30,7 +25,7 @@ export class Parent extends Child {
             ? [...this.children, child]
             : this.children.toSpliced(index, 0, child);
         // @ts-expect-error
-        child.parent = this; child.onParentChange(this);
+        child.parent = this;
     }
 
     attachChildren(children: Child[], index?: number) {
@@ -42,10 +37,8 @@ export class Parent extends Child {
             ? [...this.children, ...children]
             : this.children.toSpliced(index, 0, ...children);
         
-        for (const ch of children) {
-            // @ts-expect-error
-            ch.parent = this; ch.onParentChange(this);
-        }
+        // @ts-expect-error
+        for (const ch of children) ch.parent = this;
     }
 
     detachChild(child: Child) {
@@ -54,7 +47,7 @@ export class Parent extends Child {
         // @ts-expect-error
         this.children = this.children.toSpliced(index, 1);
         // @ts-expect-error
-        child.parent = null; child.onParentChange(null);
+        child.parent = null;
         return true;
     }
 
@@ -63,10 +56,8 @@ export class Parent extends Child {
         if (old.length === 0) return false;
         // @ts-expect-error
         this.children = [];
-        for (const ch of old) {
-            // @ts-expect-error
-            ch.parent = null; ch.onParentChange(null);
-        }
+        // @ts-expect-error
+        for (const ch of old) ch.parent = null;
         return true;
     }
 }
