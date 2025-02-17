@@ -44,7 +44,7 @@ export default class DerivRenderData {
 
 let lastZID = 1;
 function newZID() {
-    // TO DO: Maybe add a script here to reduce indexes
+    // TODO: Maybe add a script here to reduce indexes
     // of 2 other items so indexes don't go to infinity...
     return ++lastZID;
 }
