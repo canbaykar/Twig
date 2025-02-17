@@ -14,5 +14,5 @@ if (browser) {
     UNIT /= dpr;
     document.documentElement.style.setProperty('--U', UNIT + 'px');
     document.documentElement.style.setProperty('--U-NUM', UNIT + '');
-    viewport.scale /= UNIT;
+    viewport.render.scale /= UNIT;
 }
