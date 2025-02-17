@@ -14,13 +14,9 @@ export default class Deriv extends Parent {
     /** ($state) */
     conc = $state('');
 
-    render: DerivRenderData;
+    readonly render: DerivRenderData;
    
-    /**
-	 * @param s Serialized Deriv
-	 * @param parent Initial parent (better to set here than later)
-	 * @param index Index to add to initial parent with
-	 */
+    /** @param s Serialized Deriv */
     constructor(s: SDeriv = {}) {
         super();
         if (s.conc) this.conc = s.conc;

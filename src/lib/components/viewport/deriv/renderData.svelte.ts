@@ -1,6 +1,7 @@
 import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { SvelteSet } from "svelte/reactivity";
+import { derivDT } from "./deriv.DT";
 
 /** Serialized DerivRenderData */
 export interface SDerivRenderData {
@@ -17,14 +18,31 @@ export default class DerivRenderData {
     static get all() { return all }
 
     deriv: Deriv;
-    
+
+    /** Left of label to right of rule */
+    // Maintained in deriv.svelte
+    readonly width: number = $state(0);
+
+    // The deriv has a natural location inherited from parent 
+    // and an offset on top of it (below).
     x = $state(0);
     y = $state(0);
-    
+    // This is the final location (natural + offset)
+    readonly X: number = $derived.by(() => {
+        const par = this.deriv.parent;
+        const nat = par instanceof Deriv ? par.render.X : 0;
+        return nat + this.x;
+    });
+    readonly Y: number = $derived.by(() => {
+        const par = this.deriv.parent;
+        const nat = par instanceof Deriv ? par.render.Y - derivDT.derivRowOffset : 0;
+        return nat + this.y;
+    });
+
     /** ($derived, readonly) Inherited. Doesn't matter if not displayed */
     readonly zIndex: number = $derived.by(() => {
         const par = this.deriv.parent;
-        return par instanceof Deriv 
+        return par instanceof Deriv
             ? par.render.zIndex
             : par === viewport
                 ? newZID()
@@ -36,9 +54,8 @@ export default class DerivRenderData {
         if (s.x) this.x = s.x;
         if (s.y) this.y = s.y;
 
-        $effect(() => {
-            (this.zIndex ? add : del)(this.deriv);
-        })
+        // Maintain all
+        $effect(() => { (this.zIndex ? add : del)(this.deriv) })
     }
 }
 

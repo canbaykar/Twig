@@ -6,7 +6,24 @@
     }
     
     let { data }: Props = $props();
+
+    const render = data.render;
+
+    let element: HTMLElement;
+
+    // Maintain data.render.width
+    // TODO: Test that this only works when conc changes!
+    $effect(() => {
+        data.conc;
+        // @ts-expect-error
+        data.render.width = element.offsetWidth;
+    });
 </script>
 
-<span class="font-math">{data.conc}</span>
-<br/>
+<div
+    class="font-math absolute"
+    style:translate="{render.X}px {render.Y}px"
+    bind:this={element}
+>
+    {data.conc}
+</div>
