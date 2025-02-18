@@ -23,20 +23,20 @@ export default class DerivRenderData {
     // Maintained in deriv.svelte
     readonly width: number = $state(0);
 
-    // The deriv has a natural location inherited from parent 
-    // and an offset on top of it (below).
-    x = $state(0);
-    y = $state(0);
+    // The deriv has a natural location calculated using parent 
+    // and a transform on top of it (below).
+    xTransform = $state(0);
+    yTransform = $state(0);
     // This is the final location (natural + offset)
-    readonly X: number = $derived.by(() => {
+    readonly x: number = $derived.by(() => {
         const par = this.deriv.parent;
-        const nat = par instanceof Deriv ? par.render.X : 0;
-        return nat + this.x;
+        const nat = par instanceof Deriv ? par.render.x : 0;
+        return nat + this.xTransform;
     });
-    readonly Y: number = $derived.by(() => {
+    readonly y: number = $derived.by(() => {
         const par = this.deriv.parent;
-        const nat = par instanceof Deriv ? par.render.Y - derivDT.derivRowOffset : 0;
-        return nat + this.y;
+        const nat = par instanceof Deriv ? par.render.y - derivDT.derivRowOffset : 0;
+        return nat + this.yTransform;
     });
 
     /** ($derived, readonly) Inherited. */
@@ -49,8 +49,8 @@ export default class DerivRenderData {
 
     constructor(deriv: Deriv, s: SDerivRenderData = {}) {
         this.deriv = deriv;
-        if (s.x) this.x = s.x;
-        if (s.y) this.y = s.y;
+        if (s.x) this.xTransform = s.x;
+        if (s.y) this.yTransform = s.y;
 
         // Maintain all
         $effect(() => { (this.displayed ? add : del)(this.deriv) })

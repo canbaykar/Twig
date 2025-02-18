@@ -22,7 +22,7 @@
 
 <div
     class="font-math absolute"
-    style:translate="{render.X}px {render.Y}px"
+    style:translate="{render.x}px {render.y}px"
     bind:this={element}
 >
     {data.conc}
