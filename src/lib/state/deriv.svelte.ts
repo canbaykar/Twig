@@ -15,6 +15,11 @@ export default class Deriv extends Parent {
     conc = $state('');
 
     readonly render: DerivRenderData;
+
+    readonly root: Deriv = $derived.by(() => {
+        return this.parent instanceof Deriv
+            ? this.parent.root : this;
+    });
    
     /** @param s Serialized Deriv */
     constructor(s: SDeriv = {}) {
