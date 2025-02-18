@@ -31,12 +31,12 @@ export default class DerivRenderData {
     readonly x: number = $derived.by(() => {
         const par = this.deriv.parent;
         const nat = par instanceof Deriv ? par.render.x : 0;
-        return nat + this.xTransform;
+        return Math.round(nat + this.xTransform);
     });
     readonly y: number = $derived.by(() => {
         const par = this.deriv.parent;
         const nat = par instanceof Deriv ? par.render.y - derivDT.derivRowOffset : 0;
-        return nat + this.yTransform;
+        return Math.round(nat + this.yTransform);
     });
 
     /** ($derived, readonly) Inherited. */
