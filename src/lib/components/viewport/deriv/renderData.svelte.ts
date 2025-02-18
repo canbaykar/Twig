@@ -19,9 +19,8 @@ export default class DerivRenderData {
 
     deriv: Deriv;
 
-    /** Left of label to right of rule */
-    // Maintained in deriv.svelte
-    readonly width: number = $state(0);
+    /** Left of label to right of rule. Maintained in deriv.svelte */
+    width: number = $state(0);
 
     // The deriv has a natural location calculated using parent 
     // and a transform on top of it (below).

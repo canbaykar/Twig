@@ -15,7 +15,6 @@
     // TODO: Test that this only works when conc changes!
     $effect(() => {
         data.conc;
-        // @ts-expect-error
         data.render.width = element.offsetWidth;
     });
 </script>
