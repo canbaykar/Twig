@@ -39,14 +39,12 @@ export default class DerivRenderData {
         return nat + this.y;
     });
 
-    /** ($derived, readonly) Inherited. Doesn't matter if not displayed */
-    readonly zIndex: number = $derived.by(() => {
+    /** ($derived, readonly) Inherited. */
+    readonly displayed: boolean = $derived.by(() => {
         const par = this.deriv.parent;
         return par instanceof Deriv
-            ? par.render.zIndex
-            : par === viewport
-                ? newZID()
-                : 0;
+            ? par.render.displayed
+            : par === viewport;
     });
 
     constructor(deriv: Deriv, s: SDerivRenderData = {}) {
@@ -55,15 +53,8 @@ export default class DerivRenderData {
         if (s.y) this.y = s.y;
 
         // Maintain all
-        $effect(() => { (this.zIndex ? add : del)(this.deriv) })
+        $effect(() => { (this.displayed ? add : del)(this.deriv) })
     }
-}
-
-let lastZID = 1;
-function newZID() {
-    // TODO: Maybe add a script here to reduce indexes
-    // of 2 other items so indexes don't go to infinity...
-    return ++lastZID;
 }
 
 
