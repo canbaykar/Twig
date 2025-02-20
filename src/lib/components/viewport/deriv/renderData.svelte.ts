@@ -29,25 +29,25 @@ export default class DerivRenderData {
 
     // The deriv has a base location and a transform on top 
     // (+ transforms from predescessors).
+    xBase = $state(0);
     xTransform = $state(0);
     yTransform = $state(0);
     // Final transforms
     // Transform is accumulative (inheriting from parent)
-    private readonly xAcc: number = $derived.by(() => {
+    private readonly acc: { x: number, y: number } = $derived.by(() => {
         const par = this.deriv.parent;
-        const parAcc = par instanceof Deriv ? par.render.xAcc : 0;
-        return parAcc + this.xTransform;
+        return par instanceof Deriv 
+            ? {
+                x: par.render.acc.x + this.xTransform,
+                y: par.render.acc.y - derivDT.derivRowOffset + this.yTransform,
+            } : {
+                x: this.xTransform,
+                y: this.yTransform,
+            };
     });
-    // y has an extra row offset in transform accumulator
-    private readonly yAcc: number = $derived.by(() => {
-        const par = this.deriv.parent; 
-        const parAcc = par instanceof Deriv ? par.render.yAcc - derivDT.derivRowOffset : 0;
-        return parAcc + this.yTransform;
-    });
-    xBase = $state(0);
     // This is the final location (natural + offset)
-    readonly x: number = $derived(this.xBase + this.xAcc);
-    readonly y: number = $derived(this.yAcc);
+    readonly x: number = $derived(this.xBase + this.acc.x);
+    readonly y: number = $derived(this.acc.y);
 
     /** ($derived, readonly) Inherited. */
     readonly displayed: boolean = $derived.by(() => {
