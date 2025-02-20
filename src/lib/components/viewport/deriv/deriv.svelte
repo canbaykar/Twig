@@ -26,8 +26,8 @@
 </script>
 
 <div
-    class="font-math absolute"
-    style:translate="{render.x}px {render.y}px"
+    class="font-math absolute text-fg/50 bg-fg/50"
+    style:translate="calc({render.x}px - 50%) {render.y}px"
     bind:this={element}
 >
     {data.conc}
