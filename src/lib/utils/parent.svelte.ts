@@ -4,6 +4,9 @@
 export class Child {
     /** ($state, readonly) */
     readonly parent: Parent | null = $state(null);
+    /** ($state, readonly) Index of this in it's parent's children array.
+     *  -1 if it doesn't have a parent. */
+    readonly childIndex: number = $state(-1);
 
     detach() {
         if (this.parent) this.parent.detachChild(this);
@@ -20,44 +23,61 @@ export class Parent extends Child {
 
     attachChild(child: Child, index?: number) {
         if (child.parent) child.parent.detachChild(child);
+
         // @ts-expect-error
         this.children = index === undefined
             ? [...this.children, child]
             : this.children.toSpliced(index, 0, child);
+        
+        const i = index ?? this.children.length - 1;
         // @ts-expect-error
-        child.parent = this;
+        child.parent = this; child.childIndex = i;
     }
 
     attachChildren(children: Child[], index?: number) {
         for (const ch of children)
             if (ch.parent)
                 ch.parent.detachChild(ch);
+
+        const oldLen = children.length;
         // @ts-expect-error
         this.children = index === undefined
             ? [...this.children, ...children]
             : this.children.toSpliced(index, 0, ...children);
         
-        // @ts-expect-error
-        for (const ch of children) ch.parent = this;
+        for (let i = oldLen; i < this.children.length; i++) {
+            const ch = this.children[i];
+            // @ts-expect-error
+            ch.parent = this; ch.childIndex = i;
+        }
     }
 
     detachChild(child: Child) {
         const index = this.children.indexOf(child);
         if (index === -1) return false;
+
         // @ts-expect-error
         this.children = this.children.toSpliced(index, 1);
+
         // @ts-expect-error
-        child.parent = null;
+        child.parent = null; child.childIndex = -1;
+        for (let i = index; i < this.children.length; i++) 
+            // @ts-expect-error
+            this.children[i].childIndex = i;
         return true;
     }
 
     detachAll() {
         const old = this.children;
         if (old.length === 0) return false;
+
         // @ts-expect-error
         this.children = [];
-        // @ts-expect-error
-        for (const ch of old) ch.parent = null;
+
+        for (const ch of old) {
+            // @ts-expect-error
+            ch.parent = null; ch.childIndex = -1;
+        }
         return true;
     }
 }
@@ -78,6 +98,7 @@ if (import.meta.vitest) {
 
         expect(c0.parent).toBe(null);
         expect(p0.children).toEqual([]);
+        expect(c0.childIndex).toBe(-1);
 
         p0.attachChild(c0);
         c1.attach(p0);
@@ -85,8 +106,13 @@ if (import.meta.vitest) {
         expect(c0.parent).toBe(p0);
         expect(c1.parent).toBe(p0);
         expect(p0.children).toEqual([c0, c1]);
+        expect(c0.childIndex).toBe(0);
+        expect(c1.childIndex).toBe(1);
 
         c0.attach(p1);
+
+        expect(c1.childIndex).toBe(0);
+
         c1.attach(p1, 0);
 
         expect(c0.parent).toBe(p1);
