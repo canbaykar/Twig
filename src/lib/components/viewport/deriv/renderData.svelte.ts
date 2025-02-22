@@ -2,6 +2,7 @@ import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { SvelteSet } from "svelte/reactivity";
 import { derivDT } from "./deriv.DT";
+import { treeData, type TreeData } from "./treeData";
 
 /** Serialized DerivRenderData */
 export interface SDerivRenderData {
@@ -27,9 +28,19 @@ export default class DerivRenderData {
     /** Left of label to right of rule. Maintained in deriv.svelte */
     width: number = $state(0);
 
+    // Tree rendering logic
+    readonly tree: TreeData = $derived.by(() => 
+        treeData(this.width, this.deriv.children.map(c => c.render.tree))
+    )
+    private readonly xBase: number = $derived.by(() => {
+        const par = this.deriv.parent;
+        return par instanceof Deriv
+            ? par.render.xBase 
+                + par.render.tree.offsets[this.deriv.childIndex]
+            : 0;
+    });
     // The deriv has a base location and a transform on top 
     // (+ transforms from predescessors).
-    xBase = $state(0);
     xTransform = $state(0);
     yTransform = $state(0);
     // Final transforms
@@ -45,7 +56,7 @@ export default class DerivRenderData {
                 y: this.yTransform,
             };
     });
-    // This is the final location (natural + offset)
+    // This is the final location (base + transform)
     readonly x: number = $derived(this.xBase + this.acc.x);
     readonly y: number = $derived(this.acc.y);
 
