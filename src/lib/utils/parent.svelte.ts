@@ -39,17 +39,18 @@ export class Parent extends Child {
             if (ch.parent)
                 ch.parent.detachChild(ch);
 
-        const oldLen = children.length;
+        // Start index of children whose childIndexes neec updating
+        const start = index === undefined ? this.children.length : index;
         // @ts-expect-error
         this.children = index === undefined
             ? [...this.children, ...children]
             : this.children.toSpliced(index, 0, ...children);
         
-        for (let i = oldLen; i < this.children.length; i++) {
-            const ch = this.children[i];
+        // @ts-expect-error
+        for (const ch of children) ch.parent = this;
+        for (let i = start; i < this.children.length; i++)
             // @ts-expect-error
-            ch.parent = this; ch.childIndex = i;
-        }
+            this.children[i].childIndex = i;
     }
 
     detachChild(child: Child) {
