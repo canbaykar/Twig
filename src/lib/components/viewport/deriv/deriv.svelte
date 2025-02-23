@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
 	import type Deriv from "$lib/state/deriv.svelte";
+	import { derivDT } from "./deriv.DT";
 
     interface Props {
         data: Deriv;

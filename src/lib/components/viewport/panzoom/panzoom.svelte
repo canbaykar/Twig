@@ -1,10 +1,10 @@
 <script lang="ts">
 	import draggable, { type DraggableOptions } from '$lib/utils/interact/draggable.svelte';
 	import { onMount, type Snippet } from 'svelte';
-	import { UNIT } from '../unit.svelte';
+	import { derivDT } from '../deriv/deriv.DT';
 
-    const MIN_SCALE = 0.25 / UNIT;
-    const MAX_SCALE = 10 / UNIT;
+    const MIN_SCALE = 0.25;
+    const MAX_SCALE = 10;
 
     /** All properties has to be reactive! */
     interface Data {
@@ -66,8 +66,8 @@
     function updateCSS() {
         element.style.setProperty('--panzoom-x', data.x + 'px');
         element.style.setProperty('--panzoom-y', data.y + 'px');
-        element.style.setProperty('--panzoom-scale', data.scale + '');
-        element.style.setProperty('--panzoom-gs', grid_scale + '');
+        element.style.setProperty('--panzoom-scale', data.scale / derivDT.UNIT + '');
+        element.style.setProperty('--panzoom-gs', grid_scale / derivDT.UNIT + '');
     }
     onMount(updateCSS);
 </script>
@@ -92,12 +92,12 @@
 		--panzoom-y: 0;
 		--panzoom-scale: 1;
 		--panzoom-gs: 100;
-        font-size: calc(var(--DERIV-FS) * var(--U, 1px));
+        font-size: calc(var(--DERIV-FS) * 1px);
     }
 
     .background {
         background: radial-gradient(circle, var(--color-border) 1px, var(--color-bg) 1.5px);
-        --panzoom-bg-size: calc(var(--DERIV-ROW-OFFSET) * var(--panzoom-gs) * var(--U, 1px));
+        --panzoom-bg-size: calc(var(--DERIV-ROW-OFFSET) * var(--panzoom-gs) * 1px);
 		background-size: var(--panzoom-bg-size) var(--panzoom-bg-size);
         background-position: calc(50% + var(--panzoom-x)) calc(50% + var(--panzoom-y));
     }

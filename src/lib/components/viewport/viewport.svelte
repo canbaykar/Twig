@@ -5,8 +5,6 @@
 	import Deriv from "./deriv/deriv.svelte";
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
-	import { UNIT } from "./unit.svelte"; UNIT;
-	import { browser } from "$app/environment";
     
     interface Props {
         viewport: Viewport;
