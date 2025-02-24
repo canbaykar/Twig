@@ -104,5 +104,6 @@
 
     .origin {
         transform: translate(var(--panzoom-x), var(--panzoom-y)) scale(var(--panzoom-scale));
+        --spacing: calc(var(--UNIT) * 1px);
     }
 </style>
