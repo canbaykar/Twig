@@ -29,7 +29,7 @@ export function treeData(width: number, children: TreeData[]): TreeData {
 
     // - Left to right stack -
     let off = 0;
-    let colL = children[0].collider;
+    let colL = clone(children[0].collider);
     const offsetsL = new Array(len).fill(0);
     
     for (let i = 1; i < len; i++) {
@@ -96,14 +96,21 @@ function collide(c0: Collider, c1: Collider)
         }
     } else {
         for (let i = short; i < long; i++) {
-            l[i] = c0.r[i] + offset;
-            r[i] = c0.r[i] + offset;
+            l[i] = c1.l[i] + offset;
+            r[i] = c1.r[i] + offset;
         }
     }
 
     return {
         collider: { l, r },
         offset,
+    };
+}
+
+function clone(c: Collider) {
+    return {
+        l: c.l.slice(),
+        r: c.r.slice(),
     };
 }
 
