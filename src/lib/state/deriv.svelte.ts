@@ -55,7 +55,10 @@ export function addExampleProof() {
                                 {
                                     conc: 'A∧B',
                                     // rule: '1',
-                                }
+                                },
+                                // {
+                                //     conc: 'a',
+                                // },
                             ]
                         },
                         {
@@ -69,7 +72,7 @@ export function addExampleProof() {
                                         {
                                             conc: 'A∧B',
                                             // rule: '1'
-                                        }
+                                        },
                                     ]
                                 },
                                 {
@@ -78,7 +81,10 @@ export function addExampleProof() {
                             ]
                         }
                     ]
-                }
+                },
+                // {
+                //     conc: 'a',
+                // },
             ]
         })
     );
