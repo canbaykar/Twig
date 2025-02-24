@@ -62,8 +62,12 @@ export function treeData(width: number, children: TreeData[]): TreeData {
     }
 
     // - Add parent's collider row -
+    // Row under parent
     colL.l.unshift(-w);
     colL.r.unshift(w);
+    // Adjust the row over to not be smaller than parent
+    colL.l[1] = Math.min(colL.l[1], -w);
+    colL.r[1] = Math.max(colL.r[1], w);
 
     return {
         collider: colL,
