@@ -10,7 +10,8 @@ export const derivDT = Object.freeze({
     derivFS: 16 * UNIT,
 });
 
-/** All design tokens for deriv. */
+/** All design tokens for deriv. Some are unitless!
+ *  Some are unitless! Use them with UNIT*px */
 export const derivDTjs = Object.freeze({
     ...derivDT,
     
@@ -26,9 +27,12 @@ export const derivDTjs = Object.freeze({
     /** (length) Line height of labels */
     derivLabelLH: 13 * UNIT + 'px',
 
+    /** (number) Bottom css prop of bar */
     derivBarBottom: derivDT.derivRowOffset - 3 * UNIT,
+    /** (number) Left-right padding of conc */
+    derivXPadding: 4,
 
     /** (number) Margin at the sides of the rule-bar 
      * (label and rule are counted as a part of the bar here.) */
-    margin: 5 * UNIT,
+    margin: 10 * UNIT,
 });
