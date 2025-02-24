@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
 	import type Deriv from "$lib/state/deriv.svelte";
-	import { derivDT } from "./deriv.DT";
+	import { derivDTjs } from "./deriv.DT";
 
     interface Props {
         data: Deriv;
@@ -27,9 +27,17 @@
 </script>
 
 <div
-    class="font-math absolute bg-fg/25 leading-(--DERIV-LH) bottom-0"
+    class="font-math absolute bg-fg/10 bottom-0"
     style:translate="calc({render.x}px - 50%) {render.y}px"
+    style:line-height={derivDTjs.derivLH}
     bind:this={element}
 >
     {data.conc}
 </div>
+
+<div
+    class="absolute bg-fg h-1 origin-left rounded-full"
+    style:translate="calc({render.barLeft}px) {render.y}px"
+    style:width="{render.barWidth}px"
+    style:bottom="{derivDTjs.derivBarBottom}px"
+></div>

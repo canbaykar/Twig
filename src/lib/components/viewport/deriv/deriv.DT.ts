@@ -5,9 +5,19 @@ export const derivDT = Object.freeze({
     /** (number) Multiplier for all sizes in viewport because of number rounding issues */
     UNIT,
     /** (number) Height of a row of deriv */
-    derivRowOffset: 23 * UNIT,
+    derivRowOffset: 25 * UNIT,
     /** (number) Font size of formulas */
     derivFS: 16 * UNIT,
+});
+
+/** All design tokens for deriv. */
+export const derivDTjs = Object.freeze({
+    ...derivDT,
+    
+    /** (number) Font size of rules */
+    derivRuleFS: 12 * UNIT,
+    /** (number) Font size of labels */
+    derivLabelFS: 12 * UNIT,
 
     /** (length) Line height of formulas */
     derivLH: '125%',
@@ -15,13 +25,10 @@ export const derivDT = Object.freeze({
     derivRuleLH: 'normal',
     /** (length) Line height of labels */
     derivLabelLH: 13 * UNIT + 'px',
-});
 
-/** All design tokens for deriv. */
-export const derivDTjs = Object.freeze({
-    ...derivDT,
-    /** (number) Font size of rules */
-    derivRuleFS: 12 * UNIT,
-    /** (number) Font size of labels */
-    derivLabelFS: 12 * UNIT,
+    derivBarBottom: derivDT.derivRowOffset - 3 * UNIT,
+
+    /** (number) Margin at the sides of the rule-bar 
+     * (label and rule are counted as a part of the bar here.) */
+    margin: 5 * UNIT,
 });

@@ -29,7 +29,7 @@ export default class DerivRenderData {
     width: number = $state(0);
 
     // Tree rendering logic
-    readonly tree: TreeData = $derived.by(() => 
+    private readonly tree: TreeData = $derived.by(() => 
         treeData(this.width, this.deriv.children.map(c => c.render.tree))
     )
     private readonly xBase: number = $derived.by(() => {
@@ -59,6 +59,9 @@ export default class DerivRenderData {
     // This is the final location (base + transform)
     readonly x: number = $derived(this.xBase + this.acc.x);
     readonly y: number = $derived(this.acc.y);
+
+    readonly barLeft = $derived(this.x + this.tree.collider.l[1]);
+    readonly barWidth = $derived(this.tree.collider.r[1] - this.tree.collider.l[1]);
 
     /** ($derived, readonly) Inherited. */
     readonly displayed: boolean = $derived.by(() => {
