@@ -1,3 +1,5 @@
+import { derivDTjs } from "./deriv.DT";
+
 export interface TreeData {
     /** Rel. offsets of left and rigth sides of hitboxes by row
      *  not accounting for child transforms */
@@ -85,6 +87,7 @@ function collide(c0: Collider, c1: Collider)
     for (let i = 0; i < short; i++) {
         offset = Math.max(offset, c0.r[i] - c1.l[i]);
     }
+    offset += derivDTjs.margin;
 
     // Calculate collider
     const l = new Array(long);
