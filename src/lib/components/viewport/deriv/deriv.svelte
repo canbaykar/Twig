@@ -27,7 +27,7 @@
 </script>
 
 <div
-    class="font-math absolute text-fg/50 bg-fg/50"
+    class="font-math absolute bg-fg/25 leading-(--DERIV-LH) bottom-0"
     style:translate="calc({render.x}px - 50%) {render.y}px"
     bind:this={element}
 >
