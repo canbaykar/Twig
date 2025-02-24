@@ -26,18 +26,20 @@
     });
 </script>
 
-<div
-    class="font-math absolute bg-fg/10 bottom-0"
-    style:translate="calc({render.x}px - 50%) {render.y}px"
-    style:line-height={derivDTjs.derivLH}
-    bind:this={element}
->
-    {data.conc}
-</div>
+<div class="*:absolute *:font-math">
+    <div
+        class="bg-fg/10 bottom-0"
+        style:translate="calc({render.x}px - 50%) {render.y}px"
+        style:line-height={derivDTjs.derivLH}
+        bind:this={element}
+    >
+        {data.conc}
+    </div>
 
-<div
-    class="absolute bg-fg h-1 origin-left rounded-full"
-    style:translate="calc({render.barLeft}px) {render.y}px"
-    style:width="{render.barWidth}px"
-    style:bottom="{derivDTjs.derivBarBottom}px"
-></div>
+    <div
+        class="bg-fg h-1 origin-left rounded-full"
+        style:translate="calc({render.barLeft}px) {render.y}px"
+        style:width="{render.barWidth}px"
+        style:bottom="{derivDTjs.derivBarBottom}px"
+    ></div>
+</div>
