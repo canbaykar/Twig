@@ -19,7 +19,7 @@
         document.fonts.load('12px "M PLUS 1p"').then(() => {
             data.render.width = element.offsetWidth;
         });
-    // TODO: Test that this only works when conc changes!
+    
     $effect(() => {
         data.conc;
         data.render.width = element.offsetWidth;
