@@ -28,12 +28,15 @@
 
 <div class="*:absolute *:font-math">
     <div
-        class="bg-fg/10 bottom-0 px-{derivDTjs.derivXPadding}"
+        class="bottom-0 px-{derivDTjs.derivXPadding}"
         style:translate="calc({render.x}px - 50%) {render.y}px"
         style:line-height={derivDTjs.derivLH}
         bind:this={element}
+
+        contenteditable
+        bind:innerHTML={data.conc}
     >
-        {data.conc}
+        <!-- {data.conc} -->
     </div>
 
     <div
