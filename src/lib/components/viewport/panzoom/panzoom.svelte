@@ -15,7 +15,7 @@
 
     interface Props {
         data: Data,
-        children?: Snippet<[]>;
+        children?: Snippet;
     }
 
 	let { data, children }: Props = $props();
