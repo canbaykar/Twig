@@ -27,7 +27,10 @@
             data.x += e.dx;
             data.y += e.dy;
             updateCSS();
-        }
+        },
+        checker(target) {
+            return target.classList.contains('panzoom-background');
+        },
     };
 
     /** Client coords to world coords */
@@ -79,7 +82,7 @@
     class="panzoom w-full h-full overflow-hidden" 
     use:draggable={draggableOptions}
 >
-    <div class="background w-full h-full cursor-grab"></div>
+    <div class="panzoom-background w-full h-full cursor-grab"></div>
     <div class="origin w-0 h-0 absolute top-2/4 left-2/4">
         {@render children?.()}
     </div>
@@ -95,7 +98,7 @@
         font-size: calc(var(--DERIV-FS) * 1px);
     }
 
-    .background {
+    .panzoom-background {
         background: radial-gradient(circle, var(--color-border) 1px, var(--color-bg) 1.5px);
         --panzoom-bg-size: calc(var(--DERIV-ROW-OFFSET) * var(--panzoom-gs) * 1px);
 		background-size: var(--panzoom-bg-size) var(--panzoom-bg-size);
