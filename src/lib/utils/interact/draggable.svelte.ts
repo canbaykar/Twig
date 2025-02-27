@@ -11,7 +11,7 @@ export interface DraggableOptions {
 	start?(e: MouseEvent): void;
 	move?(e: MouseEvent & { dx: number; dy: number }): void;
 	cursor?: string;
-	checker?: (n: HTMLElement) => boolean;
+	checker?: (target: HTMLElement) => boolean;
 }
 
 // So that only one drag interaction activates at once
