@@ -52,16 +52,27 @@
 
     let element: HTMLElement;
     onMount(() => {
-        popup.element.addEventListener('mouseleave', onmouseleavePopup);
+        popup.element.addEventListener('mouseleave', onmouseleaveOwner);
         return () => 
-            popup.element.removeEventListener('mouseleave', onmouseleavePopup);
+            popup.element.removeEventListener('mouseleave', onmouseleaveOwner);
     });
 
-    function onmouseleavePopup(e: MouseEvent) {
-        if (e.relatedTarget === element) return;
+    function onmouseleaveOwner(e: MouseEvent) {
+        if (
+            e.relatedTarget === element ||
+            document.activeElement === element
+        ) return;
         popup.detach();
     }
     function onmouseleave() {
+        if (document.activeElement === element) return;
+        popup.detach();
+    }
+    function onblur() {
+        if (
+            element.matches(':hover') ||
+            popup.element.matches(':hover')
+        ) return;
         popup.detach();
     }
 </script>
@@ -79,4 +90,5 @@
     rows=1
     bind:this={element}
     {onmouseleave}
+    {onblur}
 ></textarea>
