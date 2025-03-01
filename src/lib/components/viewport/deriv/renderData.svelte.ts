@@ -25,7 +25,7 @@ export default class DerivRenderData {
 
     deriv: Deriv;
 
-    /** Left of label to right of rule. Maintained in deriv.svelte */
+    /** ($state) Left of label to right of rule. Maintained in deriv.svelte */
     width: number = $state(0);
 
     // Tree rendering logic
