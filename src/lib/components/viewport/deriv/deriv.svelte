@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
 	import type Deriv from "$lib/state/deriv.svelte";
+	import { on } from "svelte/events";
 	import { derivDTjs } from "./deriv.DT";
+	import { onMount } from "svelte";
+	import { FormulaPopup } from "./formulaPopup.svelte";
 
     interface Props {
         data: Deriv;
@@ -24,19 +27,24 @@
         data.conc;
         data.render.width = element.offsetWidth;
     });
+
+    // TODO: Account for focus events for accessibility
+    function makePopup(e: Event) {
+        new FormulaPopup(data, element);
+    }
 </script>
 
 <div class="*:absolute *:font-math">
     <div
-        class="bottom-0 px-{derivDTjs.derivXPadding}"
+        class="bottom-0 px-{derivDTjs.derivXPadding} cursor-default select-none"
         style:translate="calc({render.x}px - 50%) {render.y}px"
         style:line-height={derivDTjs.derivLH}
         bind:this={element}
-
-        contenteditable
-        bind:innerHTML={data.conc}
+        onmouseenter={makePopup}
+        role="textbox"
+        tabindex="0"
     >
-        <!-- {data.conc} -->
+        {data.conc}
     </div>
 
     <div
