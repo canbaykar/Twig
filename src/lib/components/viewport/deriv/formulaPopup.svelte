@@ -53,12 +53,20 @@
     let element: HTMLElement;
     onMount(() => {
         popup.element.addEventListener('mouseleave', onmouseleaveOwner);
-        return () => 
+        popup.element.addEventListener('dragleave', onmouseleaveOwner);
+        return () => {
             popup.element.removeEventListener('mouseleave', onmouseleaveOwner);
+            popup.element.removeEventListener('dragleave', onmouseleaveOwner);
+        }
     });
+    
+    let draggedOver = false;
+    function ondragenter() { draggedOver = true; }
+    function ondragleave() { draggedOver = false; }
 
     function onmouseleaveOwner(e: MouseEvent) {
         if (
+            draggedOver ||
             e.relatedTarget === element ||
             document.activeElement === element
         ) return;
@@ -89,6 +97,8 @@
         "
     rows=1
     bind:this={element}
+    {ondragenter}
+    {ondragleave}
     {onmouseleave}
     {onblur}
 ></textarea>

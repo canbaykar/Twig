@@ -41,8 +41,9 @@
         style:line-height={derivDTjs.derivLH}
         bind:this={element}
         onmouseenter={makePopup}
+        ondragenter={makePopup}
         role="textbox"
-        tabindex="0"
+        tabindex="-1"
     >
         {data.conc}
     </div>
