@@ -64,12 +64,11 @@
     function onmouseleave() {
         popup.detach();
     }
-    /////////////// scrolling issue! maybe try text-area?
 </script>
 
-<input
+<textarea
     bind:value={popup.deriv.conc}
-    class="absolute text-transparent text-center font-math caret-fg"
+    class="absolute text-transparent text-center font-math caret-fg overflow-hidden resize-none"
     style="
             top: {popup.placement.y}px;
             left: {popup.placement.x}px;
@@ -77,6 +76,7 @@
             width: {popup.placement.width}px;
             font-size: {popup.placement.height * H2FS}px;
         "
+    rows=1
     bind:this={element}
     {onmouseleave}
-/>
+></textarea>
