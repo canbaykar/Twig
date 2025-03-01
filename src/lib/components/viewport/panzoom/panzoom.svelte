@@ -16,9 +16,12 @@
     interface Props {
         data: Data,
         children?: Snippet;
+        /** Place elements here to still have the wheel event listeners
+         *  for panzoom act on them */
+        noPanzoom?: Snippet;
     }
 
-	let { data, children }: Props = $props();
+	let { data, children, noPanzoom }: Props = $props();
     let element: HTMLElement;
     let rect: DOMRect;
 
@@ -86,6 +89,7 @@
     <div class="origin w-0 h-0 absolute top-2/4 left-2/4">
         {@render children?.()}
     </div>
+    {@render noPanzoom?.()}
 </div>
 
 <style>

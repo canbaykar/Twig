@@ -22,10 +22,10 @@
     {#each DerivRenderData.displayed as data (data)}
         <Deriv {data}></Deriv>
     {/each}
+    
+    {#snippet noPanzoom()}
+        {#each viewport.render.popups.children as popup (popup)}
+            <popup.component {popup} {...popup.props} />
+        {/each}
+    {/snippet}
 </Panzoom>
-
-<div class="absolute w-0 h-0 top-0 left-0">
-    {#each viewport.render.popups.children as popup (popup)}
-        <popup.component {popup} {...popup.props} />
-    {/each}
-</div>
