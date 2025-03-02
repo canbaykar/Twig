@@ -8,43 +8,22 @@ export default class ViewportRenderData {
     popups = popups;
 }
 
-class Popups extends Parent {
-    declare readonly children: Popup[];
-
-    detachChild(child: Popup): boolean {
-        const res = super.detachChild(child);
-        child.cleanup();
-        return res;
-    }
-    
-    detachAll(): boolean {
-        const old = this.children;
-        const res = super.detachAll();
-        for (const ch of old) ch.cleanup();
-        return res;
-    }
+interface Popups extends Parent {
+    readonly children: Popup[];
 }
-const popups = new Popups();
+const popups = new Parent() as Popups;
 
 export class Popup<TComponent extends Component<any> = Component> extends Child {
     readonly component: TComponent;
     props: Omit<ComponentProps<TComponent>, 'popup'>;
-    cleanup = () => {};
 
     constructor(
         component: TComponent,
         props: Omit<ComponentProps<TComponent>, 'popup'>,
-        effect?: () => void | (() => void),
     ) {
         super();
         this.component = component;
         this.props = props;
-
-        if (effect)
-            this.cleanup = $effect.root(() => {
-                $effect(effect);
-            });
-
         popups.attachChild(this);
     }
 }
