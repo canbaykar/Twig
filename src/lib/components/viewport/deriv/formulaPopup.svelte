@@ -26,8 +26,6 @@
 <script lang="ts">
     const { popup }: { popup: FormulaPopup } = $props();
 
-    const H2FS = 1 / 1.25; ////////////////////////////////
-
     let placement = $state({
         x: 0,
         y: 0,
@@ -92,7 +90,7 @@
             left: {placement.x}px;
             line-height: {placement.height}px;
             width: {placement.width}px;
-            font-size: {placement.height * H2FS}px;
+            font-size: {placement.height * derivDTjs.derivLH2FS}px;
         "
     rows=1
     bind:this={element}

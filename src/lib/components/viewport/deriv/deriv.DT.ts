@@ -22,6 +22,9 @@ export const derivDTjs = Object.freeze({
 
     /** (length) Line height of formulas */
     derivLH: '125%',
+    /** (number) Font size - line height ratio */
+    // Make automatic based on the two props if experimenting!
+    derivLH2FS: 1 / 1.25,
     /** (length) Line height of rules */
     derivRuleLH: 'normal',
     /** (length) Line height of labels */
