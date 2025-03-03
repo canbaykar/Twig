@@ -1,7 +1,7 @@
 <script lang="ts">
 	import draggable, { type DraggableOptions } from '$lib/utils/interact/draggable.svelte';
 	import { onMount, type Snippet } from 'svelte';
-	import { derivDT } from '../deriv/deriv.DT';
+	import { DT } from '../../../../DT';
 
     const MIN_SCALE = 0.25;
     const MAX_SCALE = 10;
@@ -72,8 +72,8 @@
     function updateCSS() {
         element.style.setProperty('--panzoom-x', data.x + 'px');
         element.style.setProperty('--panzoom-y', data.y + 'px');
-        element.style.setProperty('--panzoom-scale', data.scale / derivDT.UNIT + '');
-        element.style.setProperty('--panzoom-gs', grid_scale / derivDT.UNIT + '');
+        element.style.setProperty('--panzoom-scale', data.scale / DT.UNIT + '');
+        element.style.setProperty('--panzoom-gs', grid_scale / DT.UNIT + '');
     }
     onMount(updateCSS);
 </script>

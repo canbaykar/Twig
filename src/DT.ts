@@ -1,6 +1,9 @@
 // Do not use $lib here!
-import { derivDT, _derivDT } from "./lib/components/viewport/deriv/deriv.DT";
+import { derivDT } from "./lib/components/viewport/deriv/deriv.DT";
 import plugin from "tailwindcss/plugin";
+
+// Keeps CSS generated from imported DTs. For tw plugin.
+let css: Record<string, string> = {};
 
 /**
  * DT stands for design token. It contains constants related to the tree 
@@ -11,49 +14,36 @@ import plugin from "tailwindcss/plugin";
  * organisation) make a file like below and add it to the definition of DT;
  * @example
  * // Contents of src/lib/thing/thing.DT.ts:
- * export const thingDT = Object.freeze({
- *    abcDef: 42, // In CSS turns to: --ABC-DEF: 42;
- * });
+ * // See the DesignToken type in src/DT.ts.
+ * export const thingDT = {
+ *     prefix: 'th',
+ *     noprefix: ['propTwo'],
+ *     css: {
+ *         propOne: 42, // In CSS turns to: --TH-PROP-ONE: 42;
+ *         propTwo: 99, // In CSS turns to: --PROP-TWO: 99;
+ *     },
+ *     propThree: 33, // In JS export turns to: thPropThree
+ *                    // because propThree isn't in noprefix.
+ *                    // Props in css are also exported like thPropOne.
+ * } as const;
  * 
  * // Contents of src/DT.ts:
  * // Do not use $lib here!
- * import { thingDT } from "./lib/something/DT.ts";
+ * import { ..., thingDT } from "./lib/something/DT.ts";
  * import plugin from "tailwindcss/plugin";
  * 
- * export const DT = Object.freeze({
+ * // ...
+ * 
+ * // This JSDoc description...
+ * export const DT = prepareDTs(
  *    // ...
- *    ...thingDT,
- * });
+ *    thingDT,
+ * );
  * 
  * // ...
  */
-export const DT = Object.freeze({
-    ...derivDT,
-    // Add other design tokents here
-});
-
-
-// ---- Plugin ----
-// @ts-expect-error Thanks to https://stackoverflow.com/a/67243723/13217729
-const kebabize = str => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $);
-const prepKey = (k: string) => '--' + kebabize(k).toUpperCase();
-const prepVal = (v: unknown) => '' + v;
-
-let css: Record<string, string> = {};
-for (const key in DT) {
-    css[prepKey(key)] = prepVal((DT as Record<string, unknown>)[key]);
-}
-/** Tailwind plugin to inject the tokens into CSS */
-export const DTPlugin = plugin(function({ addBase }) {
-    addBase({ ':root': css });
-});
-
-
-
-// New DT system WIP
-let _css: Record<string, string> = {};
-export const _DT = prepareDTs(
-    _derivDT,
+export const DT = prepareDTs(
+    derivDT,
     // ...
 );
 
@@ -69,11 +59,13 @@ export type DesignToken = Readonly<{
 // Update this if you update above!
 type Special = 'prefix' | 'noprefix' | 'css';
 
+
+// ---- Implementations ----
 function prepareDTs<T extends DesignToken[]>(...dts: T) {
     // Special keys
     const special = new Set(['prefix', 'noprefix', 'css']);
     // Final output
-    let DT: Writeable<DesignToken> = {};
+    const DT: Writeable<DesignToken> = {};
 
     for (const dt of dts) {
         const pre = dt.prefix;
@@ -93,13 +85,30 @@ function prepareDTs<T extends DesignToken[]>(...dts: T) {
             const pkey = addPre(key);
             const val = dt.css[key];
             DT[pkey] = val;
-            _css[prepKey(pkey)] = prepVal(val);
+            css[prepKey(pkey)] = prepVal(val);
         }
     }
 
     return Object.freeze(DT) as PrepDTs<T>;
 }
 
+// ---- Plugin ----
+// Thanks to https://stackoverflow.com/a/67243723/13217729
+function kebabize(str: string) {
+    return str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $);
+}
+function prepKey(k: string) {
+    return '--' + kebabize(k).toUpperCase();
+}
+function prepVal(v: unknown) {
+    return '' + v;
+}
+/** Tailwind plugin to inject the tokens into CSS */
+export const DTPlugin = plugin(function({ addBase }) {
+    addBase({ ':root': css });
+});
+
+// ---- Types ----
 // Here's the type madness to make the function above work better
 // with intellisense
 type PrepNoprefix<NoPre extends readonly string[] | undefined> 

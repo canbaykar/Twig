@@ -1,8 +1,8 @@
 import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { SvelteSet } from "svelte/reactivity";
-import { derivDT } from "./deriv.DT";
 import { treeData, type TreeData } from "./treeData";
+import { DT } from "../../../../DT";
 
 /** Serialized DerivRenderData */
 export interface SDerivRenderData {
@@ -50,7 +50,7 @@ export default class DerivRenderData {
         return par instanceof Deriv 
             ? {
                 x: par.render.acc.x + this.xTransform,
-                y: par.render.acc.y - derivDT.derivRowOffset + this.yTransform,
+                y: par.render.acc.y - DT.derivRowOffset + this.yTransform,
             } : {
                 x: this.xTransform,
                 y: this.yTransform,

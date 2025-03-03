@@ -4,7 +4,7 @@
 	import { onMount } from "svelte";
 	import { Popup } from "../renderData.svelte";
     import Self from './formulaPopup.svelte';
-	import { derivDTjs } from "./deriv.DT";
+	import { DT } from "../../../../DT";
 
     export class FormulaPopup extends Popup<typeof Self> {
         deriv: Deriv;
@@ -90,7 +90,7 @@
             left: {placement.x}px;
             line-height: {placement.height}px;
             width: {placement.width}px;
-            font-size: {placement.height * derivDTjs.derivLH2FS}px;
+            font-size: {placement.height * DT.derivLH2FS}px;
         "
     rows=1
     bind:this={element}

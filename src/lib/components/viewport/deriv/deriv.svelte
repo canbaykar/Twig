@@ -2,9 +2,9 @@
 	import { browser } from "$app/environment";
 	import type Deriv from "$lib/state/deriv.svelte";
 	import { on } from "svelte/events";
-	import { derivDTjs } from "./deriv.DT";
 	import { onMount } from "svelte";
 	import { FormulaPopup } from "./formulaPopup.svelte";
+	import { DT } from "../../../../DT";
 
     interface Props {
         data: Deriv;
@@ -36,9 +36,9 @@
 
 <div class="*:absolute *:font-math">
     <div
-        class="bottom-0 px-{derivDTjs.derivXPadding} cursor-default select-none"
+        class="bottom-0 px-{DT.derivXPadding} cursor-default select-none"
         style:translate="calc({render.x}px - 50%) {render.y}px"
-        style:line-height={derivDTjs.derivLH}
+        style:line-height={DT.derivLH}
         bind:this={element}
         onmouseenter={makePopup}
         ondragenter={makePopup}
@@ -52,6 +52,6 @@
         class="bg-fg h-1 origin-left rounded-full"
         style:translate="calc({render.barLeft}px) {render.y}px"
         style:width="{render.barWidth}px"
-        style:bottom="{derivDTjs.derivBarBottom}px"
+        style:bottom="{DT.derivBarBottom}px"
     ></div>
 </div>
