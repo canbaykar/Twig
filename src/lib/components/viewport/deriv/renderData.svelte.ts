@@ -50,7 +50,7 @@ export default class DerivRenderData {
         return par instanceof Deriv 
             ? {
                 x: par.render.acc.x + this.xTransform,
-                y: par.render.acc.y - DT.derivRowOffset + this.yTransform,
+                y: par.render.acc.y - DT.derivRowOffsetN + this.yTransform,
             } : {
                 x: this.xTransform,
                 y: this.yTransform,

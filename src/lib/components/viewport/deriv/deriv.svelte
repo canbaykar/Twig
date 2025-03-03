@@ -36,9 +36,9 @@
 
 <div class="*:absolute *:font-math">
     <div
-        class="bottom-0 px-{DT.derivXPadding} cursor-default select-none"
+        class="bottom-0 px-{DT.derivXPaddingN} cursor-default select-none"
         style:translate="calc({render.x}px - 50%) {render.y}px"
-        style:line-height={DT.derivLH}
+        style:line-height={DT.derivLineHeight}
         bind:this={element}
         onmouseenter={makePopup}
         ondragenter={makePopup}
@@ -52,6 +52,6 @@
         class="bg-fg h-1 origin-left rounded-full"
         style:translate="calc({render.barLeft}px) {render.y}px"
         style:width="{render.barWidth}px"
-        style:bottom="{DT.derivBarBottom}px"
+        style:bottom="{DT.derivBarBottomN}px"
     ></div>
 </div>

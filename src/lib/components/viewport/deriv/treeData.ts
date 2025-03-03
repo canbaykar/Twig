@@ -87,7 +87,7 @@ function collide(c0: Collider, c1: Collider)
     for (let i = 0; i < short; i++) {
         offset = Math.max(offset, c0.r[i] - c1.l[i]);
     }
-    offset += DT.derivMargin;
+    offset += DT.derivMarginN;
 
     // Calculate collider
     const l = new Array(long);

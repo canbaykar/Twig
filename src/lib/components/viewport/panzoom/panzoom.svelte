@@ -99,12 +99,12 @@
 		--panzoom-y: 0;
 		--panzoom-scale: 1;
 		--panzoom-gs: 100;
-        font-size: calc(var(--DERIV-FS) * 1px);
+        font-size: calc(var(--DERIV-SIZE-N) * 1px);
     }
 
     .panzoom-background {
         background: radial-gradient(circle, var(--color-border) 1px, var(--color-bg) 1.5px);
-        --panzoom-bg-size: calc(var(--DERIV-ROW-OFFSET) * var(--panzoom-gs) * 1px);
+        --panzoom-bg-size: calc(var(--DERIV-ROW-OFFSET-N) * var(--panzoom-gs) * 1px);
 		background-size: var(--panzoom-bg-size) var(--panzoom-bg-size);
         background-position: calc(50% + var(--panzoom-x)) calc(50% + var(--panzoom-y));
     }

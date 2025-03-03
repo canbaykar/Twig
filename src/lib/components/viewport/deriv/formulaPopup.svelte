@@ -90,7 +90,7 @@
             left: {placement.x}px;
             line-height: {placement.height}px;
             width: {placement.width}px;
-            font-size: {placement.height * DT.derivLH2FS}px;
+            font-size: {placement.height * DT.derivHeight2Size}px;
         "
     rows=1
     bind:this={element}
