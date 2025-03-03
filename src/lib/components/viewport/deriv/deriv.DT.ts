@@ -37,5 +37,5 @@ export const derivDTjs = Object.freeze({
 
     /** (number) Margin at the sides of the rule-bar 
      * (label and rule are counted as a part of the bar here.) */
-    margin: 10 * UNIT,
+    derivMargin: 10 * UNIT,
 });
