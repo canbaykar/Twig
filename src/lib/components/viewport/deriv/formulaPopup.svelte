@@ -36,15 +36,19 @@
         viewport.render.x;
         viewport.render.y;
         viewport.render.scale;
+        popup.deriv.render.x;
+        popup.deriv.render.y;
         popup.deriv.render.width;
         
-        const rect = popup.element.getBoundingClientRect();
-        placement = {
-            x: rect.x,
-            y: rect.y,
-            height: rect.height,
-            width: rect.width,
-        };
+        requestAnimationFrame(() => {
+            const rect = popup.element.getBoundingClientRect();
+            placement = {
+                x: rect.x,
+                y: rect.y,
+                height: rect.height,
+                width: rect.width,
+            };
+        });
     });
 
     let element: HTMLElement;
