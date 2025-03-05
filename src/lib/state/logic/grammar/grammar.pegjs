@@ -1,5 +1,5 @@
 {{
-  import { AtomicFormula, UnaryFormula, BinaryFormula, MetaFormula } from "./";
+  import { AtomicFormula, UnaryFormula, BinaryFormula, AtomicMetaFormula } from "./";
 }}
 
 Bionditional
@@ -43,7 +43,7 @@ Primary
 
 Atom "atomic statement"
   = ([A-Z] [a-zA-Z0-9]* / [⊤⊥]) { const t = text(); return new AtomicFormula(t, t) }
-  / "[" name:[0-9]+ "]" { return new MetaFormula(text(), name.join('')) }
+  / "[" name:[0-9]+ "]" { return new AtomicMetaFormula(text(), name.join('')) }
 
 _ "whitespace"
   // \xC2\xA0 is non-breaking whitespace

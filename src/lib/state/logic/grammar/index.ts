@@ -58,7 +58,8 @@ export class AtomicFormula extends Formula {
     }
 }
 
-export class MetaFormula extends Formula {
+/** Class for ***atomic metaformula (AMF)***. A metaformula is a formula with AMFs. */
+export class AtomicMetaFormula extends Formula {
     declare args: undefined | [];
 
     toString(): string {
