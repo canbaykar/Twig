@@ -1,23 +1,24 @@
-import { AtomicMetaFormula, type Formula } from './';
+// grammar is for tests
+import grammar, { AtomicMetaFormula, type Formula } from './';
 
 export class Match {
 	// Metavariable map
 	[name: number]: Formula;
 
-    private constructor() {}
+	private constructor() {}
 
-    static empty() {
-        return new Match();
-    }
-    static match(f: Formula, mf: Formula): Match | Mismatch {
-	    return new Match().match(f, mf);
-    }
-    static matchArray(fs: Formula[], mfs: Formula[]): Match | Mismatch {
-        return new Match().matchArray(fs, mfs);
-    }
-    static tryMatchArray(fs: Formula[], mfss: Formula[][]): Match | Mismatch {
-        return new Match().tryMatchArray(fs, mfss);
-    }
+	static empty() {
+		return new Match();
+	}
+	static match(f: Formula, mf: Formula): Match | Mismatch {
+		return new Match().match(f, mf);
+	}
+	static matchArray(fs: Formula[], mfs: Formula[]): Match | Mismatch {
+		return new Match().matchArray(fs, mfs);
+	}
+	static tryMatchArray(fs: Formula[], mfss: Formula[][]): Match | Mismatch {
+		return new Match().tryMatchArray(fs, mfss);
+	}
 
 	/** Returns new Match instance with [mf.label]: f, or Mismatch on conflict */
 	addRecord(f: Formula, mf: Formula): Match | Mismatch {
@@ -27,21 +28,18 @@ export class Match {
 	}
 
 	match(f: Formula, mf: Formula): Match | Mismatch {
-        if (mf instanceof AtomicMetaFormula)
-			return this.addRecord(f, mf);
-        if (f.constructor !== mf.constructor)
-			return new Mismatch(MismatchType.Constructor, f, mf);
-        if (f.label !== mf.label)
-			return new Mismatch(MismatchType.Label, f, mf);
-        return this.matchArray(f.args, mf.args);
+		if (mf instanceof AtomicMetaFormula) return this.addRecord(f, mf);
+		if (f.constructor !== mf.constructor) return new Mismatch(MismatchType.Constructor, f, mf);
+		if (f.label !== mf.label) return new Mismatch(MismatchType.Label, f, mf);
+		return this.matchArray(f.args, mf.args);
 	}
 	matchArray(fs: readonly Formula[], mfs: readonly Formula[]): Match | Mismatch {
-        let m: Match | Mismatch = this;
-        for (let i = 0; i < fs.length; i++) {
-            m = m.match(fs[i], mfs[i]);
-            if (m instanceof Mismatch) return m;
-        }
-        return m;
+		let m: Match | Mismatch = this;
+		for (let i = 0; i < fs.length; i++) {
+			m = m.match(fs[i], mfs[i]);
+			if (m instanceof Mismatch) return m;
+		}
+		return m;
 	}
 
 	/** Try to find the mf array that matches */
@@ -62,29 +60,41 @@ export const enum MismatchType {
 	/** Different labels (but same types, e.g. ∧ and ↔) */
 	Label,
 	/** All matches failed in tryMatchArray */
-	RanOut,
+	RanOut
 }
 export class Mismatch {
 	type: MismatchType;
 	x?: Formula | Formula[];
 	mx?: Formula | Formula[] | Formula[][];
 
-	constructor(type: MismatchType.MetaConflict
-					| MismatchType.Label
-					| MismatchType.Constructor, formula: Formula, metaformula: Formula);
+	constructor(
+		type: MismatchType.MetaConflict | MismatchType.Label | MismatchType.Constructor,
+		formula: Formula,
+		metaformula: Formula
+	);
 	constructor(type: MismatchType.RanOut, formula: Formula, metaformulas: Formula[]);
 	constructor(type: MismatchType.RanOut, formulas: Formula[], metaformulaArrays: Formula[][]);
-	constructor(type: MismatchType, x: Formula | Formula[], mx: Formula | Formula[] | Formula[] | Formula[][]) {
+	constructor(
+		type: MismatchType,
+		x: Formula | Formula[],
+		mx: Formula | Formula[] | Formula[] | Formula[][]
+	) {
 		this.type = type;
 		this.x = x;
 		this.mx = mx;
 		return this;
 	}
 
-    // To support chaining like match(...).match(...)
-	match() { return this; }
-	matchArray() { return this; }
-	addRecord() { return this; }
+	// To support chaining like match(...).match(...)
+	match() {
+		return this;
+	}
+	matchArray() {
+		return this;
+	}
+	addRecord() {
+		return this;
+	}
 }
 
 /**
@@ -103,11 +113,55 @@ export const tryMatchArray = Match.tryMatchArray;
 // -- Helpers --
 /** Returns false if a and b are different */
 function compare(a: Formula, b: Formula) {
-	return a.constructor === b.constructor
-		&& a.label === b.label
-		&& compareArrays(a.args, b.args);
+	return a.constructor === b.constructor && a.label === b.label && compareArrays(a.args, b.args);
 }
-function compareArrays(a: readonly Formula[], b:  readonly Formula[]) {
+function compareArrays(a: readonly Formula[], b: readonly Formula[]) {
 	for (let i = 0; i < a.length; i++) if (!compare(a[i], b[i])) return false;
 	return true;
+}
+
+// --- TESTS ---
+if (import.meta.vitest) {
+	const { it, expect, describe } = import.meta.vitest;
+
+	describe('Match test', () => {
+		let m1: Match | Mismatch;
+		it('Match', () => {
+			m1 = match(grammar.parse('A→(B→A→(B→C))'), grammar.parse('[2]→([10]→[2]→[3])'));
+			expect(m1).toMatchObject({
+				2: { label: 'A' },
+				10: { label: 'B' },
+				3: {
+					label: '→',
+					args: [{ label: 'B' }, { label: 'C' }]
+				}
+			});
+		});
+
+		let m2: Match | Mismatch;
+		it(`Mismatch`, () => {
+			m2 = match(grammar.parse('((Z→C)→(A→C)→B)'), grammar.parse('[3]→[3]→B'));
+			expect((m2 as Mismatch).type).toBe(MismatchType.MetaConflict);
+		});
+
+		let m3: Match | Mismatch;
+		it('Match with chaining', () => {
+			m3 = m1.match(grammar.parse('A→U'), grammar.parse('[2]→[5]'));
+			expect(m3).toMatchObject({
+				2: { label: 'A' },
+				10: { label: 'B' },
+				3: {
+					label: '→',
+					args: [{ label: 'B' }, { label: 'C' }]
+				},
+				5: { label: 'U' }
+			});
+		});
+
+		let m4: Match | Mismatch;
+		it('Mismatch with chaining', () => {
+			m4 = m3.match(grammar.parse('A→V'), grammar.parse('[2]→[5]'));
+			expect((m4 as Mismatch).type).toBe(MismatchType.MetaConflict);
+		});
+	});
 }
