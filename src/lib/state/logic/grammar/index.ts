@@ -2,10 +2,11 @@ import type { ParserOptions, parser } from "peggy";
 // @ts-ignore
 import * as _grammar from './grammar.pegjs';
 
+const empty = [] as const;
 export abstract class Formula {
     label: string;
     text: string;
-    args?: Formula[];
+    args: Formula[] | readonly [] = empty;
 
     constructor(text: string, label: string) {
         this.label = label;
@@ -48,7 +49,7 @@ export class UnaryFormula extends Formula {
 }
 
 export class AtomicFormula extends Formula {
-    declare args: undefined | [];
+    args = empty;
 
     toString(): string {
         return this.label;
@@ -60,7 +61,7 @@ export class AtomicFormula extends Formula {
 
 /** Class for ***atomic metaformula (AMF)***. A metaformula is a formula with AMFs. */
 export class AtomicMetaFormula extends Formula {
-    declare args: undefined | [];
+    args = empty;
 
     toString(): string {
         return '[' + this.label + ']';

@@ -33,9 +33,9 @@ export class Match {
 			return new Mismatch(MismatchType.Constructor, f, mf);
         if (f.label !== mf.label)
 			return new Mismatch(MismatchType.Label, f, mf);
-        return this.matchArray(f.args ?? [], mf.args ?? []);
+        return this.matchArray(f.args, mf.args);
 	}
-	matchArray(fs: Formula[], mfs: Formula[]): Match | Mismatch {
+	matchArray(fs: readonly Formula[], mfs: readonly Formula[]): Match | Mismatch {
         let m: Match | Mismatch = this;
         for (let i = 0; i < fs.length; i++) {
             m = m.match(fs[i], mfs[i]);
@@ -90,7 +90,7 @@ export class Mismatch {
 /**
  * Like regex. Atomic metaformulas (AMFs) match any formula. But any given AMF must
  * always match the same thing. (If [2] matched with B→C, it can't match with A→C...)
- * Different flavours: matchArray, tryMatch, tryMatchArray, new Match() (for empty match).
+ * Different flavours: matchArray, tryMatch, tryMatchArray.
  * @example match(f1, mf1).tryMatch(f2, mfs1).matchArray(fs, mfs2) // Chaining
  * @param f A formula without AMFs (isn't checked)
  * @param mf A formula with AMFs to match
@@ -105,9 +105,9 @@ export const tryMatchArray = Match.tryMatchArray;
 function compare(a: Formula, b: Formula) {
 	return a.constructor === b.constructor
 		&& a.label === b.label
-		&& compareArrays(a.args ?? [], b.args ?? []);
+		&& compareArrays(a.args, b.args);
 }
-function compareArrays(a: Formula[], b: Formula[]) {
+function compareArrays(a: readonly Formula[], b:  readonly Formula[]) {
 	for (let i = 0; i < a.length; i++) if (!compare(a[i], b[i])) return false;
 	return true;
 }
