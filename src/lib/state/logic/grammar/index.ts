@@ -58,6 +58,17 @@ export class AtomicFormula extends Formula {
     }
 }
 
+export class MetaFormula extends Formula {
+    declare args: undefined | [];
+
+    toString(): string {
+        return '[' + this.label + ']';
+    }
+    toSubString(): string {
+        return this.toString();
+    }
+}
+
 // See the definition of Parser in peggy source
 export interface Grammar {
 	StartRules: string[];

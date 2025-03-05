@@ -1,5 +1,5 @@
 {{
-  import { AtomicFormula, UnaryFormula, BinaryFormula } from "./";
+  import { AtomicFormula, UnaryFormula, BinaryFormula, MetaFormula } from "./";
 }}
 
 Bionditional
@@ -37,16 +37,13 @@ Conjunction
     }
 
 Primary
-  = "(" expr:Bionditional ")" { return expr; }
+  = "(" expr:Bionditional ")" { return expr }
   / "¬" _ expr:Primary { return new UnaryFormula(text(), "¬", [expr]) }
-  / Atom { 
-        const t = text();
-        return new AtomicFormula(t, t);
-    }
+  / Atom
 
 Atom "atomic statement"
-  = [A-Z] [a-zA-Z0-9]* 
-  / [⊤⊥]
+  = ([A-Z] [a-zA-Z0-9]* / [⊤⊥]) { const t = text(); return new AtomicFormula(t, t) }
+  / "[" name:[0-9]+ "]" { return new MetaFormula(text(), name.join('')) }
 
 _ "whitespace"
   // \xC2\xA0 is non-breaking whitespace
