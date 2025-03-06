@@ -1,6 +1,6 @@
 import type { ParserOptions, parser } from "peggy";
 // @ts-ignore
-import * as _grammar from './grammar.pegjs';
+import * as _base from './grammar.pegjs';
 
 const empty = [] as const;
 export abstract class Formula {
@@ -83,31 +83,49 @@ export class AtomicMetaFormula extends Formula {
     }
 }
 
+
+// --- grammar.pegjs ---
+// For typing only
+const base: Base = _base;
+
+export type GrammarError = InstanceType<parser.SyntaxErrorConstructor>;
+export type Parsed = Formula | GrammarError;
+
 // See the definition of Parser in peggy source
-export interface Grammar {
+interface Base {
 	StartRules: string[];
 	SyntaxError: parser.SyntaxErrorConstructor;
 
 	/** @throws {Parser.SyntaxError} If input is invalid */
 	parse(input: string, options: Omit<ParserOptions, 'peg$library'> & { peg$library: true }): Formula;
 	parse(input: string, options?: ParserOptions): Formula;
-
-	parseAll(
-		inputs: string[],
-		options: Omit<ParserOptions, 'peg$library'> & { peg$library: true }
-	): Formula[];
-	parseAll(inputs: string[], options?: ParserOptions): Formula[];
 }
 
-const grammar = Object.freeze({
-    ..._grammar,
-    parseAll,
-}) as Grammar;
+export type { Grammar };
+class Grammar {
+    readonly StartRules = base.StartRules;
+    /** Not instance of SyntaxError for some reason */
+    readonly Error = base.SyntaxError;
+
+	parse(input: string, options?: ParserOptions) {
+		return base.parse(input, options);
+	}
+	parseAll(inputs: string[], options?: ParserOptions) {
+		return inputs.map((i) => base.parse(i, options));
+	}
+
+	safeParse(input: string, options?: ParserOptions): Parsed {
+		try {
+			return base.parse(input, options);
+		} catch (e) {
+			if (e instanceof this.Error) return e;
+            else throw e;
+		}
+	}
+	safeParseAll(inputs: string[], options?: ParserOptions) {
+		return inputs.map((i) => this.safeParse(i, options));
+	}
+}
+
+const grammar = new Grammar();
 export default grammar;
-
-function parseAll(
-	inputs: string[],
-	options?: ParserOptions | Omit<ParserOptions, "peg$library"> & { peg$library: true }
-): Formula[] {
-	return inputs.map(i => (_grammar as Grammar).parse(i, options));
-}
