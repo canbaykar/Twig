@@ -20,6 +20,18 @@ export abstract class Formula {
     toSubString(): string {
         return '(' + this.toString() + ')';
     }
+
+    // Two nodes can only differ in either constructor or label!
+    is(b: Formula) {
+        return this.constructor === b.constructor 
+            && this.label === b.label 
+            && compareArrays(this.args, b.args);
+    }
+}
+
+function compareArrays(a: readonly Formula[], b: readonly Formula[]) {
+	for (let i = 0; i < a.length; i++) if (!a[i].is(b[i])) return false;
+	return true;
 }
 
 export class BinaryFormula extends Formula {

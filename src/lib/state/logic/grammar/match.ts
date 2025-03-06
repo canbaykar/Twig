@@ -3,6 +3,8 @@ import grammar, { AtomicMetaFormula, type Formula } from './';
 
 export class Match {
 	// Metavariable map
+	// '5' and 5 act the same as keys but, writing [name: string] 
+	// makes typescript upset about methods.
 	[name: number]: Formula;
 
 	private constructor() {}
@@ -22,7 +24,7 @@ export class Match {
 
 	/** Returns new Match instance with [mf.label]: f, or Mismatch on conflict */
 	addRecord(f: Formula, mf: Formula): Match | Mismatch {
-		if (mf.label in this && !compare(this[mf.label as any], f))
+		if (mf.label in this && !this[mf.label as any].is(f))
 			return new Mismatch(MismatchType.MetaConflict, f, mf);
 		return Object.assign(new Match(), this, { [mf.label]: f });
 	}
@@ -109,16 +111,6 @@ export class Mismatch {
 export const match = Match.match;
 export const matchArray = Match.matchArray;
 export const tryMatchArray = Match.tryMatchArray;
-
-// -- Helpers --
-/** Returns false if a and b are different */
-function compare(a: Formula, b: Formula) {
-	return a.constructor === b.constructor && a.label === b.label && compareArrays(a.args, b.args);
-}
-function compareArrays(a: readonly Formula[], b: readonly Formula[]) {
-	for (let i = 0; i < a.length; i++) if (!compare(a[i], b[i])) return false;
-	return true;
-}
 
 // --- TESTS ---
 if (import.meta.vitest) {
