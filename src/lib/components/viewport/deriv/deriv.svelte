@@ -13,11 +13,13 @@
     const render = data.render;
 
     let label = $state('1');
-    let rule = $state('(∧E)');
+    let rule = $state('∧E');
+    // let rule = $state('2');
     const hasLabel = $derived(label !== '');
     const hasRule = $derived(rule !== '');
     const hasChild = $derived(data.children.length !== 0);
     const hasBar = $derived(hasRule || hasLabel || hasChild);
+    const discharged = $derived(/^\d+$/.test(rule));
 
     let element: HTMLElement;
     let ruleElement: HTMLElement | null = $state(null);
@@ -42,6 +44,25 @@
     function makePopup(e: Event) {
         new FormulaPopup(data, element);
     }
+
+    const labelBase = `
+    text-(length:--DERIV-LABEL-SIZE)
+    bottom-(--DERIV-LABEL-BOTTOM)
+    leading-(--DERIV-LABEL-LH)
+
+    select-none
+    border-(length:--UNITPX) border-fg
+    rounded-full
+    min-w-(--DERIV-LABEL-HEIGHT)
+    text-center`;
+
+    const ruleBase = `
+    left-(--DERIV-RULE-LEFT)
+    text-(length:--DERIV-RULE-SIZE)
+    bottom-(--DERIV-RULE-BOTTOM)
+    leading-(--DERIV-RULE-LH)
+
+    select-none`;
 </script>
 
 <div class="**:absolute **:font-math">
@@ -70,16 +91,7 @@
         <!-- Label -->
         {#if hasLabel}
             <div
-                class="text-(length:--DERIV-LABEL-SIZE)
-                    bottom-(--DERIV-LABEL-BOTTOM)
-                    leading-(--DERIV-LABEL-LH)
-                    right-(--DERIV-LABEL-RIGHT)
-
-                    select-none
-                    border-(length:--UNITPX) border-fg
-                    rounded-full
-                    min-w-(--DERIV-LABEL-HEIGHT)
-                    text-center"
+                class="right-(--DERIV-LABEL-RIGHT) {labelBase}"
                 bind:this={labelElement}
             >
                 {label}
@@ -88,15 +100,10 @@
         <!-- Rule -->
         {#if hasRule}
             <div
-                class="text-(length:--DERIV-RULE-SIZE)
-                    bottom-(--DERIV-RULE-BOTTOM)
-                    leading-(--DERIV-RULE-LH)
-                    left-(--DERIV-RULE-LEFT)
-
-                    select-none"
+                class="{discharged ? 'left-(--DERIV-LABEL-RIGHT)' + labelBase : ruleBase}"
                 bind:this={ruleElement}
             >
-                {rule}
+                {discharged ? rule : '(' + rule + ')'}
             </div>
         {/if}
     </div>
