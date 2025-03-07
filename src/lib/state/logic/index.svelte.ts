@@ -1,0 +1,117 @@
+import grammar from "./grammar";
+
+/** Some object capable of storing data for derivations.
+ *  Not Deriv to prevent circularity in design process; this must precede Deriv. */
+export declare interface IDeriv {
+    readonly conc: string;
+    readonly children: IDeriv[];
+    readonly derivParent: IDeriv | null;
+    /////////////////////////////////////////////////////////////////////
+    // While implementing ProofData, make sure to define logic
+    // after everything it depends on (conclusion, children, etc.)
+    readonly logic: LogicData;
+}
+
+/** Has inference related computed data of Deriv */
+export class LogicData {
+    readonly deriv: IDeriv;
+    readonly conc = $derived.by(() => grammar.safeParse(this.deriv.conc));
+    // readonly attributes: AttributeData = { down: {}, up: {} };
+    // readonly label = $state(0); // 0 means no label
+    // readonly dischargedBy: LogicData | null = $state(null);
+    // readonly matches: Gettable<RuleMatch[] | LogicError | SyntaxError>
+    //     = gettable(new LogicError('Loading...'));
+    // readonly rule: Gettable<Rule | LogicError | SyntaxError>
+    //     = gettable(new LogicError('Loading...'));
+    // // - Derived -
+    // // Listening to .logic instead of ProofData doesn't work in initialisation
+    // readonly parentData: GettableNonWritable<IDeriv | null>;
+    // /** Index of data as a child of proof-parent */
+    // readonly index: GettableNonWritable<number | null>;
+    // readonly children: GettableNonWritable<(Formula | Error)[]>;
+    // readonly normalizedConclusionText: GettableNonWritable<string | null>;
+    // readonly ruleText: GettableNonWritable<string>;
+    // readonly discharged: GettableNonWritable<boolean>
+    //     = gettableDerived(this.dischargedBy, $db => $db !== null);
+
+    constructor(deriv: IDeriv) {
+        this.deriv = deriv;
+        // Derived
+        // this.parentData = data.parent;
+        // this.conclusion = gettableDerived(
+        //     data.conc,
+        //     $conc => {
+        //         try { return grammar.parse($conc); }
+        //         catch (error: any) {
+        //             if (error?.name !== 'SyntaxError') throw error;
+        //             return error as Error;
+        //         }
+        //     }
+        // );
+        // this.normalizedConclusionText = gettableDerived(
+        //     this.conclusion,
+        //     $conc => isError($conc) ? null : grammar.normalizedString($conc)
+        // );
+    }
+
+    // downPropogate() {
+    //     // Get matches
+    //     const matches = Rule.find(this);
+    //     this.matches.set(matches);
+    //     // Down-propogate
+    //     const childAttrs = this.data.children.get().map(c => c.logicData.attributes.down);
+    //     if (isError(matches)) {
+    //         this.rule.set(matches);
+    //         this.attributes.down = defaultDownPropogateAttrs(childAttrs);
+    //     } else {
+    //         const { rule, match } = choose(matches);
+    //         this.rule.set(rule);
+    //         this.attributes.down = rule.downPropogateAttrs(
+    //             childAttrs,
+    //             match,
+    //             this.conclusion.get() as Formula,
+    //         );
+    //     }
+    // }
+
+    // upPropogate() {
+    //     const parent = this.parentData.get()?.logicData;
+    //     this.attributes.up = parent
+    //         ? defaultUpPropogateAttrs(
+    //             parent.attributes,
+    //             this.index.get() as number,
+    //             parent,
+    //         )
+    //         : defaultRootUpPropogateAttrs();
+
+    //     // If not infered, rule text is determined by dischargedBy:
+    //     if (this.rule.get() === Rule.axiomRule) {
+    //         const dischargingStep
+    //             = (this.attributes.up.discharged as Map<string, LogicData>)
+    //                 .get(this.normalizedConclusionText.get() as string) ?? null;
+    //         (this.dischargedBy as Gettable<LogicData | null>).set(dischargingStep);
+    //     }
+    // }
+}
+
+// Will consider preferences when choosing in the future
+// function choose(matches: RuleMatch[]): RuleMatch {
+//     return matches[0];
+// }
+
+// function getRuleText(
+//     $rule: Rule | LogicError | SyntaxError,
+//     /** 0 means not discharged */
+//     $dischargingStepLabel: number,
+// ) {
+//     // Error case
+//     if (isError($rule))
+//         return $rule.message === 'Loading...' ? '...' : '-';
+//     // Regular case
+//     if ($rule !== Rule.axiomRule)
+//         return $rule.text;
+//     // Axiom rule case (possibly discharged)
+//     return $dischargingStepLabel 
+//         ? String($dischargingStepLabel) 
+//         : '';
+// }

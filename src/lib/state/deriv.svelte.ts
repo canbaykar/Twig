@@ -1,5 +1,6 @@
 import DerivRenderData, { type SDerivRenderData } from "$lib/components/viewport/deriv/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
+import { LogicData } from "./logic/index.svelte";
 import viewport from "./viewport.svelte";
 
 /** Serialized Deriv */
@@ -10,25 +11,29 @@ export declare interface SDeriv {
 }
 
 export default class Deriv extends Parent {
-    declare readonly children: Deriv[];
-    /** ($state) */
-    conc = $state('');
+	declare readonly children: Deriv[];
+	/** ($derived) Utility for parent */
+	readonly derivParent: Deriv | null = $derived(this.parent instanceof Deriv ? this.parent : null);
+    /** ($derived) */
+	readonly root: Deriv = $derived.by(() => {
+		return this.parent instanceof Deriv ? this.parent.root : this;
+	});
 
-    readonly render: DerivRenderData;
+	/** ($state) */
+	conc = $state('');
 
-    readonly root: Deriv = $derived.by(() => {
-        return this.parent instanceof Deriv
-            ? this.parent.root : this;
-    });
-   
-    /** @param s Serialized Deriv */
-    constructor(s: SDeriv = {}) {
-        super();
-        if (s.conc) this.conc = s.conc;
-        this.render = new DerivRenderData(this, s.render ?? {});
-        if (s.children)
-            this.attachChildren(s.children.map(ch => new Deriv(ch)));
-    }
+	readonly render: DerivRenderData;
+	readonly logic: LogicData;
+
+	/** @param s Serialized Deriv */
+	constructor(s: SDeriv = {}) {
+		super();
+		if (s.conc) this.conc = s.conc;
+		if (s.children) this.attachChildren(s.children.map((ch) => new Deriv(ch)));
+
+		this.logic = new LogicData(this);
+		this.render = new DerivRenderData(this, s.render ?? {});
+	}
 }
 
 
