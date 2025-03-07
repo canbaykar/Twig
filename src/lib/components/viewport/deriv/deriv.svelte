@@ -1,8 +1,8 @@
 <script lang="ts">
+    import Bar from './bar.svelte';
 	import { browser } from "$app/environment";
 	import type Deriv from "$lib/state/deriv.svelte";
 	import { FormulaPopup } from "./formulaPopup.svelte";
-	import { DT } from "../../../../DT";
 
     interface Props {
         data: Deriv;
@@ -12,14 +12,10 @@
 
     const render = data.render;
 
+    // Temporary
     let label = $state('1');
     let rule = $state('∧E');
     // let rule = $state('2');
-    const hasLabel = $derived(label !== '');
-    const hasRule = $derived(rule !== '');
-    const hasChild = $derived(data.children.length !== 0);
-    const hasBar = $derived(hasRule || hasLabel || hasChild);
-    const discharged = $derived(/^\d+$/.test(rule));
 
     let element: HTMLElement;
     let ruleElement: HTMLElement | null = $state(null);
@@ -30,8 +26,8 @@
     const setRuleWidth = () => render.ruleWidth = ruleElement ? ruleElement.offsetWidth : 0;
     const setLabelWidth = () => render.labelWidth = labelElement ? labelElement.offsetWidth : 0;
     $effect(() => { data.conc; setWidth(); });
-    $effect(() => { rule;      setRuleWidth(); })
-    $effect(() => { label;     setLabelWidth(); })
+    $effect(() => { rule;      setRuleWidth(); });
+    $effect(() => { label;     setLabelWidth(); });
     // (Annoyingly have to re-set after font load)
     if (browser) 
         document.fonts.load('12px "M PLUS 1p"').then(() => {
@@ -44,25 +40,6 @@
     function makePopup(e: Event) {
         new FormulaPopup(data, element);
     }
-
-    const labelBase = `
-    text-(length:--DERIV-LABEL-SIZE)
-    bottom-(--DERIV-LABEL-BOTTOM)
-    leading-(--DERIV-LABEL-LH)
-
-    select-none
-    border-(length:--UNITPX) border-fg
-    rounded-full
-    min-w-(--DERIV-LABEL-HEIGHT)
-    text-center`;
-
-    const ruleBase = `
-    left-(--DERIV-RULE-LEFT)
-    text-(length:--DERIV-RULE-SIZE)
-    bottom-(--DERIV-RULE-BOTTOM)
-    leading-(--DERIV-RULE-LH)
-
-    select-none`;
 </script>
 
 <div class="**:absolute **:font-math">
@@ -80,31 +57,5 @@
         {data.conc}
     </div>
 
-    <!-- Rule bar -->
-    <div
-        class="bg-fg h-1 origin-left rounded-full"
-        class:bg-transparent={!hasBar}
-        style:translate="calc({render.barLeft}px) {render.y}px"
-        style:width="{render.barWidth}px"
-        style:bottom="{DT.derivBarBottomN}px"
-    >
-        <!-- Label -->
-        {#if hasLabel}
-            <div
-                class="right-(--DERIV-LABEL-RIGHT) {labelBase}"
-                bind:this={labelElement}
-            >
-                {label}
-            </div>
-        {/if}
-        <!-- Rule -->
-        {#if hasRule}
-            <div
-                class="{discharged ? 'left-(--DERIV-LABEL-RIGHT)' + labelBase : ruleBase}"
-                bind:this={ruleElement}
-            >
-                {discharged ? rule : '(' + rule + ')'}
-            </div>
-        {/if}
-    </div>
+    <Bar {data} bind:labelElement bind:ruleElement {rule} {label}></Bar>
 </div>
