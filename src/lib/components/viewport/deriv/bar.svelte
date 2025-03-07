@@ -26,29 +26,10 @@
     const hasChild = $derived(data.children.length !== 0);
     const hasBar = $derived(hasRule || hasLabel || hasChild);
     const discharged = $derived(/^\d+$/.test(rule));
-
-    const labelBase = `
-    text-(length:--DERIV-LABEL-SIZE)
-    bottom-(--DERIV-LABEL-BOTTOM)
-    leading-(--DERIV-LABEL-LH)
-
-    select-none
-    border-(length:--UNITPX) border-fg
-    rounded-full
-    min-w-(--DERIV-LABEL-HEIGHT)
-    text-center`;
-
-    const ruleBase = `
-    left-(--DERIV-RULE-LEFT)
-    text-(length:--DERIV-RULE-SIZE)
-    bottom-(--DERIV-RULE-BOTTOM)
-    leading-(--DERIV-RULE-LH)
-
-    select-none`;
 </script>
 
 <div
-    class="bg-fg h-1 origin-left rounded-full"
+    class="bg-fg h-1 origin-left rounded-full select-none"
     class:bg-transparent={!hasBar}
     style:translate="calc({render.barLeft}px) {render.y}px"
     style:width="{render.barWidth}px"
@@ -57,7 +38,7 @@
     <!-- Label -->
     {#if hasLabel}
         <div
-            class="right-(--DERIV-LABEL-RIGHT) {labelBase}"
+            class="right-(--DERIV-LABEL-RIGHT) labelBase"
             bind:this={labelElement}
         >
             {label}
@@ -66,7 +47,7 @@
     <!-- Rule -->
     {#if hasRule}
         <div
-            class="{discharged ? 'left-(--DERIV-LABEL-RIGHT)' + labelBase : ruleBase}"
+            class="left-(--DERIV-LABEL-RIGHT) {discharged ? 'labelBase' : 'ruleBase'}"
             bind:this={ruleElement}
         >
             {discharged ? rule : '(' + rule + ')'}
@@ -74,3 +55,23 @@
     {/if}
 </div>
 
+<style>
+    .labelBase {
+        font-size: var(--DERIV-LABEL-SIZE);
+        bottom: var(--DERIV-LABEL-BOTTOM);
+        line-height: var(--DERIV-LABEL-LH);
+        min-width: var(--DERIV-LABEL-HEIGHT);
+        border: solid var(--UNITPX);
+
+        border-color: var(--color-fg);
+        border-radius: calc(infinity * 1px);
+        text-align: center;
+    }
+
+    .ruleBase {
+        left: var(--DERIV-RULE-LEFT);
+        font-size: var(--DERIV-RULE-SIZE);
+        bottom: var(--DERIV-RULE-BOTTOM);
+        line-height: var(--DERIV-RULE-LH);
+    }
+</style>
