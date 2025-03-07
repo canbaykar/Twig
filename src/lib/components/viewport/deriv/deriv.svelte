@@ -36,7 +36,7 @@
 
 <div class="*:absolute *:font-math">
     <div
-        class="px-{DT.derivXPaddingN} bottom-0 cursor-default select-none"
+        class="px-(--DERIV-X-PADDING) bottom-0 cursor-default select-none"
         class:bg-bg-danger-emphasis={data.logic.conc instanceof Error}
         style:translate="calc({render.x}px - 50%) {render.y}px"
         style:line-height={DT.derivLineHeight}

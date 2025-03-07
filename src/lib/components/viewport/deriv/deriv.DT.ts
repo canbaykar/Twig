@@ -13,6 +13,8 @@ export const derivDT = {
         rowOffsetN: rowOffset,
         /** (number) Font size of formulas */
         SizeN: 16 * UNIT,
+        /** (length) Left-right padding of conc */
+        xPadding: 4 * UNIT + 'px',
     },
 
     /** (number) Font size of rules */
@@ -32,8 +34,6 @@ export const derivDT = {
 
     /** (number) Bottom css prop of bar */
     barBottomN: rowOffset - 3 * UNIT,
-    /** (number) Left-right padding of conc */
-    xPaddingN: 4,
     
     /** (number) Margin at the sides of the rule-bar 
      * (label and rule are counted as a part of the bar here.) */
