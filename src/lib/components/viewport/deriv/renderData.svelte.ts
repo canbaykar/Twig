@@ -25,12 +25,21 @@ export default class DerivRenderData {
 
     deriv: Deriv;
 
-    /** ($state) Left of label to right of rule. Maintained in deriv.svelte */
-    width: number = $state(0);
+    /** ($state) Width of formula. Maintained in deriv.svelte */
+    width = $state(0);
+    /** ($state) Maintained in deriv.svelte */
+    ruleWidth = $state(0);
+    /** ($state) Maintained in deriv.svelte */
+    labelWidth = $state(0);
 
     // Tree rendering logic
     private readonly tree: TreeData = $derived.by(() => 
-        treeData(this.width, this.deriv.children.map(c => c.render.tree))
+        treeData(
+            this.width, 
+            this.deriv.children.map(c => c.render.tree),
+            this.labelWidth,
+            this.ruleWidth,
+        )
     )
     private readonly xBase: number = $derived.by(() => {
         const par = this.deriv.parent;
@@ -60,8 +69,8 @@ export default class DerivRenderData {
     readonly x: number = $derived(this.xBase + this.acc.x);
     readonly y: number = $derived(this.acc.y);
 
-    readonly barLeft = $derived(this.x + this.tree.collider.l[1]);
-    readonly barWidth = $derived(this.tree.collider.r[1] - this.tree.collider.l[1]);
+    readonly barLeft = $derived(this.x + this.tree.barLeft);
+    readonly barWidth = $derived(this.tree.barRight - this.tree.barLeft);
 
     /** ($derived, readonly) Inherited. */
     readonly displayed: boolean = $derived.by(() => {

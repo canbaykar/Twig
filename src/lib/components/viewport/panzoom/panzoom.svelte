@@ -99,7 +99,7 @@
 		--panzoom-y: 0;
 		--panzoom-scale: 1;
 		--panzoom-gs: 100;
-        font-size: calc(var(--DERIV-SIZE-N) * 1px);
+        font-size: var(--DERIV-SIZE);
     }
 
     .panzoom-background {

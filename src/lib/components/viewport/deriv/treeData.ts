@@ -7,6 +7,10 @@ export interface TreeData {
     /** Relative positions of children
      *  not accounting for child transforms */
     offsets: number[];
+    /** Relative offset of bar's left */
+    barLeft: number;
+    /** Relative offset of bar's right */
+    barRight: number;
 }
 
 interface Collider {
@@ -14,15 +18,22 @@ interface Collider {
     r: number[]; // right
 }
 
-export function treeData(width: number, children: TreeData[]): TreeData {
+export function treeData(
+    width: number, 
+    children: TreeData[],
+    labelWidth: number,
+    ruleWidth: number,
+): TreeData {
     const w = width / 2;
     const len = children.length;
 
     // - Base case -
     if (len === 0)
         return {
-                collider: { l: [-w, -w], r: [w, w] },
+                collider: { l: [-w, -w - labelWidth], r: [w, w + ruleWidth] },
                 offsets: [],
+                barLeft: -w,
+                barRight: w,
             };
     
     // Half-widths of first and last children
@@ -67,13 +78,18 @@ export function treeData(width: number, children: TreeData[]): TreeData {
     // Row under parent
     colL.l.unshift(-w);
     colL.r.unshift(w);
+    // Calculate bar
+    const barLeft = Math.min(colL.l[1], -w);
+    const barRight = Math.max(colL.r[1], w);
     // Adjust the row over to not be smaller than parent
-    colL.l[1] = Math.min(colL.l[1], -w);
-    colL.r[1] = Math.max(colL.r[1], w);
+    colL.l[1] = barLeft - labelWidth;
+    colL.r[1] = barRight + ruleWidth;
 
     return {
         collider: colL,
         offsets: average(offsetsL, offsetsR),
+        barLeft,
+        barRight,
     };
 }
 
