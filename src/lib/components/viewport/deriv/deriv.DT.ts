@@ -13,6 +13,9 @@ export const derivDT = {
         rowOffsetN: rowOffset,
         /** (number) Font size of formulas */
         SizeN: 16 * UNIT,
+        
+        /** (length) Line height of formulas */
+        LineHeight: '125%',
         /** (length) Left-right padding of conc */
         xPadding: 4 * UNIT + 'px',
     },
@@ -22,8 +25,6 @@ export const derivDT = {
     /** (number) Font size of labels */
     labelSizeN: 12 * UNIT,
 
-    /** (length) Line height of formulas */
-    LineHeight: '125%',
     /** (number) Font size - line height ratio */
     // Make automatic based on the two props if experimenting!
     Height2Size: 1 / 1.25,
