@@ -11,6 +11,10 @@ export interface TreeData {
     barLeft: number;
     /** Relative offset of bar's right */
     barRight: number;
+    /** Relative offset of global left */
+    left: number;
+    /** Relative offset of global right */
+    right: number;
 }
 
 interface Collider {
@@ -28,13 +32,17 @@ export function treeData(
     const len = children.length;
 
     // - Base case -
-    if (len === 0)
+    if (len === 0) {
+        const left = -w - labelWidth;
+        const right = w + ruleWidth;
         return {
-                collider: { l: [-w, -w - labelWidth], r: [w, w + ruleWidth] },
+                collider: { l: [-w, left], r: [w, right] },
                 offsets: [],
                 barLeft: -w,
                 barRight: w,
+                left, right,
             };
+    }
     
     // Half-widths of first and last children
     const w0 = children[0].collider.r[0];
@@ -90,6 +98,8 @@ export function treeData(
         offsets: average(offsetsL, offsetsR),
         barLeft,
         barRight,
+        left: Math.min(...colL.l),
+        right: Math.max(...colL.r),
     };
 }
 
