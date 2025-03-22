@@ -1,14 +1,7 @@
-import DerivRenderData, { type SDerivRenderData } from "$lib/components/viewport/deriv/renderData.svelte";
+import DerivRenderData from "$lib/components/viewport/deriv/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 import { LogicData } from "./logic/index.svelte";
-import viewport from "./viewport.svelte";
-
-/** Serialized Deriv */
-export declare interface SDeriv {
-    conc?: string;
-    children?: SDeriv[];
-    render?: SDerivRenderData;
-}
+import viewport, { type Serial } from "./viewport.svelte";
 
 export default class Deriv extends Parent {
 	declare readonly children: Deriv[];
@@ -26,7 +19,7 @@ export default class Deriv extends Parent {
 	readonly logic: LogicData;
 
 	/** @param s Serialized Deriv */
-	constructor(s: SDeriv = {}) {
+	constructor(s: Serial<Deriv> = {}) {
 		super();
 		if (s.conc) this.conc = s.conc;
 		if (s.children) this.attachChildren(s.children.map((ch) => new Deriv(ch)));
@@ -45,8 +38,8 @@ export function addExampleProof() {
             // rule: '→I',
             // label: '1',
             render: {
-                x: -130,
-                y: 70,
+                xTransform: -130,
+                yTransform: 70,
             },
             children: [
                 {

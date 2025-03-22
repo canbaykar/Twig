@@ -1,14 +1,8 @@
 import Deriv from "$lib/state/deriv.svelte";
-import viewport from "$lib/state/viewport.svelte";
+import viewport, { type Serial } from "$lib/state/viewport.svelte";
 import { SvelteSet } from "svelte/reactivity";
 import { treeData, type TreeData } from "./treeData";
 import { DT } from "../../../../DT";
-
-/** Serialized DerivRenderData */
-export interface SDerivRenderData {
-    x?: number;
-    y?: number;
-}
 
 const displayed = new SvelteSet<Deriv>();
 const add = displayed.add.bind(displayed);
@@ -80,10 +74,10 @@ export default class DerivRenderData {
             : par === viewport;
     });
 
-    constructor(deriv: Deriv, s: SDerivRenderData = {}) {
+    constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {
         this.deriv = deriv;
-        if (s.x) this.xTransform = s.x;
-        if (s.y) this.yTransform = s.y;
+        if (s.xTransform) this.xTransform = s.xTransform;
+        if (s.yTransform) this.yTransform = s.yTransform;
 
         // Maintain displayed
         $effect(() => { (this.displayed ? add : del)(this.deriv) })
