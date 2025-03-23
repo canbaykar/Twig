@@ -42,7 +42,7 @@
     }
 </script>
 
-<div class="**:absolute **:font-math">
+<div class="**:absolute font-math">
     <!-- Conclusion -->
     <div
         class="px-(--DERIV-X-PADDING) leading-(--DERIV-LINE-HEIGHT) bottom-0 cursor-default select-none"
