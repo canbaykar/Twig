@@ -3,13 +3,19 @@
 	import { tick } from 'svelte';
 	import { DT } from '../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
+	import { maintainWidth } from './deriv.svelte';
 
 	interface Props {
 		data: Deriv;
-		element: HTMLElement | null;
 	}
 
-	let { data, element = $bindable() }: Props = $props();
+	let { data }: Props = $props();
+
+	let element: HTMLElement;
+	maintainWidth(
+		() => data.conc,
+		() => data.render.width = element.offsetWidth
+	);
 
 	// The "element" can't be used as an input field bc the caret may be too thin on
 	// some browser due to how pazoom transforms the element. :(

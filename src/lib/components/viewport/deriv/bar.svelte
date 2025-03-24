@@ -1,11 +1,10 @@
 <script lang="ts">
 	import type Deriv from "$lib/state/deriv.svelte";
 	import { DT } from "../../../../DT";
+	import { maintainWidth } from "./deriv.svelte";
 
     interface Props {
         data: Deriv;
-        labelElement: HTMLElement | null;
-        ruleElement: HTMLElement | null;
         // Temporary
         label: string,
         rule: string,
@@ -13,13 +12,22 @@
     
     let {
         data,
-        labelElement = $bindable(),
-        ruleElement = $bindable(),
         label,
         rule,
     }: Props = $props();
-
+    
     const render = data.render;
+    
+    let labelElement: HTMLElement | null = $state(null);
+    let ruleElement:  HTMLElement | null = $state(null);
+    maintainWidth(
+        () => label,
+        () => render.labelWidth = labelElement ? labelElement.offsetWidth : 0
+    );
+    maintainWidth(
+        () => rule,
+        () => render.ruleWidth = ruleElement ? ruleElement.offsetWidth : 0
+    );
 
     const hasLabel = $derived(label !== '');
     const hasRule = $derived(rule !== '');
