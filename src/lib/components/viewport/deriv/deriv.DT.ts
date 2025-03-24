@@ -1,4 +1,6 @@
 const UNIT = 32;
+const fontSize = 16 * UNIT;
+const lineHeight = 20 * UNIT;
 const rowOffset = 25 * UNIT;
 const barGap = 3 * UNIT;
 const labelHeight = 15 * UNIT;
@@ -16,7 +18,7 @@ export const derivDT = {
         rowOffsetN: rowOffset,
         
         /** (length) Font size of formulas */
-        size: 16 * UNIT + 'px',
+        size: fontSize + 'px',
         /** (length) Font size of rules */
         ruleSize: 12 * UNIT + 'px',
         /** (length) Font size of labels */
@@ -26,7 +28,7 @@ export const derivDT = {
         xPadding: 4 * UNIT + 'px',
         
         /** (line-height) Line height of formulas */
-        LineHeight: '125%',
+        lineHeight: lineHeight + 'px',
         /** (line-height) Line height of rules */
         ruleLH: 'normal',
         /** (line-height) Line height of labels */
@@ -45,10 +47,10 @@ export const derivDT = {
         labelRight: `calc(100% + ${barGap}px)`,
     },
 
-
-    /** (number) Font size - line height ratio */
-    // Make automatic based on the two props if experimenting!
-    Height2Size: 1 / 1.25,
+    /** (number) Formula line height / 1px */
+    lineHeightN: lineHeight,
+    /** (number) Formula font size / 1px */
+    sizeN: fontSize,
 
     /** (number) Bottom css prop of bar */
     barBottomN: rowOffset - 3 * UNIT,

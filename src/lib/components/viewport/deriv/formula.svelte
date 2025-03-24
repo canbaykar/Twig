@@ -1,0 +1,87 @@
+<script lang="ts">
+	import type Deriv from '$lib/state/deriv.svelte';
+	import { tick } from 'svelte';
+	import { DT } from '../../../../DT';
+	import viewport from '$lib/state/viewport.svelte';
+
+	interface Props {
+		data: Deriv;
+		element: HTMLElement | null;
+	}
+
+	let { data, element = $bindable() }: Props = $props();
+
+	// The "element" can't be used as an input field bc the caret may be too thin on
+	// some browser due to how pazoom transforms the element. :(
+	// So we have an "editor" element with transparent text that only exists on hover
+	// or when it's in focus. It's is slightly mispositioned due to rounding, so it's
+	// not the main element that displays the text but just an overlay for caret.
+	// (But it also displays selection text.)
+	let editorElement: HTMLElement | null = $state(null);
+
+	let editorEnabled = $state(false);
+	const enableEditor = () => (editorEnabled = true);
+	const disableEditor = () => (editorEnabled = false);
+
+	let draggedOver = false;
+	function ondragenter() {
+		enableEditor();
+		draggedOver = true;
+	}
+	function ondragleave() {
+		draggedOver = false;
+	}
+
+	function onmouseleave(e: MouseEvent) {
+		if (
+			draggedOver ||
+			element?.contains?.(e.relatedTarget as Node | null) ||
+			element?.contains?.(document.activeElement)
+		)
+			return;
+		disableEditor();
+	}
+	async function onfocus() {
+		enableEditor();
+		await tick();
+		// Do nothing if focus changed while awaiting
+		if (document.activeElement !== element) return;
+		editorElement?.focus?.();
+	}
+	function onblur() {
+		if (!element?.matches?.(':hover')) disableEditor();
+	}
+</script>
+
+<div
+	class="bottom-0 cursor-default px-(--DERIV-X-PADDING) leading-(--DERIV-LINE-HEIGHT) select-none"
+	class:bg-bg-danger-emphasis={data.logic.conc instanceof Error}
+	style:translate="calc({data.render.x}px - 50%) {data.render.y}px"
+	bind:this={element}
+	onmouseenter={enableEditor}
+	{ondragenter}
+	{ondragleave}
+	{onmouseleave}
+	{onfocus}
+	role="textbox"
+	tabindex="-1"
+>
+	{data.conc}
+
+	<!-- EDITOR -->
+	{#if editorEnabled}
+		<textarea
+			bind:value={data.conc}
+			class="caret-fg absolute top-0 left-0 origin-top-left resize-none overflow-hidden text-center text-transparent"
+			style="
+            line-height: {(DT.derivLineHeightN / DT.UNIT) * viewport.render.scale}px;
+            width: {(data.render.width / DT.UNIT) * viewport.render.scale}px;
+            font-size: {(DT.derivSizeN / DT.UNIT) * viewport.render.scale}px;
+            scale: {DT.UNIT / viewport.render.scale};
+        "
+			bind:this={editorElement}
+			{onblur}
+			rows="1"
+		></textarea>
+	{/if}
+</div>
