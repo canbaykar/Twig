@@ -3,7 +3,7 @@
 	import { tick } from 'svelte';
 	import { DT } from '../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
-	import { maintainWidth } from './deriv.svelte';
+	import DerivRenderData from './renderData.svelte';
 
 	interface Props {
 		data: Deriv;
@@ -12,7 +12,7 @@
 	let { data }: Props = $props();
 
 	let element: HTMLElement;
-	maintainWidth(
+	DerivRenderData.maintainWidth(
 		() => data.conc,
 		() => data.render.width = element.offsetWidth
 	);

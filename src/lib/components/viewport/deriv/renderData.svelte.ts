@@ -3,6 +3,8 @@ import viewport, { type Serial } from "$lib/state/viewport.svelte";
 import { SvelteSet } from "svelte/reactivity";
 import { treeData, type TreeData } from "./treeData";
 import { DT } from "../../../../DT";
+import { browser } from "$app/environment";
+import { onDestroy } from "svelte";
 
 const displayed = new SvelteSet<Deriv>();
 const add = displayed.add.bind(displayed);
@@ -19,11 +21,11 @@ export default class DerivRenderData {
 
     deriv: Deriv;
 
-    /** ($state) Width of formula. Maintained in deriv.svelte */
+    /** ($state) Width of formula. Maintained in formula.svelte */
     width = $state(0);
-    /** ($state) Maintained in deriv.svelte */
+    /** ($state) Maintained in bar.svelte */
     ruleWidth = $state(0);
-    /** ($state) Maintained in deriv.svelte */
+    /** ($state) Maintained in bar.svelte */
     labelWidth = $state(0);
 
     // Tree rendering logic
@@ -82,6 +84,37 @@ export default class DerivRenderData {
         // Maintain displayed
         $effect(() => { (this.displayed ? add : del)(this.deriv) })
     }
+
+    // For maintaining width, ruleWidth and labelWidth:
+    /**
+     * Utility to maintain a width variable for an inline text element that only
+     * changes when text changes. (text variable has to be reactive e.g. $state)
+     * Accounts for width change with font load (M PLUS 1p).
+     * @param textGetter Function that gets text value for reactivity in $effect
+     * @param widthUpdater Function that updates the width variable
+     */
+    static maintainWidth(textGetter: () => any, widthUpdater: () => void) {
+        $effect(() => { textGetter(); widthUpdater(); });
+        onFontLoad(widthUpdater);
+    }
+}
+
+// Annoyingly have to account for font loading on page load for maintainWidth
+// Used only on component initiation. For updating inline element width variables after font load.
+let onFontLoad = (f: () => void) => {};
+if (browser) {
+    let instructions: (() => void)[] = [];
+    onFontLoad = f => {
+        const i = instructions.push(f) - 1;
+        onDestroy(() => {
+            if (instructions.length) instructions[i] = () => {};
+        });
+    }
+    document.fonts.load('12px "M PLUS 1p"').then(() => {
+        onFontLoad = () => {};
+        for (const f of instructions) f();
+        instructions = [];
+    });
 }
 
 
