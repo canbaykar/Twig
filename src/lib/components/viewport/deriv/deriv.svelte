@@ -15,5 +15,7 @@
     // let rule = $state('2');
 </script>
 
-<Formula {data}></Formula>
-<Bar {data} {rule} {label}></Bar>
+<Formula {data}>
+    <!-- Put DND handles here... -->
+</Formula>
+<Bar {data} {rule} {label} />
