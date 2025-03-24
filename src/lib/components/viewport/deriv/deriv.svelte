@@ -50,7 +50,5 @@
     // let rule = $state('2');
 </script>
 
-<div class="**:absolute font-math">
-    <Formula {data}></Formula>
-    <Bar {data} {rule} {label}></Bar>
-</div>
+<Formula {data}></Formula>
+<Bar {data} {rule} {label}></Bar>

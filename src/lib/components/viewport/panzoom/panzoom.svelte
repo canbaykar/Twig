@@ -19,9 +19,10 @@
         /** Place elements here to still have the wheel event listeners
          *  for panzoom act on them */
         noPanzoom?: Snippet;
+        [key: string]: any;
     }
 
-	let { data, children, noPanzoom }: Props = $props();
+	let { data, children, noPanzoom, ...restProps }: Props = $props();
     let element: HTMLElement;
     let rect: DOMRect;
 
@@ -79,14 +80,15 @@
 </script>
 
 <div 
+    {...restProps}
     bind:this={element} 
     bind:contentRect={null, (r: DOMRect) => rect = r}
     {onwheel}
-    class="panzoom w-full h-full overflow-hidden" 
+    class="panzoom **:absolute w-full h-full overflow-hidden {restProps?.class ?? ''}" 
     use:draggable={draggableOptions}
 >
     <div class="panzoom-background w-full h-full cursor-grab"></div>
-    <div class="origin w-0 h-0 absolute top-2/4 left-2/4">
+    <div class="origin w-0 h-0 top-2/4 left-2/4">
         {@render children?.()}
     </div>
     {@render noPanzoom?.()}

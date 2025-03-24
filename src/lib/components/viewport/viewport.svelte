@@ -18,7 +18,7 @@
     onDestroy(() => DerivRenderData.onDestroy());
 </script>
 
-<Panzoom data={viewport.render}>
+<Panzoom data={viewport.render} class="font-math">
     {#each DerivRenderData.displayed as data (data)}
         <Deriv {data}></Deriv>
     {/each}
