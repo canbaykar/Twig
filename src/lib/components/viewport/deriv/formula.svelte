@@ -51,10 +51,10 @@
 	}
 	async function onfocus() {
 		enableEditor();
-		await tick();
-		// Do nothing if focus changed while awaiting
-		if (document.activeElement !== element) return;
-		editorElement?.focus?.();
+		// await tick();
+		// // Do nothing if focus changed while awaiting
+		// if (document.activeElement !== element) return;
+		// editorElement?.focus?.();
 	}
 	function onblur() {
 		if (!element?.matches?.(':hover')) disableEditor();
