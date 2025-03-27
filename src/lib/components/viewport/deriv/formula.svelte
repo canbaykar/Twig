@@ -61,7 +61,7 @@
 	}
 </script>
 
-<div
+<button
 	class="bottom-0 cursor-default px-(--DERIV-X-PADDING) leading-(--DERIV-LINE-HEIGHT) select-none"
 	class:bg-bg-danger-emphasis={data.logic.conc instanceof Error}
 	style:translate="calc({data.render.x}px - 50%) {data.render.y}px"
@@ -71,7 +71,6 @@
 	{ondragleave}
 	{onmouseleave}
 	{onfocus}
-	role="textbox"
 	tabindex="-1"
 >
 	{data.conc}
@@ -94,4 +93,4 @@
 	{/if}
 
 	{@render children?.()}
-</div>
+</button>
