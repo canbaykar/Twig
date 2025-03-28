@@ -61,6 +61,7 @@
 	}
 </script>
 
+<!-- Draggable button, grabbed when clicked -->
 <button
 	class="bottom-0 cursor-default px-(--DERIV-X-PADDING) leading-(--DERIV-LINE-HEIGHT) select-none"
 	class:bg-bg-danger-emphasis={data.logic.conc instanceof Error}
