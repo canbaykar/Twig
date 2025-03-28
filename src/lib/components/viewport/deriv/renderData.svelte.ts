@@ -37,6 +37,7 @@ export default class DerivRenderData {
             this.ruleWidth,
         )
     )
+    get barWidth() { return this.tree.barWidth };
     private readonly xBase: number = $derived.by(() => {
         const par = this.deriv.parent;
         return par instanceof Deriv
@@ -63,10 +64,7 @@ export default class DerivRenderData {
     });
     // This is the final location (base + transform)
     readonly x: number = $derived(this.xBase + this.acc.x);
-    readonly y: number = $derived(this.acc.y);
-
-    readonly barLeft = $derived(this.x + this.tree.barLeft);
-    readonly barWidth = $derived(this.tree.barRight - this.tree.barLeft);
+    get y() { return this.acc.y };
 
     /** ($derived, readonly) Inherited. */
     readonly displayed: boolean = $derived.by(() => {

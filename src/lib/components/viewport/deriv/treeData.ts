@@ -7,10 +7,7 @@ export interface TreeData {
     /** Relative positions of children
      *  not accounting for child transforms */
     offsets: number[];
-    /** Relative offset of bar's left */
-    barLeft: number;
-    /** Relative offset of bar's right */
-    barRight: number;
+    barWidth: number;
     /** Relative offset of global left */
     left: number;
     /** Relative offset of global right */
@@ -38,8 +35,7 @@ export function treeData(
         return {
                 collider: { l: [-w, left], r: [w, right] },
                 offsets: [],
-                barLeft: -w,
-                barRight: w,
+                barWidth: width,
                 left, right,
             };
     }
@@ -96,8 +92,7 @@ export function treeData(
     return {
         collider: colL,
         offsets: average(offsetsL, offsetsR),
-        barLeft,
-        barRight,
+        barWidth: barRight - barLeft,
         left: Math.min(...colL.l),
         right: Math.max(...colL.r),
     };

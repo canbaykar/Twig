@@ -16,8 +16,10 @@
     // let rule = $state('2');
 </script>
 
-<Formula {data}>
-    <GripVertical width="0.75em" class="inset-y-0 right-[100%] flex justify-center items-center" />
-    <GripVertical width="0.75em" class="inset-y-0 left-[100%] flex justify-center items-center" />
-</Formula>
-<Bar {data} {rule} {label} />
+<div style:translate="{data.render.x}px {data.render.y}px">
+    <Formula {data}>
+        <!-- <GripVertical width="0.75em" class="inset-y-0 right-[100%] flex justify-center items-center" />
+        <GripVertical width="0.75em" class="inset-y-0 left-[100%] flex justify-center items-center" /> -->
+    </Formula>
+    <Bar {data} {rule} {label} />
+</div>

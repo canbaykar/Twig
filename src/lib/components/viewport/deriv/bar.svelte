@@ -37,9 +37,8 @@
 </script>
 
 <div
-    class="bg-fg h-1 origin-left rounded-full select-none"
+    class="bg-fg h-1 origin-left translate-x-[-50%] rounded-full select-none"
     class:bg-transparent={!hasBar}
-    style:translate="calc({render.barLeft}px) {render.y}px"
     style:width="{render.barWidth}px"
     style:bottom="{DT.derivBarBottomN}px"
 >
