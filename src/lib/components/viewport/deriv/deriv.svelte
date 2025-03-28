@@ -16,10 +16,20 @@
     // let rule = $state('2');
 </script>
 
-<div style:translate="{data.render.x}px {data.render.y}px">
+<div class="deriv" style:translate="{data.render.x}px {data.render.y}px">
     <Formula {data}>
-        <!-- <GripVertical width="0.75em" class="inset-y-0 right-[100%] flex justify-center items-center" />
-        <GripVertical width="0.75em" class="inset-y-0 left-[100%] flex justify-center items-center" /> -->
+        <GripVertical width="0.75em" height="100%" class="right-[100%] popup inset-y-0" />
+        <GripVertical width="0.75em" height="100%" class="left-[100%]  popup inset-y-0" />
     </Formula>
     <Bar {data} {rule} {label} />
 </div>
+
+<style>
+    /* Preprocessor removes it if I do ".popup" 😑 */
+    .deriv :global(.popup) {
+        opacity: 0;
+    }
+    .deriv:hover :global(.popup) {
+        opacity: 1;
+    }
+</style>
