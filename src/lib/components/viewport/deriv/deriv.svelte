@@ -36,7 +36,11 @@
     };
 </script>
 
-<div class="deriv" style:translate="{data.render.x}px {data.render.y}px">
+<div 
+    class="deriv" 
+    style:translate="{data.render.x}px {data.render.y}px" 
+    style:z-index={data.render.zId}
+>
     <Formula {data}>
         {@render handle("right-[100%]")}
         {@render handle("left-[100%]")}

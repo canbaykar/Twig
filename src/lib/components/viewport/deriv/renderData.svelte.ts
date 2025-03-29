@@ -74,6 +74,9 @@ export default class DerivRenderData {
             : par === viewport;
     });
 
+    /** ($derived) z-index, set to index of root in viewport */
+    zId = $derived.by(() => { return this.deriv.root.childIndex });
+
     constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {
         this.deriv = deriv;
         if (s.xTransform) this.xTransform = s.xTransform;
