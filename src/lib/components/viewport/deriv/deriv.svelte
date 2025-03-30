@@ -62,15 +62,15 @@
     {#if dragging}
         {@const r = data.render}
         {@const padding = 0.75 * DT.derivRowOffsetN}
+        {@const barWidth2 = r.barWidth / 2}
         {#if data.root === data}
-            <!-- Left -->
-            {@render dropzone(-r.width / 2 - padding, 0, 0)}
-            <!-- Right -->
-            {@render dropzone(0, r.width / 2 + padding, 0)}
+            <!-- Root -->
+            {@render dropzone(-r.width / 2 - padding, r.width / 2 + padding, 0)}
+            <!-- Bottom -->
+            {@render dropzone(-barWidth2, barWidth2, -1)}
         {/if}
 
         {@const N = data.children.length - 1}
-        {@const barWidth2 = r.barWidth / 2}
         {#if N === -1}
             <!-- Top -->
             {@render dropzone(-barWidth2, barWidth2)}
@@ -78,15 +78,8 @@
             {@const x = r.x}
             {@const c0r = data.children[0].render}
             {@const cNr = data.children[N].render}
-            <!-- Leaf Left -->
-            {@render dropzone(Math.min(-barWidth2, c0r.x - x - c0r.width / 2 - padding), c0r.x - x)}
-            <!-- Leaf Right -->
-            {@render dropzone(cNr.x - x, Math.max(cNr.x - x + cNr.width / 2 + padding, barWidth2))}
-            
-            {#each { length: N }, n}
-                <!-- Leaf Between -->
-                {@render dropzone(data.children[n].render.x - x, data.children[n + 1].render.x - x)}
-            {/each}
+            <!-- Leaf -->
+            {@render dropzone(Math.min(-barWidth2, c0r.x - x - c0r.width / 2 - padding), Math.max(cNr.x - x + cNr.width / 2 + padding, barWidth2))}
         {/if}
     {/if}
 </div>
