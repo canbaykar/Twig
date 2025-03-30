@@ -1,5 +1,5 @@
 <script module lang="ts">
-    let dragging = $state(true);
+    let dragging = $state(false);
 </script>
 
 <script lang="ts">
@@ -36,7 +36,9 @@
                 data.render.xTransform = x;
                 data.render.yTransform = y;
             }
+            dragging = true;
 
+            const activeZone: null | HTMLElement = null;
             return {
                 move(e) {
                     data.render.xTransform += e.dx * viewport.render.screen2viewport;
@@ -44,6 +46,10 @@
                     // Calculate center point
                     const x = data.render.x + data.render.width / 2;
                     const y = data.render.y + DT.derivLineHeightN / 2;
+                },
+
+                end(e) {
+                    dragging = false;
                 }
             };
         },
@@ -100,7 +106,7 @@
 
 {#snippet dropzone(left: number, right: number, y = 1)}
     <div
-        class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10 pointer-events-none"
+        class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10"
         style:left="{left}px"
         style:width="{right - left}px"
         style:bottom="{(y - 1) * DT.derivRowOffsetN + DT.derivBarBottomN}px"
