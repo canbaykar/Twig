@@ -59,6 +59,18 @@
     </Formula>
     <Bar {data} {rule} {label} />
 
+    {@render dropzones()}
+</div>
+
+<!-- SNIPPETS -->
+<!-- TODO: Remove relative! -->
+{#snippet handle(tw: string)}
+    <div use:draggable={opt} class="{tw} popup inset-y-0 cursor-all-scroll flex items-center">
+        <GripVertical width="0.75em" height="0.75em" class="relative!" />
+    </div>
+{/snippet}
+
+{#snippet dropzones()}
     {#if dragging}
         {@const r = data.render}
         {@const padding = 0.75 * DT.derivRowOffsetN}
@@ -82,13 +94,6 @@
             {@render dropzone(Math.min(-barWidth2, c0r.x - x - c0r.width / 2 - padding), Math.max(cNr.x - x + cNr.width / 2 + padding, barWidth2))}
         {/if}
     {/if}
-</div>
-
-<!-- TODO: Remove relative! -->
-{#snippet handle(tw: string)}
-    <div use:draggable={opt} class="{tw} popup inset-y-0 cursor-all-scroll flex items-center">
-        <GripVertical width="0.75em" height="0.75em" class="relative!" />
-    </div>
 {/snippet}
 
 {#snippet dropzone(left: number, right: number, y = 1)}
