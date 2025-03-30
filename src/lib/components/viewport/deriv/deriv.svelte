@@ -84,10 +84,11 @@
         {@const padding = 0.75 * DT.derivRowOffsetN}
         {@const barWidth2 = r.barWidth / 2}
         {#if data.root === data}
+            {@const right = r.width / 2 + padding}
             <!-- Root -->
-            {@render dropzone(-r.width / 2 - padding, r.width / 2 + padding, 0)}
+            {@render dropzone(-right, right, 0)}
             <!-- Bottom -->
-            {@render dropzone(-barWidth2, barWidth2, -1)}
+            {@render dropzone(Math.max(-barWidth2, -right), Math.min(barWidth2, right), -1)}
         {/if}
 
         {@const N = data.children.length - 1}
