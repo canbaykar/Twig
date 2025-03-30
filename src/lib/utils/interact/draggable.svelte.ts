@@ -9,10 +9,11 @@ if (browser) {
 
 export interface DraggableOptions {
 	start?(e: MouseEvent): void | {
-		// move is here instead of in DraggableOptions to allow you to make
-		// vars scoped in start and use them in move. (so more performant)
+		// move is here too to allow you to make vars scoped in start 
+		// and use them in move. (so more performant)
 		move?(e: MouseEvent & { dx: number; dy: number }): void;
 	};
+	move?(e: MouseEvent & { dx: number; dy: number }): void;
 	cursor?: string;
 	checker?: (target: HTMLElement) => boolean;
 }
@@ -21,11 +22,11 @@ export interface DraggableOptions {
 let active = false;
 // Used in listeners, stores old location
 let x_ = 0, y_ = 0;
-let move: (e: MouseEvent & { dx: number; dy: number }) => void = () => {};
 
 export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	let {
         start = () => {},
+		move = () => {},
         cursor = 'grabbing',
 		checker = () => true,
     } = op ?? {};
@@ -51,7 +52,7 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	function onDragStart(e: MouseEvent) {
 		document.addEventListener('mousemove', onMove);
 		const res = start(e) ?? {};
-		move = res?.move ?? (() => {});
+		if (res?.move) move = res.move;
 	}
 
 	function onUp(e: MouseEvent) {
@@ -61,7 +62,6 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 		// Reset cursor
 		sheet.replace('');
 		active = false;
-		move = () => {};
 	}
 
 	function onMove(e: MouseEvent) {
