@@ -36,14 +36,16 @@
                 data.render.xTransform = x;
                 data.render.yTransform = y;
             }
-                
-        },
-        move(e) {
-            data.render.xTransform += e.dx * viewport.render.screen2viewport;
-            data.render.yTransform += e.dy * viewport.render.screen2viewport;
-            // Calculate center point
-            const x = data.render.x + data.render.width / 2;
-            const y = data.render.y + DT.derivLineHeightN / 2;
+
+            return {
+                move(e) {
+                    data.render.xTransform += e.dx * viewport.render.screen2viewport;
+                    data.render.yTransform += e.dy * viewport.render.screen2viewport;
+                    // Calculate center point
+                    const x = data.render.x + data.render.width / 2;
+                    const y = data.render.y + DT.derivLineHeightN / 2;
+                }
+            };
         },
     };
 </script>
