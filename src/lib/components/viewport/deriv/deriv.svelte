@@ -1,3 +1,7 @@
+<script module lang="ts">
+    let dragging = $state(true);
+</script>
+
 <script lang="ts">
     import Bar from './bar.svelte';
 	import Deriv from '$lib/state/deriv.svelte';
@@ -54,6 +58,37 @@
         {@render handle("left-[100%]")}
     </Formula>
     <Bar {data} {rule} {label} />
+
+    {#if dragging}
+        {@const r = data.render}
+        {@const padding = 0.75 * DT.derivRowOffsetN}
+        {#if data.root === data}
+            <!-- Left -->
+            {@render dropzone(-r.width / 2 - padding, 0, 0)}
+            <!-- Right -->
+            {@render dropzone(0, r.width / 2 + padding, 0)}
+        {/if}
+
+        {@const N = data.children.length - 1}
+        {@const barWidth2 = r.barWidth / 2}
+        {#if N === -1}
+            <!-- Top -->
+            {@render dropzone(-barWidth2, barWidth2)}
+        {:else}
+            {@const x = r.x}
+            {@const c0r = data.children[0].render}
+            {@const cNr = data.children[N].render}
+            <!-- Leaf Left -->
+            {@render dropzone(Math.min(-barWidth2, c0r.x - x - c0r.width / 2 - padding), c0r.x - x)}
+            <!-- Leaf Right -->
+            {@render dropzone(cNr.x - x, Math.max(cNr.x - x + cNr.width / 2 + padding, barWidth2))}
+            
+            {#each { length: N }, n}
+                <!-- Leaf Between -->
+                {@render dropzone(data.children[n].render.x - x, data.children[n + 1].render.x - x)}
+            {/each}
+        {/if}
+    {/if}
 </div>
 
 <!-- TODO: Remove relative! -->
@@ -61,6 +96,15 @@
     <div use:draggable={opt} class="{tw} popup inset-y-0 cursor-all-scroll flex items-center">
         <GripVertical width="0.75em" height="0.75em" class="relative!" />
     </div>
+{/snippet}
+
+{#snippet dropzone(left: number, right: number, y = 1)}
+    <div
+        class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10 pointer-events-none"
+        style:left="{left}px"
+        style:width="{right - left}px"
+        style:bottom="{(y - 1) * DT.derivRowOffsetN + DT.derivBarBottomN}px"
+    ></div>
 {/snippet}
 
 <style>
