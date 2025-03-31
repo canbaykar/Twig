@@ -80,6 +80,7 @@
     class:dragged
     style:translate="{data.render.x}px {data.render.y}px" 
     style:z-index={data.render.zId}
+    data-address={data.address}
 >
     <Formula {data}>
         {@render handle("right-[100%]")}
