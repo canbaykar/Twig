@@ -54,9 +54,14 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 
 	function onDragStart(e: MouseEvent) {
 		document.addEventListener('mousemove', onMove);
-		const res = start(e) ?? {};
-		if (res?.move) move = res.move;
-		if (res?.end) end = res.end;
+		try {
+			const res = start(e) ?? {};
+			if (res?.move) move = res.move;
+			if (res?.end) end = res.end;
+		} catch (error) {
+			onUp(e);
+			throw error;
+		}
 	}
 
 	function onUp(e: MouseEvent) {
@@ -70,10 +75,15 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	}
 
 	function onMove(e: MouseEvent) {
-		move(Object.assign(e, {
-			dx: e.screenX - x_,
-			dy: e.screenY - y_,
-		}));
+		try {
+			move(Object.assign(e, {
+				dx: e.screenX - x_,
+				dy: e.screenY - y_,
+			}));
+		} catch (error) {
+			onUp(e);
+			throw error;
+		}
 		x_ = e.screenX;
 		y_ = e.screenY;
 	}
