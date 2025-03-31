@@ -1,7 +1,7 @@
 import DerivRenderData from "$lib/components/viewport/deriv/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 import { LogicData } from "./logic/index.svelte";
-import viewport, { type Serial } from "./viewport.svelte";
+import viewport, { type Serial, type Viewport } from "./viewport.svelte";
 
 export default class Deriv extends Parent {
 	declare readonly children: Deriv[];
@@ -11,10 +11,20 @@ export default class Deriv extends Parent {
 	readonly root: Deriv = $derived.by(() => {
 		return this.parent instanceof Deriv ? this.parent.root : this;
 	});
-    /** ($derived) */
+
+    /** ($derived) String of childIndexes, upwards */
 	readonly address: string = $derived.by(() => {
-		return this.parent instanceof Deriv ? this.parent.address + this.childIndex : this.childIndex + '';
+		return this.parent instanceof Deriv ? this.parent.address + '.' + this.childIndex : this.childIndex + '';
 	});
+    static lookup(address: string): Deriv | null {
+        const directions = address.split('.');
+        let pos: any = viewport;
+        for (let i = 0; i < directions.length; i++) {
+            pos = pos.children[parseInt(directions[i])];
+            if (!(pos instanceof Deriv)) return null;
+        }
+        return pos;
+    }
 
 	/** ($state) */
 	conc = $state('');
