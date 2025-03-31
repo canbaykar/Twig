@@ -23,6 +23,7 @@
     let rule = $state('∧E');
     // let rule = $state('2');
     
+    let dragged = $state(false);
     const opt: DraggableOptions = {
         cursor: "all-scroll",
         start(e) {
@@ -37,19 +38,37 @@
                 data.render.yTransform = y;
             }
             dragging = true;
+            dragged = true;
 
-            const activeZone: null | HTMLElement = null;
+            let activeZone: null | Element = null;
+            function updateActiveZone(val: null | Element) {
+                if (val && !val.classList.contains("dropzone")) val = null;
+                if (val === activeZone) return;
+                if (activeZone) activeZone.classList.remove('active-dropzone');
+                if (val) val.classList.add('active-dropzone');
+                activeZone = val;
+            }
+            
             return {
                 move(e) {
-                    data.render.xTransform += e.dx * viewport.render.screen2viewport;
-                    data.render.yTransform += e.dy * viewport.render.screen2viewport;
-                    // Calculate center point
+                    const s2w = viewport.render.screen2viewport;
+                    data.render.xTransform += e.dx * s2w;
+                    data.render.yTransform += e.dy * s2w;
+                    // Root formula center
                     const x = data.render.x + data.render.width / 2;
                     const y = data.render.y + DT.derivLineHeightN / 2;
+                    // WIP
+                    const el = document.elementFromPoint(
+                        e.x,
+                        e.y,
+                    );
+                    updateActiveZone(el);
                 },
 
                 end(e) {
                     dragging = false;
+                    dragged = false;
+                    updateActiveZone(null);
                 }
             };
         },
@@ -57,7 +76,8 @@
 </script>
 
 <div 
-    class="deriv" 
+    class="deriv"
+    class:pointer-events-none={dragged}
     style:translate="{data.render.x}px {data.render.y}px" 
     style:z-index={data.render.zId}
 >
@@ -107,7 +127,7 @@
 
 {#snippet dropzone(left: number, right: number, y = 1)}
     <div
-        class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10"
+        class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10 [.active-dropzone]:bg-sky-500/10"
         style:left="{left}px"
         style:width="{right - left}px"
         style:bottom="{(y - 1) * DT.derivRowOffsetN + DT.derivBarBottomN}px"
