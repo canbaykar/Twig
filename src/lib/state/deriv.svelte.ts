@@ -11,6 +11,10 @@ export default class Deriv extends Parent {
 	readonly root: Deriv = $derived.by(() => {
 		return this.parent instanceof Deriv ? this.parent.root : this;
 	});
+    /** ($derived) */
+	readonly address: string = $derived.by(() => {
+		return this.parent instanceof Deriv ? this.parent.address + this.childIndex : this.childIndex + '';
+	});
 
 	/** ($state) */
 	conc = $state('');
