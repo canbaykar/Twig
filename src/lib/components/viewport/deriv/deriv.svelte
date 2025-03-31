@@ -77,7 +77,7 @@
 
 <div 
     class="deriv"
-    class:pointer-events-none={dragged}
+    class:dragged
     style:translate="{data.render.x}px {data.render.y}px" 
     style:z-index={data.render.zId}
 >
@@ -139,7 +139,11 @@
     .deriv :global(.popup) {
         opacity: 0;
     }
+    .dragged :global(.popup),
     .deriv:hover :global(.popup) {
         opacity: 1;
+    }
+    .dragged {
+        pointer-events: none;
     }
 </style>
