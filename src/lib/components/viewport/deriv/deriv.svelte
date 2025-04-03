@@ -48,21 +48,24 @@
                 if (val) val.classList.add('active-dropzone');
                 activeZone = val;
             }
-            
+
             return {
                 move(e) {
                     const cl2wrld = viewport.render.cl2wrld;
+                    const wrld2cl = viewport.render.wrld2cl;
+                    
+                    // Move
                     data.render.xTransform += cl2wrld.scale(e.dx);
                     data.render.yTransform += cl2wrld.scale(e.dy);
                     
                     // Root formula center
-                    const x = data.render.x + data.render.width / 2;
-                    const y = data.render.y + DT.derivLineHeightN / 2;
-                    // WIP
+                    const x = data.render.x;
+                    const y = data.render.y - DT.derivLineHeightN / 2;
                     const el = document.elementFromPoint(
-                        e.x,
-                        e.y,
+                        wrld2cl.x(x),
+                        wrld2cl.y(y),
                     );
+
                     updateActiveZone(el);
                 },
 
