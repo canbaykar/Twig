@@ -1,3 +1,31 @@
+<script module lang="ts">
+    export type Converter = ReturnType<typeof makeConverter>;
+    export function makeConverter(
+        x = (x: number) => x,
+        y = (y: number) => y,
+        scale = (scale: number) => scale,
+    ) {
+        f.x = x;
+        f.y = y;
+        f.scale = scale;
+
+        function f<T extends {
+            x?: number,
+            y?: number,
+            scale?: number,
+        }>(val: T) {
+            const res: Partial<T> = {};
+            if ("x"     in val) res.x     = f.x(val.x as number);
+            if ("y"     in val) res.y     = f.y(val.y as number);
+            if ("scale" in val) res.scale = f.scale(val.scale as number);
+            return res as Pick<T, "x" | "y" | "scale">;
+        }
+
+        return f;
+    }
+    export const fallbackConverter = makeConverter();
+</script>
+
 <script lang="ts">
 	import draggable, { type DraggableOptions } from '$lib/utils/interact/draggable.svelte';
 	import { onMount, type Snippet } from 'svelte';
@@ -11,6 +39,14 @@
         x: number;
         y: number;
         scale: number;
+        /** Convert client (px) to panzoom (px) */
+        cl2pz: Converter;
+        /** Convert panzoom (px) to client (px) */
+        pz2cl: Converter;
+        /** Convert client (px) to world (UNIT) */
+        cl2wrld: Converter;
+        /** Convert world (UNIT) to client (px) */
+        wrld2cl: Converter;
     }
 
     interface Props {
@@ -22,7 +58,10 @@
         [key: string]: any;
     }
 
-	let { data, children, noPanzoom, ...restProps }: Props = $props();
+	let { 
+        data, children, noPanzoom, 
+        ...restProps 
+    }: Props = $props();
     let element: HTMLElement;
     let rect: DOMRect;
 
@@ -37,13 +76,29 @@
         },
     };
 
-    /** Client coords to world coords */
-	function client2worldPx(p: { x: number; y: number }) {
-        return {
-            x: (p.x - data.x - rect.left - rect.width / 2) / data.scale,
-            y: (p.y - data.y - rect.top - rect.height / 2) / data.scale,
-        };
-	}
+    data.cl2wrld = makeConverter(
+        x => data.cl2pz.x(x) * DT.UNIT,
+        y => data.cl2pz.y(y) * DT.UNIT,
+        scale => data.cl2pz.scale(scale) * DT.UNIT,
+    );
+    data.wrld2cl = makeConverter(
+        x => data.cl2pz.x(x) / DT.UNIT,
+        y => data.cl2pz.y(y) / DT.UNIT,
+        scale => data.cl2pz.scale(scale) / DT.UNIT,
+    );
+    onMount(() => {
+        data.cl2pz = makeConverter(
+            x => (x - data.x - rect.left - rect.width / 2) / data.scale,
+            y => (y - data.y - rect.top - rect.height / 2) / data.scale,
+            scale => scale / data.scale,
+        );
+        data.pz2cl = makeConverter(
+            x => (x * data.scale) + data.x + rect.left + rect.width / 2,
+            y => (y * data.scale) + data.y + rect.top + rect.height / 2,
+            scale => scale * data.scale,
+        );
+        return () => data.cl2pz = data.pz2cl = data.cl2wrld = data.wrld2cl = fallbackConverter;
+    });
 
     // Helper functions for zoom(...) below
 	const clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
@@ -55,7 +110,7 @@
     let grid_scale: number;
     updateGridScale();
 	function zoom(factor: number, anchor: { x: number; y: number }) {
-		const world_anchor = client2worldPx(anchor);
+		const world_anchor = data.cl2pz(anchor);
 		const old_scale = data.scale;
 		data.scale = clamp(data.scale * factor, MIN_SCALE, MAX_SCALE);
         updateGridScale();

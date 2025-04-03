@@ -51,9 +51,10 @@
             
             return {
                 move(e) {
-                    const s2w = viewport.render.screen2viewport;
-                    data.render.xTransform += e.dx * s2w;
-                    data.render.yTransform += e.dy * s2w;
+                    const cl2wrld = viewport.render.cl2wrld;
+                    data.render.xTransform += cl2wrld.scale(e.dx);
+                    data.render.yTransform += cl2wrld.scale(e.dy);
+                    
                     // Root formula center
                     const x = data.render.x + data.render.width / 2;
                     const y = data.render.y + DT.derivLineHeightN / 2;
@@ -68,7 +69,14 @@
                 end(e) {
                     dragging = false;
                     dragged = false;
+
+                    const zone = activeZone;
                     updateActiveZone(null);
+
+                    if (!(zone instanceof HTMLElement)) return;
+                    const adr = zone.dataset.address;
+                    if (typeof adr !== 'string') return;
+                    console.log(Deriv.lookup(adr)?.conc)
                 }
             };
         },
@@ -132,6 +140,7 @@
         style:left="{left}px"
         style:width="{right - left}px"
         style:bottom="{(y - 1) * DT.derivRowOffsetN + DT.derivBarBottomN}px"
+        data-address={data.address}
     ></div>
 {/snippet}
 
