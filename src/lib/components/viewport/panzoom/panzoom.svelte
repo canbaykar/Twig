@@ -18,7 +18,7 @@
             if ("x"     in val) res.x     = f.x(val.x as number);
             if ("y"     in val) res.y     = f.y(val.y as number);
             if ("scale" in val) res.scale = f.scale(val.scale as number);
-            return res as Pick<T, "x" | "y" | "scale">;
+            return res as T;
         }
 
         return f;
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 	import draggable, { type DraggableOptions } from '$lib/utils/interact/draggable.svelte';
-	import { onMount, type Snippet } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { DT } from '../../../../DT';
 
     const MIN_SCALE = 0.25;
@@ -63,7 +63,11 @@
         ...restProps 
     }: Props = $props();
     let element: HTMLElement;
-    let rect: DOMRect;
+    let rect = $state({
+        left: 0, right: 0,
+        top: 0, bottom: 0,
+        width: 0, height: 0,
+    }) as DOMRect;
 
     const draggableOptions: DraggableOptions = {
         move(e) {
@@ -76,29 +80,27 @@
         },
     };
 
+    data.cl2pz = makeConverter(
+        x => (x - data.x - rect.left - rect.width / 2) / data.scale,
+        y => (y - data.y - rect.top - rect.height / 2) / data.scale,
+        scale => scale / data.scale,
+    );
+    data.pz2cl = makeConverter(
+        x => (x * data.scale) + data.x + rect.left + rect.width / 2,
+        y => (y * data.scale) + data.y + rect.top + rect.height / 2,
+        scale => scale * data.scale,
+    );
     data.cl2wrld = makeConverter(
         x => data.cl2pz.x(x) * DT.UNIT,
         y => data.cl2pz.y(y) * DT.UNIT,
         scale => data.cl2pz.scale(scale) * DT.UNIT,
     );
     data.wrld2cl = makeConverter(
-        x => data.cl2pz.x(x) / DT.UNIT,
-        y => data.cl2pz.y(y) / DT.UNIT,
-        scale => data.cl2pz.scale(scale) / DT.UNIT,
+        x => data.pz2cl.x(x / DT.UNIT),
+        y => data.pz2cl.y(y / DT.UNIT),
+        scale => data.pz2cl.scale(scale / DT.UNIT),
     );
-    onMount(() => {
-        data.cl2pz = makeConverter(
-            x => (x - data.x - rect.left - rect.width / 2) / data.scale,
-            y => (y - data.y - rect.top - rect.height / 2) / data.scale,
-            scale => scale / data.scale,
-        );
-        data.pz2cl = makeConverter(
-            x => (x * data.scale) + data.x + rect.left + rect.width / 2,
-            y => (y * data.scale) + data.y + rect.top + rect.height / 2,
-            scale => scale * data.scale,
-        );
-        return () => data.cl2pz = data.pz2cl = data.cl2wrld = data.wrld2cl = fallbackConverter;
-    });
+    onDestroy(() => data.cl2pz = data.pz2cl = data.cl2wrld = data.wrld2cl = fallbackConverter);
 
     // Helper functions for zoom(...) below
 	const clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
