@@ -11,6 +11,7 @@
 	import draggable from '$lib/utils/interact/draggable.svelte';
 	import viewport from '$lib/state/viewport.svelte';
 	import { DT } from '../../../../DT';
+	import { IndicatorPopup } from './indicatorPopup.svelte';
 
     interface Props {
         data: Deriv;
@@ -49,6 +50,13 @@
                 activeZone = val;
             }
 
+            const indicator = new IndicatorPopup();
+            indicator.left = 10;
+            indicator.top = 10;
+            indicator.width = 10;
+            indicator.height = 10;
+            indicator.opacity = 1;
+
             return {
                 move(e) {
                     const cl2wrld = viewport.render.cl2wrld;
@@ -76,10 +84,12 @@
                     const zone = activeZone;
                     updateActiveZone(null);
 
+                    indicator.detach();
+
                     if (!(zone instanceof HTMLElement)) return;
                     const adr = zone.dataset.address;
                     if (typeof adr !== 'string') return;
-                    console.log(Deriv.lookup(adr)?.conc)
+                    console.log(Deriv.lookup(adr)?.conc);
                 }
             };
         },
