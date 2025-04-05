@@ -41,24 +41,30 @@
             dragging = true;
             dragged = true;
 
-            let activeZone: null | Element = null;
-            function updateActiveZone(val: null | Element) {
-                if (val && !val.classList.contains("dropzone")) val = null;
-                if (val === activeZone) return;
-                if (activeZone) activeZone.classList.remove('active-dropzone');
-                if (val) val.classList.add('active-dropzone');
-                activeZone = val;
-            }
+            // let activeZone: null | Element = null;
+            // function updateActiveZone(val: null | Element) {
+            //     if (val && !val.classList.contains("dropzone")) val = null;
+            //     if (val === activeZone) return;
+            //     if (activeZone) activeZone.classList.remove('active-dropzone');
+            //     if (val) val.classList.add('active-dropzone');
+            //     activeZone = val;
+            // }
 
             const indicator = new IndicatorPopup();
-            indicator.left = 10;
-            indicator.top = 10;
-            indicator.width = 10;
-            indicator.height = 10;
-            indicator.opacity = 1;
+            indicator.height = DT.derivRowOffsetN;
+
+            function updateIndicator() {
+                indicator.left = data.render.x - data.render.width / 2;
+                indicator.top = data.render.y - DT.derivBarBottomN;
+                indicator.width = data.render.width;
+                indicator.opacity = 1;
+            }
+            updateIndicator();
 
             return {
                 move(e) {
+                    updateIndicator();
+
                     const cl2wrld = viewport.render.cl2wrld;
                     const wrld2cl = viewport.render.wrld2cl;
                     
@@ -74,22 +80,22 @@
                         wrld2cl.y(y),
                     );
 
-                    updateActiveZone(el);
+                    // updateActiveZone(el);
                 },
 
                 end(e) {
                     dragging = false;
                     dragged = false;
 
-                    const zone = activeZone;
-                    updateActiveZone(null);
+                    // const zone = activeZone;
+                    // updateActiveZone(null);
 
                     indicator.detach();
 
-                    if (!(zone instanceof HTMLElement)) return;
-                    const adr = zone.dataset.address;
-                    if (typeof adr !== 'string') return;
-                    console.log(Deriv.lookup(adr)?.conc);
+                    // if (!(zone instanceof HTMLElement)) return;
+                    // const adr = zone.dataset.address;
+                    // if (typeof adr !== 'string') return;
+                    // console.log(Deriv.lookup(adr)?.conc);
                 }
             };
         },

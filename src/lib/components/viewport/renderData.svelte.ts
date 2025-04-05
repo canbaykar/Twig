@@ -7,6 +7,7 @@ export default class ViewportRenderData {
     y = $state(0);
     scale = $state(1);
     popups = popups;
+    panzoomPopups = panzoomPopups;
 
     // /** ($derived) Multiply screen length in px with this to convert to viewport length */
     // screen2viewport = $derived(DT.UNIT / this.scale);
@@ -27,18 +28,23 @@ interface Popups extends Parent {
     readonly children: Popup[];
 }
 const popups = new Parent() as Popups;
+const panzoomPopups = new Parent() as Popups;
 
 export class Popup<TComponent extends Component<any> = Component> extends Child {
     readonly component: TComponent;
+    /** Is the popup displayed inside panzoom / among panzoom elements */
+    panzoom: boolean;
     props: Omit<ComponentProps<TComponent>, 'popup'>;
 
     constructor(
         component: TComponent,
+        panzoom: boolean,
         props: Omit<ComponentProps<TComponent>, 'popup'>,
     ) {
         super();
         this.component = component;
+        this.panzoom = panzoom;
         this.props = props;
-        popups.attachChild(this);
+        (this.panzoom ? panzoomPopups : popups).attachChild(this);
     }
 }
