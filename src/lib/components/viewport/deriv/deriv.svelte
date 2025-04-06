@@ -48,14 +48,6 @@
 </div>
 
 <style>
-    /* Preprocessor removes it if I do ".popup" 😑 */
-    .deriv :global(.handle) {
-        opacity: 0;
-    }
-    .dragged :global(.handle),
-    .deriv:hover :global(.handle) {
-        opacity: 1;
-    }
     .dragged {
         pointer-events: none;
     }

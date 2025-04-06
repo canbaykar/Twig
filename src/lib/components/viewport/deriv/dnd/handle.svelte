@@ -106,3 +106,13 @@
 >
     <GripVertical width="0.75em" height="0.75em" class="relative!" />
 </div>
+
+<style>
+    :global(.deriv) .handle {
+        opacity: 0;
+    }
+    :global(.deriv.dragged) .handle,
+    :global(.deriv:hover) .handle {
+        opacity: 1;
+    }
+</style>
