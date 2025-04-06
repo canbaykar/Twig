@@ -49,11 +49,11 @@
 
 <style>
     /* Preprocessor removes it if I do ".popup" 😑 */
-    .deriv :global(.popup) {
+    .deriv :global(.handle) {
         opacity: 0;
     }
-    .dragged :global(.popup),
-    .deriv:hover :global(.popup) {
+    .dragged :global(.handle),
+    .deriv:hover :global(.handle) {
         opacity: 1;
     }
     .dragged {

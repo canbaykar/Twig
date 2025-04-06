@@ -102,7 +102,7 @@
 <div
     {...restProps}
     use:draggable={opt}
-    class="popup inset-y-0 cursor-all-scroll flex items-center {restProps?.class ?? ''}"
+    class="handle inset-y-0 cursor-all-scroll flex items-center {restProps?.class ?? ''}"
 >
     <GripVertical width="0.75em" height="0.75em" class="relative!" />
 </div>
