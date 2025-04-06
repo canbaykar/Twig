@@ -1,5 +1,5 @@
 <script module lang="ts">
-	import { Popup } from "../renderData.svelte";
+	import { Popup } from "../../renderData.svelte";
     import Self from "./indicatorPopup.svelte";
 
     export class IndicatorPopup extends Popup<typeof Self> {
@@ -16,7 +16,7 @@
 </script>
 
 <script lang="ts">
-	import { DT } from "../../../../DT";
+	import { DT } from "../../../../../DT";
 	import viewport from "$lib/state/viewport.svelte";
 
     const { popup }: { popup: IndicatorPopup } = $props();
