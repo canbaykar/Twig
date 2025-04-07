@@ -9,7 +9,7 @@
     let { data }: Props = $props();
     
     const render = data.render;
-    const padding = 0.75 * DT.derivRowOffsetN;
+    const padding = DT.derivDropZonePaddingN;
     const barWidth2 = render.barWidth / 2;
     const N = data.children.length - 1;
 </script>

@@ -5,6 +5,7 @@ const rowOffset = 25 * UNIT;
 const barBottom = rowOffset - 3 * UNIT;
 const barGap = 3 * UNIT;
 const labelHeight = 15 * UNIT;
+const dropZonePadding = 0.75 * rowOffset;
 
 // New DT system WIP
 export const derivDT = {
@@ -61,6 +62,9 @@ export const derivDT = {
     lineHeightN: lineHeight,
     /** (number) Formula font size / 1px */
     sizeN: fontSize,
+
+    /** (number) Padding at either side of sidemost dropzones (except top and bottom type zones) */
+    dropZonePaddingN: dropZonePadding,
     
     /** (number) Margin at the sides of the rule-bar 
      * (label and rule are counted as a part of the bar here.) */
