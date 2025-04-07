@@ -19,7 +19,7 @@
     <!-- Root -->
     {@render dropzone(-right, right, 0)}
     <!-- Bottom -->
-    {@render dropzone(Math.max(-barWidth2, -right), Math.min(barWidth2, right), -1)}
+    {@render dropzone(Math.max(-barWidth2, -right), Math.min(barWidth2, right), 1)}
 {/if}
 
 {#if N === -1}
@@ -34,12 +34,12 @@
 {/if}
 
 <!-- SNIPPETS -->
-{#snippet dropzone(left: number, right: number, y = 1)}
+{#snippet dropzone(left: number, right: number, y = -1)}
     <div
         class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10 [.active-dropzone]:bg-sky-500/10"
         style:left="{left}px"
         style:width="{right - left}px"
-        style:bottom="{(y - 1) * DT.derivRowOffsetN + DT.derivBarBottomN}px"
+        style:top="{y * DT.derivRowOffsetN - DT.derivBarBottomN}px"
         data-address={data.address}
     ></div>
 {/snippet}
