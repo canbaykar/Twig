@@ -94,10 +94,7 @@
     const opt: DraggableOptions = {
         cursor: "all-scroll",
         start(e) {
-            if (data.parent === viewport)
-                // Detach & reattach to get to front
-                data.attach(viewport); 
-            else {
+            if (data.parent !== viewport) {
                 const x = data.render.x;
                 const y = data.render.y;
                 data.attach(viewport);
