@@ -63,11 +63,12 @@
 {#snippet dropzone(type: DropzoneType)}
     {@const op = dropzonePositioner[type](data)}
     <div
-        class="dropzone outline-10 h-(--DERIV-ROW-OFFSET) bg-amber-500/10"
+        class="dropzone h-(--DERIV-ROW-OFFSET)"
         style:left="{op.left}px"
         style:width="{-2 * op.left}px"
         style:top="{op.top}px"
         data-address={data.address}
+        data-type={type}
     ></div>
 {/snippet}
 
