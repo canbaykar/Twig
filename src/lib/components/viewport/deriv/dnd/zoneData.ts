@@ -6,11 +6,15 @@ export type DropzoneType = keyof typeof zoneTypes;
 // Dragged element makes instances of this (some class that extends ZoneData). 
 // Dropzone components/elements don't have instances because they may represent multiple zones.
 abstract class ZoneData {
+    readonly deriv: Deriv;
     abstract readonly type: DropzoneType;
-    abstract readonly deriv: Deriv;
     abstract enter(dragged: Deriv): void;
     abstract exit(dragged: Deriv): void;
     abstract drop(dragged: Deriv): void;
+
+    constructor(deriv: Deriv) {
+        this.deriv = deriv;
+    }
     
     /** In relative world coordinates */
     static getElementRect(deriv: Deriv): { left: number, top: number, width: number, height: number } {
@@ -25,13 +29,16 @@ export const zoneTypes = {
     // ---- ROOT ----
     root: class RootZoneData extends ZoneData {
         readonly type = 'root';
-        readonly deriv: Deriv;
         readonly childIndex: number;
 
-        constructor(deriv: Deriv, childIndex: number) {
-            super();
-            this.deriv = deriv;
-            this.childIndex = childIndex;
+        constructor(deriv: Deriv, x: number) {
+            super(deriv);
+            for (let i = deriv.children.length - 1; i >= 0; i--)
+                if (x > deriv.children[i].render.x) {
+                    this.childIndex = i + 1;
+                    return;
+                }
+            this.childIndex = 0;
         }
 
         enter(dragged: Deriv): void {
@@ -55,12 +62,6 @@ export const zoneTypes = {
     // ---- BOTTOM ----
     bottom: class BottomZoneData extends ZoneData {
         readonly type = 'bottom';
-        readonly deriv: Deriv;
-
-        constructor(deriv: Deriv) {
-            super();
-            this.deriv = deriv;
-        }
 
         enter(dragged: Deriv): void {
             // ...
@@ -83,12 +84,6 @@ export const zoneTypes = {
     // ---- TOP ----
     top: class TopZoneData extends ZoneData {
         readonly type = 'top';
-        readonly deriv: Deriv;
-
-        constructor(deriv: Deriv) {
-            super();
-            this.deriv = deriv;
-        }
 
         enter(dragged: Deriv): void {
             // ...
@@ -111,13 +106,11 @@ export const zoneTypes = {
     // ---- CHILD ----
     child: class ChildZoneData extends ZoneData {
         readonly type = 'child';
-        readonly deriv: Deriv;
         readonly childIndex: number;
 
-        constructor(deriv: Deriv, childIndex: number) {
-            super();
-            this.deriv = deriv;
-            this.childIndex = childIndex;
+        constructor(deriv: Deriv, x: number) {
+            super(deriv);
+            this.childIndex = x > deriv.render.x ? 1 : 0;
         }
 
         enter(dragged: Deriv): void {
