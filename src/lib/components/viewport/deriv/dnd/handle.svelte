@@ -7,7 +7,7 @@
 	import { DT } from '../../../../../DT';
 	import { IndicatorPopup } from './indicatorPopup.svelte';
 	import { dragLog } from '../deriv.svelte';
-	import { dropzonePositioner, type DropzoneType } from './dropzones.svelte';
+	import { zoneTypes, type DropzoneType } from './zoneData';
 
     interface Props {
         data: Deriv;
@@ -22,14 +22,14 @@
         ...restProps
     }: Props = $props();
 
-    interface ZoneData_ {
+    type DropAction = null | {
         deriv: Deriv;
         type: DropzoneType;
         childIndex: number;
     }
 
     /** Takes in world coords, not screen! */
-    function ZDFromPoint(x: number, y: number): ZoneData_ | null {
+    function DAFromPoint(x: number, y: number): DropAction {
         const wrld2cl = viewport.render.wrld2cl;
         const el = document.elementFromPoint(wrld2cl.x(x), wrld2cl.y(y));
         // if ((el instanceof HTMLElement) && !el.classList.contains('dropzone')) console.log(el)
@@ -57,96 +57,64 @@
             }
     }
 
-    function getRect(zd: ZoneData_) {
-        const pos = dropzonePositioner[zd.type](zd.deriv);
-        const render = zd.deriv.render;
-
-        let left = render.x + pos.left;
-        let right = render.x - pos.left;
-        console.log({left, ...zd})
-        if (zd.type === 'child') {
-            const c = zd.deriv.children;
-            // Centers of left and right siblings
-            const leftCenter  = c[zd.childIndex - 1]?.render?.x ?? -Infinity;
-            const rightCenter = c[zd.childIndex    ]?.render?.x ??  Infinity;
-            left = Math.max(left, leftCenter);
-            right = Math.min(right, rightCenter);
-        }
-
-        const top = render.y + pos.top;
-        return {
-            top, left, right,
-            bottom: top - DT.derivRowOffsetN,
-        };
-    }
-    function rectHovered(
-        x: number, y: number, 
-        rect: { left: number, right: number, top: number, bottom: number }
-    ) {
-        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-    }
-
-    function ZDNStart(zdn: ZoneData_ | null) {
-        if (!zdn) return;
-        switch (zdn.type) {
-            case 'root':
-                // ...
-            case 'bottom':
-                // ...
-            default:
-                // ...
-        }
-    }
-    function ZDNEnd(zdn: ZoneData_ | null) {
-        if (!zdn) return;
-        switch (zdn.type) {
-            case 'root':
-                // ...
-            case 'bottom':
-                // ...
-            default:
-                // ...
-        }
-    }
-    function ZDNMove(zdn: ZoneData_ | null, dx: number, dy: number) {
-        if (!zdn) return;
-        switch (zdn.type) {
-            case 'bottom':
-                // ...
-            default:
-                // ...
-        }
+    function executeDA(a: DropAction) {
+        // ...
     }
     
-    function indicateDragged(ind: IndicatorPopup, opacity = 1) {
-        ind.left = data.render.x - data.render.width / 2;
-        ind.top = data.render.y - DT.derivBarBottomN;
-        ind.width = data.render.width;
-        ind.opacity = opacity;
+    function indicateDA(a: DropAction, ind: IndicatorPopup) {
+        if (!a) {
+            // If a is null, make ind invisible but keep it on dragged deriv for animation
+            ind.opacity = 0;
+            ind.left = data.render.x - data.render.width / 2;
+            ind.top = data.render.y - DT.derivBarBottomN;
+            ind.width = data.render.width;
+            return;
+        }
+        const pos = zoneTypes[a.type].getElementRect(a.deriv);
+        const render = a.deriv.render;
+        ind.top = render.y + pos.top;
+        ind.opacity = 1;
+
+        const left = render.x + pos.left;
+        const right = render.x - pos.left;
+        console.log({left, ...a})
+        if (a.type !== 'child') {
+            ind.left = left;
+            ind.width = right - left;
+        } else {
+            const c = a.deriv.children;
+            // Centers of left and right siblings
+            const leftCenter  = c[a.childIndex - 1]?.render?.x ?? -Infinity;
+            const rightCenter = c[a.childIndex    ]?.render?.x ??  Infinity;
+            ind.left = Math.max(left, leftCenter);
+            ind.width = Math.min(right, rightCenter) - ind.left;
+        }
     }
     
     const opt: DraggableOptions = {
         cursor: "all-scroll",
         start(e) {
+            if (data.parent !== viewport) {
+                const x = data.render.x;
+                const y = data.render.y;
+                data.attach(viewport);
+                data.render.xTransform = x;
+                data.render.yTransform = y;
+            }
+
             dragged = true;
             dragLog(true);
 
-            // Rectangle popup that indicates where the deriv goes when dropped
+            let dropAction: DropAction = null;
+            // Rectangle popup that indicates current dropAction
             const indicator = new IndicatorPopup();
             indicator.height = DT.derivRowOffsetN;
-            indicateDragged(indicator);
 
-            // Null when not free or not over zone
-            let zdn: ZoneData_ | null = null;
-            function updateDND() {
-                const par = data.parent;
+            function updateDA() {
                 const x = data.render.x;
                 const y = data.render.y;
-
-                // If zd not changed, do nothing
-                if (zdn && rectHovered(x, y, getRect(zdn))) return;
-
-                zdn = ZDFromPoint(x, y);
+                dropAction = DAFromPoint(x, y);
+                indicateDA(dropAction, indicator); 
             }
 
             return {
@@ -155,47 +123,20 @@
                     data.render.xTransform += cl2wrld.scale(e.dx);
                     data.render.yTransform += cl2wrld.scale(e.dy);
 
-                    updateDND();
+                    updateDA();
                 },
 
                 end(e) {
                     dragged = false;
                     dragLog(false);
 
-                    updateDND();
-
+                    updateDA();
                     indicator.detach();
+                    executeDA(dropAction);
                 }
             };
         },
     };
-    
-    // function indicateZD(a: ZoneData, ind: IndicatorPopup) {
-    //     if (!a) {
-    //         // If a is null, make ind invisible but keep it on dragged deriv for animation
-    //         indicateDragged(ind, 0);
-    //         return;
-    //     }
-    //     const pos = dropzonePositioner[a.type](a.deriv);
-    //     const render = a.deriv.render;
-    //     ind.top = render.y + pos.top;
-    //     ind.opacity = 1;
-
-    //     const left = render.x + pos.left;
-    //     const right = render.x - pos.left;
-    //     console.log({left, ...a})
-    //     if (a.type !== 'child') {
-    //         ind.left = left;
-    //         ind.width = right - left;
-    //     } else {
-    //         const c = a.deriv.children;
-    //         // Centers of left and right siblings
-    //         const leftCenter  = c[a.childIndex - 1]?.render?.x ?? -Infinity;
-    //         const rightCenter = c[a.childIndex    ]?.render?.x ??  Infinity;
-    //         ind.left = Math.max(left, leftCenter);
-    //         ind.width = Math.min(right, rightCenter) - ind.left;
-    //     }
-    // }
 </script>
 
 <!-- TODO: Remove "relative!" -->
