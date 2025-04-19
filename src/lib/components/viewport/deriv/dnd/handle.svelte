@@ -7,7 +7,8 @@
 	import { DT } from '../../../../../DT';
 	import { IndicatorPopup } from './indicatorPopup.svelte';
 	import { dragLog } from '../deriv.svelte';
-	import { zoneTypes, type DropzoneType } from './zoneData';
+	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
+	import { ZoneDataFromPoint } from './dropzones.svelte';
 
     interface Props {
         data: Deriv;
@@ -21,47 +22,8 @@
         dragged = $bindable(false),
         ...restProps
     }: Props = $props();
-
-    type DropAction = null | {
-        deriv: Deriv;
-        type: DropzoneType;
-        childIndex: number;
-    }
-
-    /** Takes in world coords, not screen! */
-    function DAFromPoint(x: number, y: number): DropAction {
-        const wrld2cl = viewport.render.wrld2cl;
-        const el = document.elementFromPoint(wrld2cl.x(x), wrld2cl.y(y));
-        // if ((el instanceof HTMLElement) && !el.classList.contains('dropzone')) console.log(el)
-        if (!(el instanceof HTMLElement) || !el.classList.contains('dropzone')) 
-            return null;
-        
-            const type = el.dataset.type as DropzoneType | undefined;
-            const adr = el.dataset.address;
-            if (!type || !adr) return null;
-            const deriv = Deriv.lookup(adr);
-            if (!deriv) return null;
-
-            switch (type) {
-                case 'child':
-                    for (let i = deriv.children.length - 1; i >= 0; i--)
-                        if (x > deriv.children[i].render.x)
-                            return { childIndex: i + 1, deriv, type: 'child' };
-                    return { childIndex: 0, deriv, type: 'child' };
-                case 'top':
-                    return { childIndex: 0, deriv, type: 'top' };
-                case 'root':
-                    return { childIndex: x > deriv.render.x ? 1 : 0, deriv, type: 'root' };
-                default: // case 'bottom'
-                    return { childIndex: 0, deriv, type: 'bottom' };
-            }
-    }
-
-    function executeDA(a: DropAction) {
-        // ...
-    }
     
-    function indicateDA(a: DropAction, ind: IndicatorPopup) {
+    function indicateDA(a: ZoneData, ind: IndicatorPopup) {
         if (!a) {
             // If a is null, make ind invisible but keep it on dragged deriv for animation
             ind.opacity = 0;
@@ -105,7 +67,7 @@
             dragged = true;
             dragLog(true);
 
-            let dropAction: DropAction = null;
+            let dropAction: ZoneData | null = null;
             // Rectangle popup that indicates current dropAction
             const indicator = new IndicatorPopup();
             indicator.height = DT.derivRowOffsetN;
@@ -113,7 +75,7 @@
             function updateDA() {
                 const x = data.render.x;
                 const y = data.render.y;
-                dropAction = DAFromPoint(x, y);
+                dropAction = ZoneDataFromPoint(x, y);
                 indicateDA(dropAction, indicator); 
             }
 
@@ -132,7 +94,6 @@
 
                     updateDA();
                     indicator.detach();
-                    executeDA(dropAction);
                 }
             };
         },
