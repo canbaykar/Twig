@@ -38,10 +38,10 @@ export const zoneTypes = {
         }
 
         enter(dragged: Deriv): void {
-            // ...
+            dragged.attach(this.deriv, this.childIndex);
         }
         exit(dragged: Deriv): void {
-            // ...
+            dragged.detach();
         }
         drop(dragged: Deriv): void {
             // ...
@@ -55,37 +55,15 @@ export const zoneTypes = {
         }
     },
     
-    // ---- BOTTOM ----
-    bottom: class BottomZoneData extends ZoneDataBase {
-        readonly type = 'bottom';
-
-        enter(dragged: Deriv): void {
-            // ...
-        }
-        exit(dragged: Deriv): void {
-            // ...
-        }
-        drop(dragged: Deriv): void {
-            // ...
-        }
-
-        // One elementRect (and thus one dropzone component is shared among siblings)
-        // But the ZoneData instance and rect is per child
-        static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
-            const left = -Math.min(deriv.render.width / 2 + DT.derivDropZonePaddingN, deriv.render.barWidth / 2);
-            return { left, top: row2height(1), width: -2 * left, height: DT.derivRowOffsetN };
-        }
-    },
-    
     // ---- TOP ----
     top: class TopZoneData extends ZoneDataBase {
         readonly type = 'top';
 
         enter(dragged: Deriv): void {
-            // ...
+            dragged.attach(this.deriv);
         }
         exit(dragged: Deriv): void {
-            // ...
+            dragged.detach();
         }
         drop(dragged: Deriv): void {
             // ...
@@ -115,10 +93,10 @@ export const zoneTypes = {
         }
 
         enter(dragged: Deriv): void {
-            // ...
+            dragged.attach(this.deriv, this.childIndex);
         }
         exit(dragged: Deriv): void {
-            // ...
+            dragged.detach();
         }
         drop(dragged: Deriv): void {
             // ...
@@ -132,4 +110,27 @@ export const zoneTypes = {
             return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
         }
     },
+    
+    // TODO: Implement bottom dropzone
+    // ---- BOTTOM ----
+    // bottom: class BottomZoneData extends ZoneDataBase {
+    //     readonly type = 'bottom';
+
+    //     enter(dragged: Deriv): void {
+    //         // ...
+    //     }
+    //     exit(dragged: Deriv): void {
+    //         // ...
+    //     }
+    //     drop(dragged: Deriv): void {
+    //         // ...
+    //     }
+
+    //     // One elementRect (and thus one dropzone component is shared among siblings)
+    //     // But the ZoneData instance and rect is per child
+    //     static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
+    //         const left = -Math.min(deriv.render.width / 2 + DT.derivDropZonePaddingN, deriv.render.barWidth / 2);
+    //         return { left, top: row2height(1), width: -2 * left, height: DT.derivRowOffsetN };
+    //     }
+    // },
 } as const;

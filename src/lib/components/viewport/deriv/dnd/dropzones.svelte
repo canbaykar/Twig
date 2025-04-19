@@ -32,7 +32,7 @@
     <!-- Root -->
     {@render dropzone('root')}
     <!-- Bottom -->
-    {@render dropzone('bottom')}
+    <!-- {@render dropzone('bottom')} -->
 {/if}
 
 {#if data.children.length === 0}
