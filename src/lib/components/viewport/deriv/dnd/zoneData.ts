@@ -38,7 +38,7 @@ export const zoneTypes = {
         
         static getElementRect(deriv: Deriv): { left: number, top: number, width: number, height: number } {
             const left = -deriv.render.width / 2 - DT.derivDropZonePaddingN;
-            return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN };
+            return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN + DT.derivDropZonePaddingN / 4 };
         }
     },
 
