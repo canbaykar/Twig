@@ -23,60 +23,17 @@
         ...restProps
     }: Props = $props();
     
-    function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
-        if (!a) {
-            // If a is null, make ind invisible but keep it on dragged deriv for animation
-            ind.opacity = 0;
-            ind.left = data.render.x - data.render.width / 2;
-            ind.top = data.render.y - DT.derivBarBottomN;
-            ind.width = data.render.width;
-            return;
-        }
-        const pos = zoneTypes[a.type].getElementRect(a.deriv);
-        const render = a.deriv.render;
-        ind.top = render.y + pos.top;
-        ind.opacity = 1;
-
-        const left = render.x + pos.left;
-        const right = render.x - pos.left;
-        console.log({left, ...a})
-        if (a.type !== 'child') {
-            ind.left = left;
-            ind.width = right - left;
-        } else {
-            const c = a.deriv.children;
-            // Centers of left and right siblings
-            const leftCenter  = c[a.childIndex - 1]?.render?.x ?? -Infinity;
-            const rightCenter = c[a.childIndex    ]?.render?.x ??  Infinity;
-            ind.left = Math.max(left, leftCenter);
-            ind.width = Math.min(right, rightCenter) - ind.left;
-        }
-    }
-    
     const opt: DraggableOptions = {
         cursor: "all-scroll",
         start(e) {
-            if (data.parent !== viewport) {
-                const x = data.render.x;
-                const y = data.render.y;
-                data.attach(viewport);
-                data.render.xTransform = x;
-                data.render.yTransform = y;
-            }
-
             dragged = true;
             dragLog(true);
 
-            let dropAction: ZoneData | null = null;
-            // Rectangle popup that indicates current dropAction
-            const indicator = new IndicatorPopup();
-            indicator.height = DT.derivRowOffsetN;
+            // null: free, else: bound
+            const zd = data.parent === viewport ? null : new zoneTypes.initial(data);
 
-            function updateDA() {
-                const x = data.render.x;
-                const y = data.render.y;
-                dropAction = ZoneDataFromPoint(x, y);
-                indicateDA(dropAction, indicator); 
+            function updateZD() {
+                
             }
 
             return {
@@ -85,19 +42,57 @@
                     data.render.xTransform += cl2wrld.scale(e.dx);
                     data.render.yTransform += cl2wrld.scale(e.dy);
 
-                    updateDA();
+                    updateZD();
                 },
 
                 end(e) {
                     dragged = false;
                     dragLog(false);
 
-                    updateDA();
-                    indicator.detach();
+                    updateZD();
+
+                    if (data.parent !== viewport)
+                        data.render.xTransform = data.render.yTransform = 0;
                 }
             };
         },
     };
+
+    function getBindingRect(d: Deriv) {
+        // const relLeft = -d.render.width / 2 - DT.derivDropZonePaddingN;
+        // return { left: d.render.x + relLeft, top: -DT.derivBarBottomN, width: -2 * relLeft, height: DT.derivRowOffsetN };
+        // ...
+    }
+    
+    // function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
+    //     if (!a) {
+    //         // If a is null, make ind invisible but keep it on dragged deriv for animation
+    //         ind.opacity = 0;
+    //         ind.left = data.render.x - data.render.width / 2;
+    //         ind.top = data.render.y - DT.derivBarBottomN;
+    //         ind.width = data.render.width;
+    //         return;
+    //     }
+    //     const pos = zoneTypes[a.type].getElementRect(a.deriv);
+    //     const render = a.deriv.render;
+    //     ind.top = render.y + pos.top;
+    //     ind.opacity = 1;
+
+    //     const left = render.x + pos.left;
+    //     const right = render.x - pos.left;
+    //     console.log({left, ...a})
+    //     if (a.type !== 'child') {
+    //         ind.left = left;
+    //         ind.width = right - left;
+    //     } else {
+    //         const c = a.deriv.children;
+    //         // Centers of left and right siblings
+    //         const leftCenter  = c[a.childIndex - 1]?.render?.x ?? -Infinity;
+    //         const rightCenter = c[a.childIndex    ]?.render?.x ??  Infinity;
+    //         ind.left = Math.max(left, leftCenter);
+    //         ind.width = Math.min(right, rightCenter) - ind.left;
+    //     }
+    // }
 </script>
 
 <!-- TODO: Remove "relative!" -->
