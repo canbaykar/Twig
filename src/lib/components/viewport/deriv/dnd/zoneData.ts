@@ -1,4 +1,5 @@
 import type Deriv from "$lib/state/deriv.svelte";
+import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
 
 export type ZoneType = keyof typeof zoneTypes;
@@ -19,7 +20,7 @@ abstract class ZoneDataBase {
     
     /** In relative world coordinates */
     static getElementRect(deriv: Deriv): { left: number, top: number, width: number, height: number } {
-        throw new Error('Abstract static method not implemented.');
+        throw new Error('Static method not implemented.');
     }
 }
 
@@ -33,12 +34,7 @@ export const zoneTypes = {
         readonly type = 'initial';
 
         exit(dragged: Deriv): void {
-            dragged.detach();
-        }
-        
-        static getElementRect(deriv: Deriv): { left: number, top: number, width: number, height: number } {
-            const left = -deriv.render.width / 2 - DT.derivDropZonePaddingN;
-            return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN + DT.derivDropZonePaddingN / 4 };
+            dragged.attach(viewport);
         }
     },
 
@@ -56,7 +52,7 @@ export const zoneTypes = {
             dragged.attach(this.deriv, this.childIndex);
         }
         exit(dragged: Deriv): void {
-            dragged.detach();
+            dragged.attach(viewport);
         }
 
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
@@ -73,7 +69,7 @@ export const zoneTypes = {
             dragged.attach(this.deriv);
         }
         exit(dragged: Deriv): void {
-            dragged.detach();
+            dragged.attach(viewport);
         }
 
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
@@ -101,7 +97,7 @@ export const zoneTypes = {
             dragged.attach(this.deriv, this.childIndex);
         }
         exit(dragged: Deriv): void {
-            dragged.detach();
+            dragged.attach(viewport);
         }
 
         // One elementRect (and thus one dropzone component is shared among siblings)
