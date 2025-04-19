@@ -27,6 +27,21 @@ abstract class ZoneDataBase {
 const row2height = (row: number) => row * DT.derivRowOffsetN - DT.derivBarBottomN;
 
 export const zoneTypes = {
+    // ---- INITIAL ----
+    // This is special because it doesn't have an element in dropzones.svelte. So it's not enterable.
+    initial: class InitialZoneData extends ZoneDataBase {
+        readonly type = 'initial';
+
+        exit(dragged: Deriv): void {
+            dragged.detach();
+        }
+        
+        static getElementRect(deriv: Deriv): { left: number, top: number, width: number, height: number } {
+            const left = -deriv.render.width / 2 - DT.derivDropZonePaddingN;
+            return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN };
+        }
+    },
+
     // ---- ROOT ----
     root: class RootZoneData extends ZoneDataBase {
         readonly type = 'root';
@@ -44,8 +59,6 @@ export const zoneTypes = {
             dragged.detach();
         }
 
-        // One elementRect (and thus one dropzone component is shared among siblings)
-        // But the ZoneData instance is per child
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
             const left = -deriv.render.width / 2 - DT.derivDropZonePaddingN;
             return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN };
@@ -63,8 +76,6 @@ export const zoneTypes = {
             dragged.detach();
         }
 
-        // One elementRect (and thus one dropzone component is shared among siblings)
-        // But the ZoneData instance and rect is per child
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
             const left = -deriv.render.barWidth / 2;
             return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
