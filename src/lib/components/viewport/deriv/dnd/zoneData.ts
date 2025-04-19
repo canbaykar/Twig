@@ -9,9 +9,9 @@ export type ZoneData = InstanceType<typeof zoneTypes[ZoneType]>;
 abstract class ZoneDataBase {
     readonly deriv: Deriv;
     abstract readonly type: ZoneType;
-    abstract enter(dragged: Deriv): void;
-    abstract exit(dragged: Deriv): void;
-    abstract drop(dragged: Deriv): void;
+    enter(dragged: Deriv) {}
+    exit(dragged: Deriv) {}
+    drop(dragged: Deriv) {}
 
     constructor(deriv: Deriv) {
         this.deriv = deriv;
@@ -43,9 +43,6 @@ export const zoneTypes = {
         exit(dragged: Deriv): void {
             dragged.detach();
         }
-        drop(dragged: Deriv): void {
-            // ...
-        }
 
         // One elementRect (and thus one dropzone component is shared among siblings)
         // But the ZoneData instance is per child
@@ -64,9 +61,6 @@ export const zoneTypes = {
         }
         exit(dragged: Deriv): void {
             dragged.detach();
-        }
-        drop(dragged: Deriv): void {
-            // ...
         }
 
         // One elementRect (and thus one dropzone component is shared among siblings)
@@ -97,9 +91,6 @@ export const zoneTypes = {
         }
         exit(dragged: Deriv): void {
             dragged.detach();
-        }
-        drop(dragged: Deriv): void {
-            // ...
         }
 
         // One elementRect (and thus one dropzone component is shared among siblings)
