@@ -23,7 +23,7 @@
         ...restProps
     }: Props = $props();
     
-    function indicateDA(a: ZoneData, ind: IndicatorPopup) {
+    function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
         if (!a) {
             // If a is null, make ind invisible but keep it on dragged deriv for animation
             ind.opacity = 0;
