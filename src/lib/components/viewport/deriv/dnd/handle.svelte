@@ -8,7 +8,7 @@
 	import { IndicatorPopup } from './indicatorPopup.svelte';
 	import { dragLog } from '../deriv.svelte';
 	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
-	import { ZoneDataFromPoint } from './dropzones.svelte';
+	import { zoneDataFromPoint } from './dropzones.svelte';
 
     interface Props {
         data: Deriv;
@@ -29,11 +29,24 @@
             dragged = true;
             dragLog(true);
 
-            // null: free, else: bound
-            const zd = data.parent === viewport ? null : new zoneTypes.initial(data);
+            // null: free, else: bound (assumes parent can't be null while dragging!)
+            const free = () => data.parent === viewport;
+            let zd: ZoneData | null = free() ? null : new zoneTypes.initial(data);
 
             function updateZD() {
-                
+                const x = data.render.x;
+                const y = data.render.y;
+
+                // Did we exit a zone?
+                if (zd && !inBoundingRect(data, x, y)) {
+                    zd.exit(data);
+                    zd = null;
+                }
+
+                // Did we enter a zone? (single = isn't typo!)
+                if (!zd && (zd = zoneDataFromPoint(x, y))) {
+                    zd.enter(data);
+                }
             }
 
             return {
@@ -50,9 +63,12 @@
                     dragLog(false);
 
                     updateZD();
+                    if (zd) zd.drop(data);
 
+                    // Reset stuff used for DND
                     if (data.parent !== viewport)
                         data.render.xTransform = data.render.yTransform = 0;
+                    data.render.treeOverwrite = null;
                 }
             };
         },
@@ -79,6 +95,10 @@
             width: right - left,
             height: DT.derivRowOffsetN + DT.derivDropZonePaddingN / 3,
         };
+    }
+    function inBoundingRect(d: Deriv, x: number, y: number) {
+        const r = getBindingRect(d);
+        return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
     }
     
     // function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
