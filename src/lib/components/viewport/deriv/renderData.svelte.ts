@@ -21,7 +21,7 @@ export default class DerivRenderData {
 
     deriv: Deriv;
 
-    /** ($state) Width of formula. Maintained in formula.svelte */
+    /** ($state) Width of formula. Maintained in formula.svelte but can be overwritten. */
     width = $state(0);
     /** ($state) Maintained in bar.svelte */
     ruleWidth = $state(0);
@@ -30,13 +30,17 @@ export default class DerivRenderData {
 
     // Tree rendering logic
     private readonly tree: TreeData = $derived.by(() => 
-        treeData(
+        this.treeOverwrite ?? treeData(
             this.width, 
             this.deriv.children.map(c => c.render.tree),
             this.labelWidth,
             this.ruleWidth,
         )
     )
+    /** ($state) Used for DND */
+    treeOverwrite: TreeData | null = null;
+
+    // Stuff derived from tree:
     get barWidth() { return this.tree.barWidth };
     private readonly xBase: number = $derived.by(() => {
         const par = this.deriv.parent;
@@ -45,6 +49,7 @@ export default class DerivRenderData {
                 + par.render.tree.offsets[this.deriv.childIndex]
             : 0;
     });
+
     // The deriv has a base location and a transform on top 
     // (+ transforms from predescessors).
     xTransform = $state(0);
