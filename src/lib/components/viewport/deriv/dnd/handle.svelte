@@ -59,9 +59,26 @@
     };
 
     function getBindingRect(d: Deriv) {
-        // const relLeft = -d.render.width / 2 - DT.derivDropZonePaddingN;
-        // return { left: d.render.x + relLeft, top: -DT.derivBarBottomN, width: -2 * relLeft, height: DT.derivRowOffsetN };
-        // ...
+        // Half width
+        const w2 = d.render.width / 2 + DT.derivDropZonePaddingN;
+        let left  = d.render.x - w2;
+        let right = d.render.x + w2;
+
+        // Extend rect to neighbouring siblings' centers
+        if (d.parent instanceof Deriv) {
+            const prevSib = d.parent.children[d.childIndex - 1];
+            if (prevSib) left = Math.min(left, prevSib.render.x);
+
+            const nextSib = d.parent.children[d.childIndex + 1];
+            if (nextSib) right = Math.max(right, nextSib.render.x);
+        }
+
+        return {
+            left,
+            top: d.render.y - DT.derivRowOffsetN,
+            width: right - left,
+            height: DT.derivRowOffsetN + DT.derivDropZonePaddingN / 3,
+        };
     }
     
     // function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
