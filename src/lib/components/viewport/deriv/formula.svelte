@@ -16,7 +16,7 @@
 	let element: HTMLElement;
 	DerivRenderData.maintainWidth(
 		() => data.conc,
-		() => data.render.width = element.offsetWidth
+		() => data.render.baseWidth = element.offsetWidth
 	);
 
 	// The "element" can't be used as an input field bc the caret may be too thin on
@@ -82,7 +82,7 @@
 			class="caret-fg absolute top-0 left-0 origin-top-left resize-none overflow-hidden text-center text-transparent"
 			style="
             line-height: {(DT.derivLineHeightN / DT.UNIT) * viewport.render.scale}px;
-            width: {(data.render.width / DT.UNIT) * viewport.render.scale}px;
+            width: {(data.render.baseWidth / DT.UNIT) * viewport.render.scale}px;
             font-size: {(DT.derivSizeN / DT.UNIT) * viewport.render.scale}px;
             scale: {DT.UNIT / viewport.render.scale};
         "
