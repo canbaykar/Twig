@@ -4,7 +4,7 @@
 	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
 
     /** Takes in world coords, not screen! */
-    export function ZoneDataFromPoint(x: number, y: number): ZoneData | null {
+    export function zoneDataFromPoint(x: number, y: number): ZoneData | null {
         const wrld2cl = viewport.render.wrld2cl;
         const el = document.elementFromPoint(wrld2cl.x(x), wrld2cl.y(y));
         if (!(el instanceof HTMLElement) || !el.classList.contains('dropzone')) return null;
