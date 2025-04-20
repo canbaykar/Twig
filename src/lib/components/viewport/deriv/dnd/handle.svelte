@@ -8,7 +8,7 @@
 	import { IndicatorPopup } from './indicatorPopup.svelte';
 	import { dragLog } from '../deriv.svelte';
 	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
-	import { ZoneDataFromPoint } from './dropzones.svelte';
+	import { zoneDataFromPoint } from './dropzones.svelte';
 
     interface Props {
         data: Deriv;
