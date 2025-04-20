@@ -2,7 +2,10 @@ import type Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
 
-export type ZoneType = keyof typeof zoneTypes;
+// Following doesn't work due to circularity, update manually
+// export type ZoneType = keyof typeof zoneTypes;
+export type ZoneType = "initial" | "root" | "top" | "child";
+
 export type ZoneData = InstanceType<typeof zoneTypes[ZoneType]>;
 
 // Dragged element makes instances of this (some class that extends ZoneData). 
