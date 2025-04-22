@@ -73,6 +73,17 @@ export default class DerivRenderData {
     readonly x: number = $derived(this.xBase + this.acc.x);
     get y() { return this.acc.y };
 
+    /** Takes world coordinates */
+    moveTo(x: number, y: number) {
+        this.xTransform += x - this.x;
+        this.yTransform += y - this.y;
+    }
+
+    /** Getter (so not reactive!) */
+    get xy() {
+        return [this.x, this.y];
+    }
+
     /** ($derived, readonly) Inherited. */
     readonly displayed: boolean = $derived.by(() => {
         const par = this.deriv.parent;
