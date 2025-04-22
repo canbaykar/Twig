@@ -33,6 +33,9 @@
             const free = () => data.parent === viewport;
             let zd: ZoneData | null = free() ? null : new zoneTypes.initial(data);
 
+            // Rectangle popup that indicates current binding zone rect
+            const indicator = new IndicatorPopup();
+
             function updateZD() {
                 const x = data.render.x;
                 const y = data.render.y;
@@ -47,6 +50,12 @@
                 if (!zd && (zd = zoneDataFromPoint(x, y))) {
                     zd.enter(data);
                 }
+
+                // Enter and exit functions may have moved dragged as a side effect
+                // of attaching-detaching.
+                data.render.moveTo(x, y);
+
+                indicateBoundingRect(data, zd, indicator);
             }
 
             return {
@@ -69,6 +78,8 @@
                     if (data.parent !== viewport)
                         data.render.xTransform = data.render.yTransform = 0;
                     data.render.treeOverwrite = null;
+
+                    indicator.detach();
                 }
             };
         },
@@ -77,8 +88,11 @@
     function getBindingRect(d: Deriv) {
         // Half width
         const w2 = d.render.width / 2 + DT.derivDropZonePaddingN;
-        let left  = d.render.x - w2;
-        let right = d.render.x + w2;
+        // TODO: Change DerivRenderData so as to remove these two
+        const xBase = d.render.x - d.render.xTransform;
+        const yBase = d.render.y - d.render.yTransform;
+        let left  = xBase - w2;
+        let right = xBase + w2;
 
         // Extend rect to neighbouring siblings' centers
         if (d.parent instanceof Deriv) {
@@ -91,14 +105,33 @@
 
         return {
             left,
-            top: d.render.y - DT.derivRowOffsetN,
+            top: yBase - DT.derivRowOffsetN,
             width: right - left,
             height: DT.derivRowOffsetN + DT.derivDropZonePaddingN / 3,
         };
     }
+
     function inBoundingRect(d: Deriv, x: number, y: number) {
         const r = getBindingRect(d);
         return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
+    }
+
+    function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
+        if (zd) {
+            const r = getBindingRect(dragged);
+            ind.left = r.left;
+            ind.top = r.top;
+            ind.width = r.width;
+            ind.height = r.height;
+            ind.opacity = 1;
+        } else {
+            // If zd is null, make ind invisible but keep it on dragged deriv for animation
+            ind.opacity = 0;
+            ind.left = data.render.x - data.render.width / 2;
+            ind.top = data.render.y - DT.derivBarBottomN;
+            ind.width = data.render.width;
+            ind.height = DT.derivRowOffsetN;
+        } 
     }
     
     // function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
