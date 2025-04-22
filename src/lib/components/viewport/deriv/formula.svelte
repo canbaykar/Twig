@@ -59,6 +59,11 @@
 	function onblur() {
 		if (!element?.matches?.(':hover')) disableEditor();
 	}
+
+	// For debugging
+	function ondblclick() { // @ts-ignore
+		console.log(data.render.tree);
+	}
 </script>
 
 <!-- Draggable button, grabbed when clicked -->
@@ -71,6 +76,7 @@
 	{ondragleave}
 	{onmouseleave}
 	{onfocus}
+	{ondblclick}
 	tabindex="-1"
 >
 	{data.conc}
