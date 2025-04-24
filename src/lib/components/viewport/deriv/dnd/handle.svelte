@@ -103,11 +103,12 @@
             if (nextSib) right = Math.max(right, nextSib.render.x);
         }
 
+        const delta = DT.derivDropZonePaddingN / 6;
         return {
             left,
-            top: yBase - DT.derivRowOffsetN,
+            top: yBase - DT.derivBarBottomN - delta,
             width: right - left,
-            height: DT.derivRowOffsetN + DT.derivDropZonePaddingN / 3,
+            height: DT.derivRowOffsetN + delta * 2,
         };
     }
 
@@ -133,36 +134,6 @@
             ind.height = DT.derivRowOffsetN;
         } 
     }
-    
-    // function indicateDA(a: ZoneData | null, ind: IndicatorPopup) {
-    //     if (!a) {
-    //         // If a is null, make ind invisible but keep it on dragged deriv for animation
-    //         ind.opacity = 0;
-    //         ind.left = data.render.x - data.render.width / 2;
-    //         ind.top = data.render.y - DT.derivBarBottomN;
-    //         ind.width = data.render.width;
-    //         return;
-    //     }
-    //     const pos = zoneTypes[a.type].getElementRect(a.deriv);
-    //     const render = a.deriv.render;
-    //     ind.top = render.y + pos.top;
-    //     ind.opacity = 1;
-
-    //     const left = render.x + pos.left;
-    //     const right = render.x - pos.left;
-    //     console.log({left, ...a})
-    //     if (a.type !== 'child') {
-    //         ind.left = left;
-    //         ind.width = right - left;
-    //     } else {
-    //         const c = a.deriv.children;
-    //         // Centers of left and right siblings
-    //         const leftCenter  = c[a.childIndex - 1]?.render?.x ?? -Infinity;
-    //         const rightCenter = c[a.childIndex    ]?.render?.x ??  Infinity;
-    //         ind.left = Math.max(left, leftCenter);
-    //         ind.width = Math.min(right, rightCenter) - ind.left;
-    //     }
-    // }
 </script>
 
 <!-- TODO: Remove "relative!" -->
