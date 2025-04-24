@@ -42,43 +42,45 @@ export function treeData(
                 left, right,
             };
     }
-    
+
+    const N = len - 1;
     // Half-widths of first and last children
     const w0 = children[0].collider.r[0];
-    const wN = children[len-1].collider.r[0];
+    const wN = children[N].collider.r[0];
 
     // - Left to right stack -
-    let off = 0;
     let colL = clone(children[0].collider);
     const offsetsL = new Array(len).fill(0);
     
     for (let i = 1; i < len; i++) {
-        const { collider, offset } = collide(colL, children[i].collider);
-        colL = collider;
-        offsetsL[i] = off += offset;
+        const childCol = children[i].collider;
+        const off = offset(colL, childCol);
+        colL = merge(colL, childCol, 0, off);
+        offsetsL[i] = off;
     }
 
     // - Shift everything to center -
     // Offset of the first child
-    const off0 = (w0 - off - wN) / 2;
-    off += off0;
+    const off0 = (w0 - offsetsL[N] - wN) / 2;
     shift(colL.l, off0);
     shift(colL.r, off0);
     shift(offsetsL, off0);
+    const offN = offsetsL[N];
 
     // - Right to left stack -
     // We are restacking the whole thing again but actually
     // we just need to restack the 'loose' ones but this is faster
     // to write right now. TODO: Optimize
-    let colR = children[len-1].collider;
+    let colR = children[N].collider;
     const offsetsR = new Array(len).fill(0);
     offsetsR[0] = offsetsL[0];
-    offsetsR[len-1] = offsetsL[len-1];
+    offsetsR[N] = offsetsL[N];
 
     for (let i = len - 2; i > 0; i--) {
-        const { collider, offset } = collide(colR, children[i].collider);
-        colR = collider;
-        offsetsR[i] = off -= offset;
+        const childCol = children[i].collider;
+        const off = offset(childCol, colR);
+        colR = merge(childCol, colR, -off, 0);
+        offsetsR[i] = offN - off;
     }
 
     // - Add parent's collider row -
@@ -97,46 +99,45 @@ export function treeData(
         collider: colL,
         offsets: average(offsetsL, offsetsR),
         barWidth: barRight - barLeft,
-        left: Math.min(...colL.l),
-        right: Math.max(...colL.r),
+        left:  Math.min(colL.l[1], ...children.map(c => c.left)),
+        right: Math.max(colL.r[1], ...children.map(c => c.right)),
     };
 }
 
-function collide(c0: Collider, c1: Collider)
-    : { collider: Collider, offset: number } {
+/** How much do you need to offset c1 to left to not clip c0? + margin */
+function offset(c0: Collider, c1: Collider) {
+    const short = Math.min(c0.l.length, c1.l.length);
+    let dist = -Infinity;
+    for (let i = 0; i < short; i++)
+        dist = Math.max(dist, c0.r[i] - c1.l[i]);
+    return dist + DT.derivMarginN;
+}
+
+/** Assumes they don't clip and c0 is at the left of c1 (with offsets) */
+function merge(c0: Collider, c1: Collider, c0off = 0, c1off: number = 0): Collider {
     const short = Math.min(c0.l.length, c1.l.length);
     const long = Math.max(c0.l.length, c1.l.length);
 
-    // Calculate offset
-    let offset = -Infinity;
-    for (let i = 0; i < short; i++) {
-        offset = Math.max(offset, c0.r[i] - c1.l[i]);
-    }
-    offset += DT.derivMarginN;
-
-    // Calculate collider
     const l = new Array(long);
     const r = new Array(long);
+
     for (let i = 0; i < short; i++) {
-        l[i] = c0.l[i];
-        r[i] = c1.r[i] + offset;
+        l[i] = c0.l[i] + c0off;
+        r[i] = c1.r[i] + c1off;
     }
     if (c0.l.length > c1.l.length) {
         for (let i = short; i < long; i++) {
-            l[i] = c0.l[i];
-            r[i] = c0.r[i];
+            l[i] = c0.l[i] + c0off;
+            r[i] = c0.r[i] + c0off;
         }
     } else {
         for (let i = short; i < long; i++) {
-            l[i] = c1.l[i] + offset;
-            r[i] = c1.r[i] + offset;
+            l[i] = c1.l[i] + c1off;
+            r[i] = c1.r[i] + c1off;
         }
     }
 
-    return {
-        collider: { l, r },
-        offset,
-    };
+    return { l, r };
 }
 
 function clone(c: Collider) {
