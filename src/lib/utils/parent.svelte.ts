@@ -24,14 +24,21 @@ export class Parent extends Child {
     attachChild(child: Child, index?: number) {
         if (child.parent) child.parent.detachChild(child);
 
-        // @ts-expect-error
-        this.children = index === undefined
-            ? [...this.children, child]
-            : this.children.toSpliced(index, 0, child);
+        if (index === undefined) {
+            // @ts-expect-error
+            this.children = [...this.children, child];
+            // @ts-expect-error
+            child.childIndex = this.children.length - 1;
+        } else {
+            // @ts-expect-error
+            this.children = this.children.toSpliced(index, 0, child);
+            for (let i = index; i < this.children.length; i++) 
+                // @ts-expect-error
+                this.children[i].childIndex = i;
+        }
         
-        const i = index ?? this.children.length - 1;
         // @ts-expect-error
-        child.parent = this; child.childIndex = i;
+        child.parent = this;
     }
 
     attachChildren(children: Child[], index?: number) {
