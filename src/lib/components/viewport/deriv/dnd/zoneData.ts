@@ -107,7 +107,7 @@ export const zoneTypes = {
         // But the ZoneData instance and rect is per child
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
             const c0r = deriv.children[0].render;
-            const left = Math.min(-deriv.render.barWidth / 2, c0r.x - deriv.render.x - c0r.width / 2 - DT.derivDropZonePaddingN);
+            const left = Math.min(-deriv.render.barWidth / 2, c0r.x - c0r.xTransform - deriv.render.x - c0r.width / 2 - DT.derivDropZonePaddingN);
             return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
         }
     },
