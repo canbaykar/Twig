@@ -25,6 +25,11 @@ export class Parent extends Child {
         if (child.parent) child.parent.detachChild(child);
 
         index = index ?? this.children.length;
+        if (index > this.children.length) {
+            console.warn(`Index ${index} in attachChild more than children array length ${this.children.length}`);
+            index = this.children.length;
+        }
+        
         // @ts-expect-error
         this.children = this.children.toSpliced(index, 0, child);
         
