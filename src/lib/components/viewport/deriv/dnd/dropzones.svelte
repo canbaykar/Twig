@@ -28,12 +28,12 @@
     let { data }: Props = $props();
 </script>
 
-{#if data.root === data}
-    <!-- Root -->
+<!-- {#if data.root === data}
+    <!-- Root ->
     {@render dropzone('root')}
-    <!-- Bottom -->
-    <!-- {@render dropzone('bottom')} -->
-{/if}
+    <!-- Bottom ->
+    {@render dropzone('bottom')}
+{/if} -->
 
 {#if data.children.length === 0}
     <!-- Top -->

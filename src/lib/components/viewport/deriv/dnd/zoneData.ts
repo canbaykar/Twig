@@ -4,7 +4,7 @@ import { DT } from "../../../../../DT";
 
 // Following doesn't work due to circularity, update manually
 // export type ZoneType = keyof typeof zoneTypes;
-export type ZoneType = "initial" | "root" | "top" | "child";
+export type ZoneType = "initial" | "top" | "child";
 
 export type ZoneData = InstanceType<typeof zoneTypes[ZoneType]>;
 
@@ -38,29 +38,6 @@ export const zoneTypes = {
 
         exit(dragged: Deriv): void {
             dragged.attach(viewport);
-        }
-    },
-
-    // ---- ROOT ----
-    root: class RootZoneData extends ZoneDataBase {
-        readonly type = 'root';
-        readonly childIndex: number;
-
-        constructor(deriv: Deriv, x: number) {
-            super(deriv);
-            this.childIndex = x > deriv.render.x ? 1 : 0;
-        }
-
-        enter(dragged: Deriv): void {
-            dragged.attach(this.deriv, this.childIndex);
-        }
-        exit(dragged: Deriv): void {
-            dragged.attach(viewport);
-        }
-
-        static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
-            const left = -deriv.render.width / 2 - DT.derivDropZonePaddingN;
-            return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN };
         }
     },
     
@@ -112,7 +89,30 @@ export const zoneTypes = {
         }
     },
     
-    // TODO: Implement bottom dropzone
+    // TODO: Implement root and bottom dropzones
+    // // ---- ROOT ----
+    // root: class RootZoneData extends ZoneDataBase {
+    //     readonly type = 'root';
+    //     readonly childIndex: number;
+
+    //     constructor(deriv: Deriv, x: number) {
+    //         super(deriv);
+    //         this.childIndex = x > deriv.render.x ? 1 : 0;
+    //     }
+
+    //     enter(dragged: Deriv): void {
+    //         dragged.attach(this.deriv, this.childIndex);
+    //     }
+    //     exit(dragged: Deriv): void {
+    //         dragged.attach(viewport);
+    //     }
+
+    //     static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
+    //         const left = -deriv.render.width / 2 - DT.derivDropZonePaddingN;
+    //         return { left, top: row2height(0), width: -2 * left, height: DT.derivRowOffsetN };
+    //     }
+    // },
+    
     // ---- BOTTOM ----
     // bottom: class BottomZoneData extends ZoneDataBase {
     //     readonly type = 'bottom';
