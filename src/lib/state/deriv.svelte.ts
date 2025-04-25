@@ -47,57 +47,117 @@ export default class Deriv extends Parent {
 // Attach example deriv
 export function addExampleProof() {
     viewport.attachChild(
-        new Deriv({
-            conc: '(A∧B)→C',
-            // rule: '→I',
-            // label: '1',
-            render: {
-                xTransform: -130,
-                yTransform: 70,
-            },
-            children: [
-                {
-                    conc: 'C',
-                    // rule: '→E',
-                    children: [
-                        {
-                            conc: 'B',
-                            // rule: '∧E',
-                            children: [
-                                {
-                                    conc: 'A∧B',
-                                    // rule: '1',
-                                },
-                                // {
-                                //     conc: 'a',
-                                // },
-                            ]
-                        },
-                        {
-                            conc: 'B→C',
-                            // rule: '→E',
-                            children: [
-                                {
-                                    conc: 'A',
-                                    // rule: '∧E',
-                                    children: [
-                                        {
-                                            conc: 'A∧B',
-                                            // rule: '1'
-                                        },
-                                    ]
-                                },
-                                {
-                                    conc: 'A→(B→C)'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                // {
-                //     conc: 'a',
-                // },
-            ]
-        })
-    );
+			new Deriv({
+				conc: '(A∧B)→C',
+				// rule: '→I',
+				// label: '1',
+				render: {
+					xTransform: -130,
+					yTransform: 70,
+				},
+				children: [
+					{
+						conc: 'C',
+						// rule: '→E',
+						children: [
+							{
+								conc: 'B',
+								// rule: '∧E',
+								children: [
+									{
+										conc: 'A∧B'
+										// rule: '1',
+									}
+								]
+							},
+							{
+								conc: 'B→C',
+								// rule: '→E',
+								children: [
+									{
+										conc: 'A',
+										// rule: '∧E',
+										children: [
+											{
+												conc: 'A∧B'
+												// rule: '1'
+											}
+										]
+									},
+									{
+										conc: 'A→(B→C)'
+									}
+								]
+							}
+						]
+					}
+					// {
+					//     conc: 'a',
+					// },
+				]
+			})
+		);
+
+    viewport.attachChild(
+			new Deriv({
+                conc: 'a',
+				render: {
+					xTransform: 0,
+					yTransform: 6000
+				},
+				children: [
+					// ---- Right leaning stack ----
+					{
+						conc: 'a',
+						children: [
+							{ conc: 'a' },
+							{
+								conc: 'a',
+								children: [
+									{ conc: 'a' },
+									{
+										conc: 'a',
+										children: [
+											{ conc: 'a' },
+											{
+												conc: 'a',
+												children: [{ conc: 'a' }, { conc: 'a' }]
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+
+                    // ---- Middle ----
+                    { conc: 'a' },
+                    { conc: 'a' },
+
+					// ---- Left leaning stack ----
+					{
+						conc: 'a',
+						children: [
+							{
+								conc: 'a',
+								children: [
+									{
+										conc: 'a',
+										children: [
+											{
+												conc: 'a',
+												children: [{ conc: 'a' }, { conc: 'a' }]
+											},
+											{ conc: 'a' }
+										]
+									},
+									{ conc: 'a' }
+								]
+							},
+							{ conc: 'a' }
+						]
+					}
+				]
+			})
+		);
 }
