@@ -1,11 +1,12 @@
 import ViewportRenderData from "$lib/components/viewport/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
+import type Deriv from "./deriv.svelte";
 
 export type { Viewport };
 /** Works as the root element of everything in panzoom, like document in HTML */
 class Viewport extends Parent {
-    /** Exists for the logic of Deriv.displayed */
-    readonly displayed = true;
+    declare readonly children: Deriv[];
+
     /** Render data */
     render = new ViewportRenderData();
 }
