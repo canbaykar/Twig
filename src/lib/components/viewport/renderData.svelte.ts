@@ -21,6 +21,14 @@ export default class ViewportRenderData {
     cl2wrld = fallbackConverter;
     /** Convert world (UNIT) to client (px) */
     wrld2cl = fallbackConverter;
+
+    /** ($state) Number of dragged derivs (0 or 1 under expected conditions). Set with dragLog */
+    readonly dragging: number = $state(0);
+    /** Log start and stop (don't forget!) of dragging a Deriv to maintain dropzones.
+     *  @param dragging Is this the start of the DND interaction? */
+    dragLog(dragging: boolean) { // @ts-expect-error
+        return this.dragging = Math.max(0, this.dragging + (dragging ? 1 : -1));
+    }
 }
 
 // ---- Popups ----

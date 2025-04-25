@@ -18,18 +18,36 @@
     onDestroy(() => DerivRenderData.onDestroy());
 </script>
 
-<Panzoom data={viewport.render} class="font-math">
-    {#each DerivRenderData.displayed as data (data)}
-        <Deriv {data}></Deriv>
-    {/each}
-    
-    {#each viewport.render.panzoomPopups.children as popup (popup)}
-        <popup.component {popup} {...popup.props} />
-    {/each}
-    
-    {#snippet noPanzoom()}
-        {#each viewport.render.popups.children as popup (popup)}
+<!-- The :global(.hover) class is used to determine non-DND when hover effects should happen -->
+<div
+    class="font-math w-full h-full overflow-hidden"
+    class:dragging={viewport.render.dragging}
+    class:hover={!viewport.render.dragging}
+>
+    <Panzoom data={viewport.render}>
+        {#each DerivRenderData.displayed as data (data)}
+            <Deriv {data}></Deriv>
+        {/each}
+        
+        {#each viewport.render.panzoomPopups.children as popup (popup)}
             <popup.component {popup} {...popup.props} />
         {/each}
-    {/snippet}
-</Panzoom>
+        
+        {#snippet noPanzoom()}
+            {#each viewport.render.popups.children as popup (popup)}
+                <popup.component {popup} {...popup.props} />
+            {/each}
+        {/snippet}
+    </Panzoom>
+</div>
+
+<style>
+    .dragging {
+        :global(*) {
+            pointer-events: none;
+        }
+        :global(.deriv, .dropzone) {
+            pointer-events: all;
+        }
+    }
+</style>

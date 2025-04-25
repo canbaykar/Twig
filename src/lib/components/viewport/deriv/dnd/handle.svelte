@@ -6,28 +6,24 @@
 	import viewport from '$lib/state/viewport.svelte';
 	import { DT } from '../../../../../DT';
 	import { IndicatorPopup } from './indicatorPopup.svelte';
-	import { dragLog } from '../deriv.svelte';
 	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
 	import { zoneDataFromPoint } from './dropzones.svelte';
 
     interface Props {
         data: Deriv;
-        /** ($bindable) Is the deriv dragged? */
-        dragged?: boolean;
         [key: string]: any;
     }
     
     let {
         data, 
-        dragged = $bindable(false),
         ...restProps
     }: Props = $props();
     
     const opt: DraggableOptions = {
         cursor: "all-scroll",
         start(e) {
-            dragged = true;
-            dragLog(true);
+            data.render.dragged = true;
+            viewport.render.dragLog(true);
 
             // null: free, else: bound (assumes parent can't be null while dragging!)
             const free = () => data.parent === viewport;
@@ -68,8 +64,8 @@
                 },
 
                 end(e) {
-                    dragged = false;
-                    dragLog(false);
+                    data.render.dragged = false;
+                    viewport.render.dragLog(false);
 
                     updateZD();
                     if (zd) zd.drop(data);
