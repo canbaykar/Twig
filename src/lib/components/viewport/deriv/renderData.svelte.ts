@@ -1,21 +1,21 @@
 import Deriv from "$lib/state/deriv.svelte";
 import viewport, { type Serial } from "$lib/state/viewport.svelte";
-import { SvelteSet } from "svelte/reactivity";
 import { treeData, type TreeData } from "./treeData";
 import { DT } from "../../../../DT";
 import { browser } from "$app/environment";
 import { onDestroy } from "svelte";
 
-const displayed = new SvelteSet<Deriv>();
-const add = displayed.add.bind(displayed);
-const del = displayed.delete.bind(displayed);
+const displayed = $derived(flatten(viewport.children));
+function flatten(ds: Deriv[]): Deriv[] {
+    return ds.map(d => [d, ...flatten(d.children)]).flat();
+}
 
 export default class DerivRenderData {
-    /** SvelteSet of all displayed derivs */
+    /** ($derived) Array of all displayed derivs */
     static get displayed() { return displayed }
+
     /** Run this in onDestroy */
     static onDestroy() {
-        displayed.clear();
         // stuff like cancelanimationframe here...
     }
 
@@ -84,24 +84,12 @@ export default class DerivRenderData {
         return [this.x, this.y];
     }
 
-    /** ($derived, readonly) Inherited. */
-    readonly displayed: boolean = $derived.by(() => {
-        const par = this.deriv.parent;
-        return par instanceof Deriv
-            ? par.render.displayed
-            : par === viewport;
-    });
-
-    /** ($derived) z-index, set to index of root in viewport */
-    zId = $derived.by(() => { return this.deriv.root.childIndex });
+    
 
     constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {
         this.deriv = deriv;
         if (s.xTransform) this.xTransform = s.xTransform;
         if (s.yTransform) this.yTransform = s.yTransform;
-
-        // Maintain displayed
-        $effect(() => { (this.displayed ? add : del)(this.deriv) })
     }
 
     // For maintaining width, ruleWidth and labelWidth:
