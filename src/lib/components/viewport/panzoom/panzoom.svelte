@@ -144,7 +144,8 @@
     class="panzoom **:absolute w-full h-full overflow-hidden {restProps?.class ?? ''}" 
     use:draggable={draggableOptions}
 >
-    <div class="panzoom-background w-full h-full cursor-grab"></div>
+    <!-- Has .dnd to not be disabled on drag and drop, see viewport.svelte -->
+    <div class="panzoom-background dnd w-full h-full cursor-grab"></div>
     <div class="origin w-0 h-0 top-2/4 left-2/4">
         {@render children?.()}
     </div>

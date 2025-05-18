@@ -47,7 +47,7 @@
 {#snippet dropzone(type: ZoneType)}
     {@const op = zoneTypes[type].getElementRect(data)}
     <div
-        class="dropzone h-(--DERIV-ROW-OFFSET)"
+        class="dropzone dnd h-(--DERIV-ROW-OFFSET)"
         style:left="{op.left}px"
         style:width="{-2 * op.left}px"
         style:top="{op.top}px"

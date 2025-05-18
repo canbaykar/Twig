@@ -46,7 +46,7 @@
         :global(*) {
             pointer-events: none;
         }
-        :global(.deriv, .dropzone) {
+        :global(.dnd) { /* dnd: drag and drop */
             pointer-events: all;
         }
     }
