@@ -90,13 +90,17 @@
         let left  = xBase - w2;
         let right = xBase + w2;
 
-        // Extend rect to neighbouring siblings' centers
+        // Stretch rect to neighbouring siblings' centers or to ends
+        // of the parent's child zone
         if (d.parent instanceof Deriv) {
+            const zoneRect = zoneTypes["child"].getElementRect(d.parent);
+            zoneRect.left += d.parent.render.x;
+
             const prevSib = d.parent.children[d.childIndex - 1];
-            if (prevSib) left = Math.min(left, prevSib.render.x);
+            left = Math.min(left, prevSib ? prevSib.render.x : zoneRect.left);
 
             const nextSib = d.parent.children[d.childIndex + 1];
-            if (nextSib) right = Math.max(right, nextSib.render.x);
+            right = Math.max(right, nextSib ? nextSib.render.x : zoneRect.left + zoneRect.width);
         }
 
         const delta = DT.derivDropZonePaddingN / 6;
