@@ -73,7 +73,6 @@
         move(e) {
             data.x += e.dx;
             data.y += e.dy;
-            updateCSS();
         },
         checker(target) {
             return target.classList.contains('panzoom-background');
@@ -124,7 +123,6 @@
     function onwheel(e: WheelEvent) {
 		e.preventDefault(); // To block native scroll
         zoom(Math.pow(0.8, e.deltaY / 100), { x: e.clientX, y: e.clientY });
-        updateCSS();
 	}
 
     function updateCSS() {
@@ -134,6 +132,12 @@
         element.style.setProperty('--panzoom-gs', grid_scale / DT.UNIT + '');
     }
     onMount(updateCSS);
+    $effect(() => {
+        data.x;
+        data.y;
+        data.scale;
+        updateCSS();
+    });
 </script>
 
 <div 
