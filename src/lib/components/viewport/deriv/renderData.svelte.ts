@@ -84,15 +84,12 @@ export default class DerivRenderData {
         return [this.x, this.y];
     }
     
-    /** ($derived) Overwritable: Set true if being dragged, false otherwise.
-     *  Am I or any of my ascenstors being dragged? */
-    get dragged() { return this._dragged_get; }
-    set dragged(val: boolean) { this._dragged_set = val; }
-    // Implementation
-    private readonly _dragged_get = $derived.by((): boolean => { // @ts-expect-error
-        return this._dragged_set || !!this.deriv.parent?.render?._dragged_get;
+    /** ($state) Am I being dragged? */
+    dragged = $state(false);
+    /** ($derived) Am I OR any of my ascenstors being dragged? */
+    readonly inDragged = $derived.by((): boolean => { // @ts-expect-error
+        return this.dragged || !!this.deriv.parent?.render?.inDragged;
     });
-    private _dragged_set = $state(false);
 
     constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {
         this.deriv = deriv;

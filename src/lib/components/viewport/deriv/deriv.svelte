@@ -29,6 +29,7 @@
 <div 
     class="deriv"
     class:dragged={data.render.dragged}
+    class:pointer-events-none={data.render.inDragged}
     style:translate="{data.render.x}px {data.render.y}px" 
     data-address={data.address}
     onmousedown={gotoTop}
@@ -40,13 +41,7 @@
     </Formula>
     <Bar {data} {rule} {label} />
 
-    {#if viewport.render.dragging && !data.render.dragged}
+    {#if viewport.render.dragging && !data.render.inDragged}
         <Dropzones {data} />
     {/if}
 </div>
-
-<style>
-    .dragged {
-        pointer-events: none;
-    }
-</style>
