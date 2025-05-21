@@ -40,16 +40,21 @@
                 if (zd && !inBoundingRect(data, x, y)) {
                     zd.exit(data);
                     zd = null;
+                    data.render.moveTo(x, y);
                 }
 
                 // Did we enter a zone? (single = isn't typo!)
                 if (!zd && (zd = zoneDataFromPoint(x, y))) {
                     zd.enter(data);
+
+                    data.render.moveTo(x, y);
+                    // If entering caused an exit, move viewport to prevent it
+                    inBoundingRectFix(data, x, y);
                 }
 
                 // Enter and exit functions may have moved dragged as a side effect
                 // of attaching-detaching.
-                data.render.moveTo(x, y);
+                // data.render.moveTo(x, y);
 
                 indicateBoundingRect(data, zd, indicator);
             }
@@ -112,9 +117,33 @@
         };
     }
 
-    function inBoundingRect(d: Deriv, x: number, y: number) {
-        const r = getBindingRect(d);
+    function inBoundingRect(data: Deriv, x: number, y: number, r = getBindingRect(data)) {
         return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
+    }
+
+    /** Displacement to make inBoundingRect true (+ margin stuff) */
+    // Takes in the possibility width or height < 2 * margin
+    function inBoundingRectFix(data: Deriv, x: number, y: number) {
+        const r = getBindingRect(data);
+        if (inBoundingRect(data, x, y, r)) return; // No fix needed
+        
+        // Calculate margins to shrink rect by
+        const m = DT.derivDropZonePaddingN;
+        const mx = Math.min(m, r.width / 2);
+        const my = Math.min(m, r.height / 2);
+        
+        // Calculate displaced coords
+        let x_ = x;
+        let y_ = y;
+        y_ = Math.max(y_, r.top + my);
+        y_ = Math.min(y_, r.top + r.height - my);
+        x_ = Math.max(x_, r.left + mx);
+        x_ = Math.min(x_, r.left + r.width - mx);
+        
+        // Apply displacement
+        viewport.render.x -= (x_ - x) / DT.UNIT;
+        viewport.render.y -= (y_ - y) / DT.UNIT;
+        data.render.moveTo(x_, y_);
     }
 
     function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
