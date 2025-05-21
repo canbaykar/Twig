@@ -52,10 +52,6 @@
                     inBoundingRectFix(data, x, y);
                 }
 
-                // Enter and exit functions may have moved dragged as a side effect
-                // of attaching-detaching.
-                // data.render.moveTo(x, y);
-
                 indicateBoundingRect(data, zd, indicator);
             }
 
@@ -95,7 +91,7 @@
         let left  = xBase - w2;
         let right = xBase + w2;
 
-        const delta = DT.derivDropZonePaddingN / 6;
+        const delta = DT.derivDropZonePaddingN / 5;
         // Stretch rect to neighbouring siblings' centers or to ends
         // of the parent's child zone
         if (d.parent instanceof Deriv) {
