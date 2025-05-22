@@ -32,6 +32,8 @@
             // Rectangle popup that indicates current binding zone rect
             const indicator = new IndicatorPopup();
 
+            // if (free()) shrinkTree();
+
             function updateZD() {
                 const x = data.render.x;
                 const y = data.render.y;
@@ -51,6 +53,8 @@
                     // If entering caused an exit, move viewport to prevent it
                     inBoundingRectFix(data, x, y);
                 }
+
+                // if (free()) shrinkTree();
 
                 indicateBoundingRect(data, zd, indicator);
             }
@@ -77,6 +81,7 @@
                     data.render.treeOverwrite = null;
 
                     indicator.detach();
+                    // data.render.treeOverwrite = null;
                 }
             };
         },
@@ -161,6 +166,17 @@
             ind.height = DT.derivRowOffsetN;
         } 
     }
+
+    // function shrinkTree() {
+    //     const tree = data.render.tree;
+    //     data.render.treeOverwrite = {
+    //         ...tree,
+    //         collider: {
+    //             l: tree.collider.l.slice(0,1),
+    //             r: tree.collider.r.slice(0,1),
+    //         },
+    //     };
+    // }
 </script>
 
 <!-- TODO: Remove "relative!" -->
