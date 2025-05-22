@@ -29,7 +29,7 @@ export default class DerivRenderData {
     labelWidth = $state(0);
 
     // Tree rendering logic
-    private readonly tree: TreeData = $derived.by(() => 
+    readonly tree: TreeData = $derived.by(() => 
         this.treeOverwrite ?? treeData(
             this.baseWidth, 
             this.deriv.children.map(c => c.render.tree),
