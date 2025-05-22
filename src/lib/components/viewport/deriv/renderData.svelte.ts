@@ -38,7 +38,7 @@ export default class DerivRenderData {
         )
     )
     /** ($state) Used for DND */
-    treeOverwrite: TreeData | null = null;
+    treeOverwrite: TreeData | null = $state(null);
 
     // Stuff derived from tree:
     /** ($derived) Width of formula element but can be overwritten with treeOverwrite */
