@@ -5,7 +5,7 @@ const rowOffset = 25 * UNIT;
 const barBottom = rowOffset - 3 * UNIT;
 const barGap = 3 * UNIT;
 const labelHeight = 15 * UNIT;
-const dropZonePadding = 0.5 * rowOffset;
+const dropZonePadding = 0.1 * rowOffset;
 
 // New DT system WIP
 export const derivDT = {

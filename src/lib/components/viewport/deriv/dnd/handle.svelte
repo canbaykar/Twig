@@ -88,15 +88,15 @@
     };
 
     function getBindingRect(d: Deriv) {
+        const padding = DT.derivDropZonePaddingN;
         // Half width
-        const w2 = d.render.width / 2 + DT.derivDropZonePaddingN;
+        const w2 = d.render.width / 2 + padding;
         // TODO: Change DerivRenderData so as to remove these two
         const xBase = d.render.x - d.render.xTransform;
         const yBase = d.render.y - d.render.yTransform;
         let left  = xBase - w2;
         let right = xBase + w2;
 
-        const delta = DT.derivDropZonePaddingN / 5;
         // Stretch rect to neighbouring siblings' centers or to ends
         // of the parent's child zone
         if (d.parent instanceof Deriv) {
@@ -105,18 +105,18 @@
 
             const prevSib = d.parent.children[d.childIndex - 1];
             left = Math.min(left, 
-                prevSib ? prevSib.render.x : zoneRect.left - delta);
+                prevSib ? prevSib.render.x : zoneRect.left - padding);
 
             const nextSib = d.parent.children[d.childIndex + 1];
             right = Math.max(right, 
-                nextSib ? nextSib.render.x : zoneRect.left + zoneRect.width + delta);
+                nextSib ? nextSib.render.x : zoneRect.left + zoneRect.width + padding);
         }
 
         return {
             left,
-            top: yBase - DT.derivBarBottomN - delta,
+            top: yBase - DT.derivBarBottomN - padding,
             width: right - left,
-            height: DT.derivRowOffsetN + delta * 2,
+            height: DT.derivRowOffsetN + padding * 2,
         };
     }
 
