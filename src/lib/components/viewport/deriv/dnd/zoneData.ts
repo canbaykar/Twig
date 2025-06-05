@@ -61,20 +61,22 @@ export const zoneTypes = {
     // ---- CHILD ----
     child: class ChildZoneData extends ZoneDataBase {
         readonly type = 'child';
-        readonly childIndex: number;
+        readonly prevSib: Deriv | undefined;
 
         constructor(deriv: Deriv, x: number) {
             super(deriv);
             for (let i = deriv.children.length - 1; i >= 0; i--)
                 if (x > deriv.children[i].render.x) {
-                    this.childIndex = i + 1;
+                    this.prevSib = deriv.children[i];
+                    if (this.prevSib.render.dragged)
+                        this.prevSib = deriv.children[i - 1];
                     return;
                 }
-            this.childIndex = 0;
         }
 
         enter(dragged: Deriv): void {
-            dragged.attach(this.deriv, this.childIndex);
+            const i = this.prevSib ? this.deriv.children.indexOf(this.prevSib) : 0;
+            dragged.attach(this.deriv, i);
         }
         exit(dragged: Deriv): void {
             dragged.attach(viewport);
