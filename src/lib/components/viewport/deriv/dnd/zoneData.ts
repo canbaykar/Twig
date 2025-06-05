@@ -75,7 +75,7 @@ export const zoneTypes = {
         }
 
         enter(dragged: Deriv): void {
-            const i = this.prevSib ? this.deriv.children.indexOf(this.prevSib) : 0;
+            const i = this.prevSib ? this.deriv.children.indexOf(this.prevSib) + 1 : 0;
             dragged.attach(this.deriv, i);
         }
         exit(dragged: Deriv): void {
