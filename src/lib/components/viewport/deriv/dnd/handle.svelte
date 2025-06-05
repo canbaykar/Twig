@@ -6,7 +6,7 @@
 	import viewport from '$lib/state/viewport.svelte';
 	import { DT } from '../../../../../DT';
 	import { IndicatorPopup } from './indicatorPopup.svelte';
-	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
+	import { zoneTypes, type ZoneData } from './zoneData';
 	import { zoneDataFromPoint } from './dropzones.svelte';
 
 	interface Props {
@@ -35,31 +35,6 @@
 				const x = data.render.x;
 				const y = data.render.y;
 
-				// Did we exit a zone?
-				if (zd && !inBoundingRect(data, x, y)) {
-					zd.exit(data);
-					zd = null;
-					data.render.moveTo(x, y);
-				}
-
-				// Did we enter a zone? (single = isn't typo!)
-				if (!zd && (zd = zoneDataFromPoint(x, y))) {
-					zd.enter(data);
-
-					data.render.moveTo(x, y);
-					// If entering caused an exit, move viewport to prevent it
-					inBoundingRectFix(data, x, y);
-				}
-
-				// if (free()) shrinkTree();
-
-				indicateBoundingRect(data, zd, indicator);
-			}
-
-			function updateZD_() {
-				const x = data.render.x;
-				const y = data.render.y;
-
                 const tr = getTransition(x, y);
                 if (tr) {
                     tr[0]?.exit(data);
@@ -70,7 +45,7 @@
                     data.render.moveTo(x, y);
 
 					// If entering caused an exit, move viewport to prevent it
-					// inBoundingRectFix(data, x, y);
+					if (zd) inBoundingRectFix(data, x, y);
                 }
 
 				// if (free()) shrinkTree();
@@ -80,7 +55,7 @@
 
             function getTransition(x: number, y: number): false | [ZoneData | null, ZoneData | null] {
                 const oldZ = zd;
-                let newZ = zd;
+                let   newZ = zd;
 
                 // Did we exit a zone?
                 if (newZ && !inBoundingRect(data, x, y)) newZ = null;
