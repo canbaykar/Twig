@@ -43,8 +43,8 @@ export default class Deriv extends Parent {
 	}
 
 	/** Util for crawling Derivs to find the first one that satisfies fn */
-	static find(start: Deriv, fn: (d: Deriv) => boolean): Deriv | null {
-		return Crawler.find(start, fn);
+	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
+		return Crawler.find(start, fn, backwards);
 	}
 }
 
@@ -70,13 +70,21 @@ export class Crawler {
 		return true;
 	}
 
-	static find(start: Deriv, fn: (d: Deriv) => boolean): Deriv | null {
-		return new Crawler(start).find(fn);
+	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
+		return new Crawler(start).find(fn, backwards);
 	}
-	find(fn: (d: Deriv) => boolean): Deriv | null {
+	find(fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
+		return (backwards ? this.findBackwards : this.findForwards)(fn);
+	}
+	findForwards(fn: (d: Deriv) => boolean): Deriv | null {
 		if (fn(this.curr)) return this.curr;
 		if (!this.next()) return null;
-		return this.find(fn);
+		return this.findForwards(fn);
+	}
+	findBackwards(fn: (d: Deriv) => boolean): Deriv | null {
+		if (fn(this.curr)) return this.curr;
+		if (!this.prev()) return null;
+		return this.findBackwards(fn);
 	}
 
 	getNext(curr = this.curr): Deriv | null {
