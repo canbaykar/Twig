@@ -76,12 +76,12 @@ export class Crawler {
 	find(fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
 		return (backwards ? this.findBackwards : this.findForwards)(fn);
 	}
-	findForwards(fn: (d: Deriv) => boolean): Deriv | null {
+	private findForwards(fn: (d: Deriv) => boolean): Deriv | null {
 		if (fn(this.curr)) return this.curr;
 		if (!this.next()) return null;
 		return this.findForwards(fn);
 	}
-	findBackwards(fn: (d: Deriv) => boolean): Deriv | null {
+	private findBackwards(fn: (d: Deriv) => boolean): Deriv | null {
 		if (fn(this.curr)) return this.curr;
 		if (!this.prev()) return null;
 		return this.findBackwards(fn);
