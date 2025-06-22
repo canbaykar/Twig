@@ -15,7 +15,7 @@
 	}
 
 	let { data, ...restProps }: Props = $props();
-
+    
     // null: free, else: bound (assumes parent can't be null while dragging!)
     const free = () => data.parent === viewport;
 
@@ -38,6 +38,12 @@
 
                 const tr = getTransition(x, y);
                 if (tr) {
+					// For clipToInterval below
+					const int = getClipInterval(data, tr);
+					console.log('Transition:', tr.map(z => z?.deriv?.conc));
+					console.log('Clip interval:', int);
+					console.log('Current position:', x, y);
+
                     tr[0]?.exit(data);
                     tr[1]?.enter(data);
 
@@ -45,8 +51,9 @@
 
                     data.render.moveTo(x, y);
 
-					// If entering caused an exit, move viewport to prevent it
-					if (zd) inBoundingRectFix(data, x, y);
+					// If entering caused an exit or vice versa, move viewport to prevent it
+					// clipToInterval(data, int);
+					// inBoundingRectFix(data, x, y);
                 }
 
 				// if (free()) shrinkTree();
@@ -130,6 +137,49 @@
 	function inBoundingRect(data: Deriv, x: number, y: number, r = getBindingRect(data)) {
 		return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
 	}
+
+    // Run this before changing zd to get the sides of bounding rect if !!int[1],
+    // else get nearest sides of neighboring derivs (only considers derivs connected to int[0])
+    // + Recalculation function so movement of tree doesn't change zoneData
+    function getClipInterval(data: Deriv, tr: [ZoneData | null, ZoneData | null]): [number, number] {
+		// Case: Zone to zone OR Null to zone
+        if (tr[1]) {
+			const r = getBindingRect(tr[1].deriv);
+			return [r.left, r.left + r.width];
+		}
+
+		// Case: Zone to null
+		const y = data.render.y;
+		const inRow = (row: number) => y <= row && y >= row - DT.derivRowOffsetN;
+		const inRow_ = (d: Deriv) => inRow(d.render.y);
+		
+		const leftDeriv = Deriv.find(tr[0]!.deriv, inRow_, true);
+		const righDeriv = Deriv.find(tr[0]!.deriv, inRow_);
+
+		return [
+			leftDeriv ? leftDeriv.render.x + leftDeriv.render.width / 2 : -Infinity,
+			righDeriv ? righDeriv.render.x - righDeriv.render.width / 2 :  Infinity,
+		];
+    }
+
+    function clipToInterval(data: Deriv, int: [number, number]) {
+		const x = data.render.x;
+		if (x >= int[0] && x <= int[1]) return;
+
+		// Shrink interval to not have put the element too close to an edge
+		const delta = DT.derivDropZonePaddingN;
+		let pad = Math.min(delta, (int[1] - int[0]) / 2);
+		if (!isFinite(pad)) pad = delta; // padding may be infinite or NaN
+		const l = int[0] + pad;
+		const r = int[1] - pad;
+
+		// The displaced location
+		let x_ = Math.min(Math.max(x, l), r);
+
+		// Apply displacement
+		viewport.render.x -= (x_ - x) / DT.UNIT;
+		data.render.moveTo(x_, data.render.y);
+    }
 
 	/** Displacement to make inBoundingRect true (+ margin stuff) */
 	// Takes in the possibility width or height < 2 * margin
