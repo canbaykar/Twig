@@ -74,7 +74,7 @@ export class Crawler {
 		return new Crawler(start).find(fn, backwards);
 	}
 	find(fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
-		return (backwards ? this.findBackwards : this.findForwards)(fn);
+		return (backwards ? this.findBackwards : this.findForwards).bind(this)(fn);
 	}
 	private findForwards(fn: (d: Deriv) => boolean): Deriv | null {
 		if (fn(this.curr)) return this.curr;
