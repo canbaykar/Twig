@@ -16,14 +16,15 @@
 
 	let { data, ...restProps }: Props = $props();
 
+    // null: free, else: bound (assumes parent can't be null while dragging!)
+    const free = () => data.parent === viewport;
+
 	const opt: DraggableOptions = {
 		cursor: 'all-scroll',
 		start(e) {
 			data.render.dragged = true;
 			viewport.render.dragLog(true);
 
-			// null: free, else: bound (assumes parent can't be null while dragging!)
-			const free = () => data.parent === viewport;
 			let zd: ZoneData | null = free() ? null : new zoneTypes.initial(data);
 
 			// Rectangle popup that indicates current binding zone rect
@@ -133,13 +134,16 @@
 	/** Displacement to make inBoundingRect true (+ margin stuff) */
 	// Takes in the possibility width or height < 2 * margin
 	function inBoundingRectFix(data: Deriv, x: number, y: number) {
+		const delta = DT.derivDropZonePaddingN;
+
+        if (free()) return;
+
 		const r = getBindingRect(data);
 		if (inBoundingRect(data, x, y, r)) return; // No fix needed
 
 		// Calculate margins to shrink rect by
-		const m = DT.derivDropZonePaddingN;
-		const mx = Math.min(m, r.width / 2);
-		const my = Math.min(m, r.height / 2);
+		const mx = Math.min(delta, r.width / 2);
+		const my = Math.min(delta, r.height / 2);
 
 		// Calculate displaced coords
 		let x_ = x;
