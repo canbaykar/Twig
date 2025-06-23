@@ -131,30 +131,6 @@
 		return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
 	}
 
-    // Run this before changing zd to get the sides of bounding rect if !!int[1],
-    // else get nearest sides of neighboring derivs (only considers derivs connected to int[0])
-    // + Recalculation function so movement of tree doesn't change zoneData
-    function getClipInterval(data: Deriv, tr: [ZoneData | null, ZoneData | null]): [number, number] {
-		// Case: Zone to zone OR Null to zone
-        if (tr[1]) {
-			const r = getBoundingRect(tr[1].deriv);
-			return [r.left, r.left + r.width];
-		}
-
-		// Case: Zone to null
-		const y = data.render.y;
-		const inRow = (row: number) => y <= row && y >= row - DT.derivRowOffsetN;
-		const inRow_ = (d: Deriv) => inRow(d.render.y);
-		
-		const leftDeriv = Deriv.find(tr[0]!.deriv, inRow_, true);
-		const righDeriv = Deriv.find(tr[0]!.deriv, inRow_);
-
-		return [
-			leftDeriv ? leftDeriv.render.x + leftDeriv.render.width / 2 : -Infinity,
-			righDeriv ? righDeriv.render.x - righDeriv.render.width / 2 :  Infinity,
-		];
-    }
-
     function clipToInterval(data: Deriv, int: [number, number]) {
 		const x = data.render.x;
 		if (x >= int[0] && x <= int[1]) return;
