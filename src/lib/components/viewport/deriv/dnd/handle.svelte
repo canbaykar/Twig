@@ -38,13 +38,7 @@
 
                 const tr = getTransition(x, y);
                 if (tr) {
-					// For clipToInterval below
-					const int = getClipInterval(data, tr);
-					console.log('Transition:', tr.map(z => z?.deriv?.conc));
-					console.log('Clip interval:', int);
-					console.log('Current position:', x, y);
-
-                    tr[0]?.exit(data);
+					tr[0]?.exit(data);
                     tr[1]?.enter(data);
 
                     zd = tr[1];
@@ -52,8 +46,7 @@
                     data.render.moveTo(x, y);
 
 					// If entering caused an exit or vice versa, move viewport to prevent it
-					// clipToInterval(data, int);
-					// inBoundingRectFix(data, x, y);
+					clipToBoundingRect(data, x, y);
                 }
 
 				// if (free()) shrinkTree();
@@ -181,32 +174,12 @@
 		data.render.moveTo(x_, data.render.y);
     }
 
-	/** Displacement to make inBoundingRect true (+ margin stuff) */
-	// Takes in the possibility width or height < 2 * margin
-	function inBoundingRectFix(data: Deriv, x: number, y: number) {
-		const delta = DT.derivDropZonePaddingN;
-
+	/** Displacement to make inBoundingRect true (+ padding stuff) (only in x direction) */
+	// Takes in the possibility width or height < 2 * padding
+	function clipToBoundingRect(data: Deriv, x: number, y: number) {
         if (free()) return;
-
 		const r = getBindingRect(data);
-		if (inBoundingRect(data, x, y, r)) return; // No fix needed
-
-		// Calculate margins to shrink rect by
-		const mx = Math.min(delta, r.width / 2);
-		const my = Math.min(delta, r.height / 2);
-
-		// Calculate displaced coords
-		let x_ = x;
-		let y_ = y;
-		y_ = Math.max(y_, r.top + my);
-		y_ = Math.min(y_, r.top + r.height - my);
-		x_ = Math.max(x_, r.left + mx);
-		x_ = Math.min(x_, r.left + r.width - mx);
-
-		// Apply displacement
-		viewport.render.x -= (x_ - x) / DT.UNIT;
-		viewport.render.y -= (y_ - y) / DT.UNIT;
-		data.render.moveTo(x_, y_);
+		clipToInterval(data, [r.left, r.left + r.width]);
 	}
 
 	function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
