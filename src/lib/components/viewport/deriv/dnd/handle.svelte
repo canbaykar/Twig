@@ -32,6 +32,9 @@
 
 			// if (free()) shrinkTree();
 
+			// Used to enhance clipToBoundingRect feature by considering velocity
+			let xOld = data.render.x;
+
 			function updateZD() {
 				const x = data.render.x;
 				const y = data.render.y;
@@ -46,12 +49,13 @@
                     data.render.moveTo(x, y);
 
 					// If entering caused an exit or vice versa, move viewport to prevent it
-					clipToBoundingRect(data, x, y);
+					clipToBoundingRect(data, x, y, x - xOld);
                 }
 
 				// if (free()) shrinkTree();
 
 				indicateBoundingRect(data, zd, indicator);
+				xOld = x;
 			}
 
             function getTransition(x: number, y: number): false | [ZoneData | null, ZoneData | null] {
@@ -131,14 +135,26 @@
 		return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
 	}
 
-    function clipToInterval(data: Deriv, int: [number, number]) {
+	/** Displacement to make inBoundingRect true (+ padding stuff) (only in x direction) */
+	// Takes in the possibility width or height < 2 * padding
+	function clipToBoundingRect(data: Deriv, x: number, y: number, dx = 0) {
+        if (free()) return;
+		const r = getBoundingRect(data);
+		clipToInterval(
+			data, 
+			[r.left, r.left + r.width], 
+			Math.max(DT.derivDropZonePaddingN, DT.derivDropZonePaddingN / viewport.render.scale)
+			+ Math.abs(dx) * 10,
+		);
+	}
+
+    function clipToInterval(data: Deriv, int: [number, number], padding = 0) {
 		const x = data.render.x;
 		if (x >= int[0] && x <= int[1]) return;
 
 		// Shrink interval to not have put the element too close to an edge
-		const delta = DT.derivDropZonePaddingN;
-		let pad = Math.min(delta, (int[1] - int[0]) / 2);
-		if (!isFinite(pad)) pad = delta; // padding may be infinite or NaN
+		let pad = Math.min(padding, (int[1] - int[0]) / 2);
+		if (!isFinite(pad)) pad = padding; // padding may be infinite or NaN
 		const l = int[0] + pad;
 		const r = int[1] - pad;
 
@@ -149,14 +165,6 @@
 		viewport.render.x -= (x_ - x) / DT.UNIT;
 		data.render.moveTo(x_, data.render.y);
     }
-
-	/** Displacement to make inBoundingRect true (+ padding stuff) (only in x direction) */
-	// Takes in the possibility width or height < 2 * padding
-	function clipToBoundingRect(data: Deriv, x: number, y: number) {
-        if (free()) return;
-		const r = getBoundingRect(data);
-		clipToInterval(data, [r.left, r.left + r.width]);
-	}
 
 	function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
 		if (zd) {
