@@ -93,7 +93,7 @@
 		}
 	};
 
-	function getBindingRect(d: Deriv) {
+	function getBoundingRect(d: Deriv) {
 		const padding = DT.derivDropZonePaddingN;
 		// Half width
 		const w2 = d.render.width / 2 + padding;
@@ -127,7 +127,7 @@
 		};
 	}
 
-	function inBoundingRect(data: Deriv, x: number, y: number, r = getBindingRect(data)) {
+	function inBoundingRect(data: Deriv, x: number, y: number, r = getBoundingRect(data)) {
 		return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
 	}
 
@@ -137,7 +137,7 @@
     function getClipInterval(data: Deriv, tr: [ZoneData | null, ZoneData | null]): [number, number] {
 		// Case: Zone to zone OR Null to zone
         if (tr[1]) {
-			const r = getBindingRect(tr[1].deriv);
+			const r = getBoundingRect(tr[1].deriv);
 			return [r.left, r.left + r.width];
 		}
 
@@ -178,13 +178,13 @@
 	// Takes in the possibility width or height < 2 * padding
 	function clipToBoundingRect(data: Deriv, x: number, y: number) {
         if (free()) return;
-		const r = getBindingRect(data);
+		const r = getBoundingRect(data);
 		clipToInterval(data, [r.left, r.left + r.width]);
 	}
 
 	function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
 		if (zd) {
-			const r = getBindingRect(dragged);
+			const r = getBoundingRect(dragged);
 			ind.left = r.left;
 			ind.top = r.top;
 			ind.width = r.width;
