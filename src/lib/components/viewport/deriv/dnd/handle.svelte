@@ -162,7 +162,7 @@
 		let x_ = Math.min(Math.max(x, l), r);
 
 		// Apply displacement
-		viewport.render.x -= (x_ - x) / DT.UNIT;
+		viewport.render.x -= (x_ - x) / DT.UNIT * viewport.render.scale;
 		data.render.moveTo(x_, data.render.y);
     }
 
