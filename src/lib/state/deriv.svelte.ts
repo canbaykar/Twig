@@ -118,7 +118,7 @@ export class Crawler {
 	}
 	private getLast(curr = this.curr, reverse = false): Deriv | null {
 		if (!curr.children.length) return curr;
-		return this.getLast(curr.children[curr.children.length - 1 + +reverse * 2]);
+		return this.getLast(curr.children[reverse ? 0 : curr.children.length - 1]);
 	}
 }
 
