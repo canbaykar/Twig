@@ -43,8 +43,8 @@ export default class Deriv extends Parent {
 	}
 
 	/** Util for crawling Derivs to find the first one that satisfies fn */
-	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
-		return Crawler.find(start, fn, backwards);
+	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false, reverse = false): Deriv | null {
+		return Crawler.find(start, fn, backwards, reverse);
 	}
 }
 
@@ -57,65 +57,68 @@ export class Crawler {
 		this.curr = deriv;
 	}
 
-	next() {
-		const next = this.getNext();
+	next(reverse = false) {
+		const next = this.getNext(this.curr, reverse);
 		if (!next) return false;
 		this.curr = next;
 		return true;
 	}
-	prev() {
-		const prev = this.getPrev();
+	prev(reverse = false) {
+		const prev = this.getPrev(this.curr, reverse);
 		if (!prev) return false;
 		this.curr = prev;
 		return true;
 	}
 
-	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
-		return new Crawler(start).find(fn, backwards);
+	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false, reverse = false): Deriv | null {
+		return new Crawler(start).find(fn, backwards, reverse);
 	}
-	find(fn: (d: Deriv) => boolean, backwards = false): Deriv | null {
-		return (backwards ? this.findBackwards : this.findForwards).bind(this)(fn);
+	find(fn: (d: Deriv) => boolean, backwards = false, reverse = false): Deriv | null {
+		return (backwards ? this.findBackwards : this.findForwards).bind(this)(fn, reverse);
 	}
-	private findForwards(fn: (d: Deriv) => boolean): Deriv | null {
+	private findForwards(fn: (d: Deriv) => boolean, reverse = false): Deriv | null {
 		if (fn(this.curr)) return this.curr;
-		if (!this.next()) return null;
-		return this.findForwards(fn);
+		if (!this.next(reverse)) return null;
+		return this.findForwards(fn, reverse);
 	}
-	private findBackwards(fn: (d: Deriv) => boolean): Deriv | null {
+	private findBackwards(fn: (d: Deriv) => boolean, reverse = false): Deriv | null {
 		if (fn(this.curr)) return this.curr;
-		if (!this.prev()) return null;
-		return this.findBackwards(fn);
+		if (!this.prev(reverse)) return null;
+		return this.findBackwards(fn, reverse);
 	}
 
-	getNext(curr = this.curr): Deriv | null {
+	// Variable names and explanations below assume reverse = false
+	getNext(curr = this.curr, reverse = false): Deriv | null {
 		// Case: Has children
-		const firstChild = curr.children[0];
+		const firstChild = curr.children[reverse ? curr.children.length - 1 : 0];
 		if (firstChild) return firstChild;
 		// Case: Check for right cousin (sibling counts as cuisin)
-		return this.getNextCousin(curr);
+		return this.getNextCousin(curr, reverse);
 	}
-	private getNextCousin(curr: Deriv): Deriv | null {
+	private getNextCousin(curr = this.curr, reverse = false): Deriv | null {
 		// Case: No parent
 		if (!curr.derivParent) return null;
 		// Case: Has right sibling
-		const rightSib = curr.derivParent.children[curr.childIndex + 1];
+		const rightSib = curr.derivParent.children[curr.childIndex + 1 - +reverse * 2];
 		if (rightSib) return rightSib;
 		// Case: Check right (lower) cousins of higher degree
-		return this.getNextCousin(curr.derivParent);
+		return this.getNextCousin(curr.derivParent, reverse);
 	}
 
-	getPrev(curr = this.curr): Deriv | null {
+	// Variable names and explanations below assume reverse = false
+	getPrev(curr = this.curr, reverse = false): Deriv | null {
 		// Case: No parent
 		if (!curr.derivParent) return null;
 		// Case: Is first child
-		if (curr.childIndex === 0) return curr.derivParent;
+		if (curr.childIndex === (reverse ? curr.children.length - 1 : 0))
+			return curr.derivParent;
 		// Case: Return last node of left sibling
-		const leftSib = curr.derivParent.children[curr.childIndex - 1];
+		const leftSib = curr.derivParent.children[curr.childIndex - 1 + +reverse * 2];
 		return this.getLast(leftSib);
 	}
-	private getLast(curr: Deriv): Deriv | null {
+	private getLast(curr = this.curr, reverse = false): Deriv | null {
 		if (!curr.children.length) return curr;
-		return this.getLast(curr.children[curr.children.length - 1]);
+		return this.getLast(curr.children[curr.children.length - 1 + +reverse * 2]);
 	}
 }
 
