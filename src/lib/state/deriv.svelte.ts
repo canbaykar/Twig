@@ -200,20 +200,20 @@ export function addExampleProof() {
 			children: [
 				// ---- Right leaning stack ----
 				{
-					conc: 'a',
+					conc: 'b',
 					children: [
-						{ conc: 'a' },
+						{ conc: 'c' },
 						{
-							conc: 'a',
+							conc: 'd',
 							children: [
-								{ conc: 'a' },
+								{ conc: 'e' },
 								{
-									conc: 'a',
+									conc: 'f',
 									children: [
-										{ conc: 'a' },
+										{ conc: 'g' },
 										{
-											conc: 'a',
-											children: [{ conc: 'a' }, { conc: 'a' }]
+											conc: 'h',
+											children: [{ conc: 'i' }, { conc: 'j' }]
 										}
 									]
 								}
@@ -223,30 +223,30 @@ export function addExampleProof() {
 				},
 
 				// ---- Middle ----
-				{ conc: 'a' },
-				{ conc: 'a' },
+				{ conc: 'k' },
+				{ conc: 'l' },
 
 				// ---- Left leaning stack ----
 				{
-					conc: 'a',
+					conc: 'm',
 					children: [
 						{
-							conc: 'a',
+							conc: 'n',
 							children: [
 								{
-									conc: 'a',
+									conc: 'o',
 									children: [
 										{
-											conc: 'a',
-											children: [{ conc: 'a' }, { conc: 'a' }]
+											conc: 'p',
+											children: [{ conc: 'q' }, { conc: 'r' }]
 										},
-										{ conc: 'a' }
+										{ conc: 's' }
 									]
 								},
-								{ conc: 'a' }
+								{ conc: 't' }
 							]
 						},
-						{ conc: 'a' }
+						{ conc: 'u' }
 					]
 				}
 			]
