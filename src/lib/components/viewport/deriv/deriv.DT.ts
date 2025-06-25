@@ -57,6 +57,8 @@ export const derivDT = {
     
     /** (number) Bottom css prop of bar */
     barBottomN: barBottom,
+    /** (number) rowOffsetN - barBottomN */
+    barTopN: rowOffset - barBottom,
 
     /** (number) Formula line height / 1px */
     lineHeightN: lineHeight,
