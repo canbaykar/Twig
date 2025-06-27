@@ -167,9 +167,6 @@
 		const leftZone  = Deriv.find(            data.root,  atLeft, false,  true, limit);
 		const rightZone = Deriv.find(leftZone ?? data.root, atRight, false, false, limit);
 
-		console.log(leftZone?.conc, leftZone);
-		console.log(rightZone?.conc, rightZone);
-
 		return [
 			leftZone  ? () => rectRight(getRect(leftZone)) : () => -Infinity,
 			rightZone ? () => getRect(rightZone).left      : () =>  Infinity,
