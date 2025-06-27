@@ -41,6 +41,8 @@
 
                 const tr = getTransition(x, y);
                 if (tr) {
+					const sideZoneData = determineSideZones(data, tr);
+
 					tr[0]?.exit(data);
                     tr[1]?.enter(data);
 
@@ -49,7 +51,8 @@
                     data.render.moveTo(x, y);
 
 					// If entering caused an exit or vice versa, move viewport to prevent it
-					clipToBoundingRect(data, x, y, x - xOld);
+					clip(data, sideZoneData, x - xOld);
+					// clipToBoundingRect(data, x - xOld);
                 }
 
 				// if (free()) shrinkTree();
@@ -135,26 +138,67 @@
 		return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
 	}
 
-	/** Displacement to make inBoundingRect true (+ padding stuff) (only in x direction) */
-	// Takes in the possibility width or height < 2 * padding
-	function clipToBoundingRect(data: Deriv, x: number, y: number, dx = 0) {
-        if (free()) return;
-		const r = getBoundingRect(data);
-		clipToInterval(
-			data, 
-			[r.left, r.left + r.width], 
-			Math.max(DT.derivDropZonePaddingN, DT.derivDropZonePaddingN / viewport.render.scale)
-			+ Math.abs(dx) * 10,
-		);
+	/** Getters for right side of the zone at the left of data and left side of ... */
+	function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null]): [() => number, () => number] {
+		// Side zones are only applicable when !tr[1].
+		if (tr[1]) return [() => -Infinity, () => Infinity];
+
+		const x = data.render.x;
+		const y = data.render.y;
+
+		// Number of rows over root that are relevant
+		const limit = Math.floor((data.root.render.y + DT.derivBarTopN - y) / DT.derivRowOffsetN);
+		
+		// Helper functions
+		const getRect = (d: Deriv) => {
+			const rect = zoneTypes[d.children.length ? 'child' : 'top'].getElementRect(d);
+			rect.left += d.render.x; // Relative to absolute coord. y is not used
+			return rect;
+		}
+		const rectRight = (r: any) => r.left + r.width;
+		const oneRowBelow = (d: Deriv) =>
+			   y >= d.render.y + DT.derivBarTopN - 2 * DT.derivRowOffsetN 
+			&& y <= d.render.y + DT.derivBarTopN - DT.derivRowOffsetN;
+		const atRight = (d: Deriv) => oneRowBelow(d) && x < getRect(d).left;
+		const atLeft  = (d: Deriv) => oneRowBelow(d) && x > rectRight(getRect(d));
+
+		// Var. names below assume reverse = false,
+		// Also the vars below aren't zones, they are owners of the zones (so they are one row down)
+		const leftZone  = Deriv.find(            data.root,  atLeft, false,  true, limit);
+		const rightZone = Deriv.find(leftZone ?? data.root, atRight, false, false, limit);
+
+		console.log(leftZone?.conc, leftZone);
+		console.log(rightZone?.conc, rightZone);
+
+		return [
+			leftZone  ? () => rectRight(getRect(leftZone)) : () => -Infinity,
+			rightZone ? () => getRect(rightZone).left      : () =>  Infinity,
+		];
 	}
 
-    function clipToInterval(data: Deriv, int: [number, number], padding = 0) {
+	// Only in x direction
+	function clip(data: Deriv, sideZoneData: [() => number, () => number], dx: number) {
+		if (free()) {
+			// Clip into between side zones
+			clipToInterval(data, [sideZoneData[0](), sideZoneData[1]()], dx);
+		} else {
+			// Clip into bounding rect
+			const r = getBoundingRect(data);
+			clipToInterval(data, [r.left, r.left + r.width], dx);
+		}
+	}
+
+    function clipToInterval(data: Deriv, int: [number, number], dx: number) {
 		const x = data.render.x;
 		if (x >= int[0] && x <= int[1]) return;
+		const len = int[1] - int[0]; // May be infinite or NaN
 
-		// Shrink interval to not have put the element too close to an edge
-		let pad = Math.min(padding, (int[1] - int[0]) / 2);
-		if (!isFinite(pad)) pad = padding; // padding may be infinite or NaN
+		// Shrink interval by padding to not have put the element too close to an edge
+		let pad = Math.abs(dx) * 10
+			+ Math.max(DT.derivDropZonePaddingN, DT.derivDropZonePaddingN / viewport.render.scale);
+		// For the case: width < 2 * padding
+		if (isFinite(len)) pad = Math.min(pad, (int[1] - int[0]) / 2);
+
 		const l = int[0] + pad;
 		const r = int[1] - pad;
 
