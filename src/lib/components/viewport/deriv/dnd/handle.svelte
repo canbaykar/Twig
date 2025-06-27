@@ -55,7 +55,7 @@
 					const dx = x - xOld;
 					const dy = y - yOld;
 					const v = Math.sqrt(dx*dx + dy*dy) / DT.UNIT * viewport.render.scale;
-					if (v < 10) clip(data, sideZoneData, dx);
+					if (v < 10) clip(data, sideZoneData, dx); // 10 is arbitrary
 				}
 
 				// if (free()) shrinkTree();
