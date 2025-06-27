@@ -32,8 +32,8 @@
 
 			// if (free()) shrinkTree();
 
-			// Used to enhance clipToBoundingRect feature by considering velocity
 			let xOld = data.render.x;
+			let yOld = data.render.y;
 
 			function updateZD() {
 				const x = data.render.x;
@@ -49,16 +49,20 @@
                     zd = tr[1];
 
                     data.render.moveTo(x, y);
-
-					// If entering caused an exit or vice versa, move viewport to prevent it
-					clip(data, sideZoneData, x - xOld);
-					// clipToBoundingRect(data, x - xOld);
-                }
+					
+					// If entering caused an exit or vice versa, move viewport to prevent it;
+					// but only if dragging slowly.
+					const dx = x - xOld;
+					const dy = y - yOld;
+					const v = Math.sqrt(dx*dx + dy*dy) / DT.UNIT * viewport.render.scale;
+					if (v < 10) clip(data, sideZoneData, dx);
+				}
 
 				// if (free()) shrinkTree();
 
 				indicateBoundingRect(data, zd, indicator);
 				xOld = x;
+				yOld = y;
 			}
 
             function getTransition(x: number, y: number): false | [ZoneData | null, ZoneData | null] {
