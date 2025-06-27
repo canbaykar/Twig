@@ -194,7 +194,7 @@
 		const len = int[1] - int[0]; // May be infinite or NaN
 
 		// Shrink interval by padding to not have put the element too close to an edge
-		let pad = Math.abs(dx) * 10
+		let pad = Math.min(Math.abs(dx), DT.derivRowOffsetN / 4);
 			+ Math.max(DT.derivDropZonePaddingN, DT.derivDropZonePaddingN / viewport.render.scale);
 		// For the case: width < 2 * padding
 		if (isFinite(len)) pad = Math.min(pad, (int[1] - int[0]) / 2);
