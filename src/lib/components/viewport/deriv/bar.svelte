@@ -68,6 +68,7 @@
         line-height: var(--DERIV-LABEL-LH);
         min-width: var(--DERIV-LABEL-HEIGHT);
         border: solid var(--UNITPX);
+        padding: 0 calc(2.5 * var(--UNITPX));
 
         border-color: var(--color-fg);
         border-radius: calc(infinity * 1px);
