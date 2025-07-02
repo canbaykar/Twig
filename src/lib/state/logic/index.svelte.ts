@@ -12,6 +12,13 @@ export declare interface IDeriv {
     readonly logic: LogicData;
 }
 
+export class LogicError extends Error {
+    constructor(message?: string, options?: ErrorOptions) {
+        super(message, options);
+        this.name = "LogicError";
+    }
+}
+
 /** Has inference related computed data of Deriv */
 export class LogicData {
     readonly deriv: IDeriv;
