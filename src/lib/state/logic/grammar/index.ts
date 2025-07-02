@@ -5,12 +5,11 @@ import * as _base from './grammar.pegjs';
 const empty = [] as const;
 export abstract class Formula {
     label: string;
-    text: string;
     args: Formula[] | readonly [] = empty;
 
-    constructor(text: string, label: string) {
+    constructor(label: string, args: Formula[] | readonly []) {
         this.label = label;
-        this.text = text;
+        this.args = args;
     }
 
     /** Normalised string form as opposed to .text */
@@ -35,11 +34,10 @@ function compareArrays(a: readonly Formula[], b: readonly Formula[]) {
 }
 
 export class BinaryFormula extends Formula {
-    args: [Formula, Formula];
+    declare args: [Formula, Formula];
 
-    constructor(text: string, label: string, args: [Formula, Formula]) {
-        super(text, label);
-        this.args = args;
+    constructor(label: string, args: [Formula, Formula]) {
+        super(label, args);
     }
 
     toString(): string {
@@ -48,11 +46,10 @@ export class BinaryFormula extends Formula {
 }
 
 export class UnaryFormula extends Formula {
-    args: [Formula];
+    declare args: [Formula];
 
-    constructor(text: string, label: string, args: [Formula]) {
-        super(text, label);
-        this.args = args;
+    constructor(label: string, args: [Formula]) {
+        super(label, args);
     }
 
     toString(): string {
@@ -61,7 +58,11 @@ export class UnaryFormula extends Formula {
 }
 
 export class AtomicFormula extends Formula {
-    args = empty;
+    declare args: readonly [];
+
+    constructor(label: string) {
+        super(label, empty);
+    }
 
     toString(): string {
         return this.label;
@@ -73,7 +74,11 @@ export class AtomicFormula extends Formula {
 
 /** Class for ***atomic metaformula (AMF)***. A metaformula is a formula with AMFs. */
 export class AtomicMetaFormula extends Formula {
-    args = empty;
+    declare args: readonly [];
+
+    constructor(label: string) {
+        super(label, empty);
+    }
 
     toString(): string {
         return '[' + this.label + ']';
