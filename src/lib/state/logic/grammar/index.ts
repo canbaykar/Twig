@@ -7,7 +7,7 @@ export abstract class Formula {
     label: string;
     args: Formula[] | readonly [] = empty;
 
-    constructor(label: string, args: Formula[] | readonly []) {
+    constructor(label: string, ...args: Formula[]) {
         this.label = label;
         this.args = args;
     }
@@ -36,8 +36,8 @@ function compareArrays(a: readonly Formula[], b: readonly Formula[]) {
 export class BinaryFormula extends Formula {
     declare args: [Formula, Formula];
 
-    constructor(label: string, args: [Formula, Formula]) {
-        super(label, args);
+    constructor(label: string, ...args: [Formula, Formula]) {
+        super(label, ...args);
     }
 
     toString(): string {
@@ -48,8 +48,8 @@ export class BinaryFormula extends Formula {
 export class UnaryFormula extends Formula {
     declare args: [Formula];
 
-    constructor(label: string, args: [Formula]) {
-        super(label, args);
+    constructor(label: string, arg: Formula) {
+        super(label, arg);
     }
 
     toString(): string {
@@ -61,7 +61,7 @@ export class AtomicFormula extends Formula {
     declare args: readonly [];
 
     constructor(label: string) {
-        super(label, empty);
+        super(label);
     }
 
     toString(): string {
@@ -77,7 +77,7 @@ export class AtomicMetaFormula extends Formula {
     declare args: readonly [];
 
     constructor(label: string) {
-        super(label, empty);
+        super(label);
     }
 
     toString(): string {
