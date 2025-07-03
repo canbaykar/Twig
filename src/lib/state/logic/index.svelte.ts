@@ -1,4 +1,5 @@
 import grammar from "./grammar";
+import Rule, { type RuleMatch } from "./rule";
 
 /** Some object capable of storing data for derivations.
  *  Not Deriv to prevent circularity in design process; this must precede Deriv. */
@@ -23,6 +24,13 @@ export class LogicError extends Error {
 export class LogicData {
     readonly deriv: IDeriv;
     readonly conc = $derived.by(() => grammar.safeParse(this.deriv.conc));
+
+    readonly matches = $derived.by(() => Rule.find(this));
+    readonly rule = $derived.by(() => 
+        this.matches instanceof Error ? this.matches : choose(this.matches).rule
+    );
+    readonly ruleText = $derived.by(() => getRuleText(this.rule, 0));
+
     // readonly attributes: AttributeData = { down: {}, up: {} };
     // readonly label = $state(0); // 0 means no label
     // readonly dischargedBy: LogicData | null = $state(null);
@@ -102,23 +110,23 @@ export class LogicData {
 }
 
 // Will consider preferences when choosing in the future
-// function choose(matches: RuleMatch[]): RuleMatch {
-//     return matches[0];
-// }
+function choose(matches: RuleMatch[]): RuleMatch {
+    return matches[0];
+}
 
-// function getRuleText(
-//     $rule: Rule | LogicError | SyntaxError,
-//     /** 0 means not discharged */
-//     $dischargingStepLabel: number,
-// ) {
-//     // Error case
-//     if (isError($rule))
-//         return $rule.message === 'Loading...' ? '...' : '-';
-//     // Regular case
-//     if ($rule !== Rule.axiomRule)
-//         return $rule.text;
-//     // Axiom rule case (possibly discharged)
-//     return $dischargingStepLabel 
-//         ? String($dischargingStepLabel) 
-//         : '';
-// }
+function getRuleText(
+    rule: Rule | LogicError | SyntaxError,
+    /** 0 means not discharged */
+    dischargingStepLabel: number,
+) {
+    // Error case
+    if (rule instanceof Error)
+        return rule.message === 'Loading...' ? '...' : '-';
+    // Regular case
+    if (rule !== Rule.axiomRule)
+        return rule.text;
+    // Axiom rule case (possibly discharged)
+    return dischargingStepLabel 
+        ? String(dischargingStepLabel) 
+        : '';
+}

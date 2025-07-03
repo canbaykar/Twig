@@ -13,11 +13,8 @@
     let { data }: Props = $props();
 
     // Temporary
-    let label = $state('1');
-    let rule = $state('∧E');
-    // let rule = $state('2');
-    
-    let dragged = $state(false);
+    // let label = $state('1');
+    let label = $state('');
 
     function gotoTop() { // If not last child, reattach to be last
         if (viewport.children.length - 1 > data.root.childIndex)
@@ -39,7 +36,7 @@
         <Handle {data} class="right-[100%]" />
         <Handle {data} class="left-[100%]" />
     </Formula>
-    <Bar {data} {rule} {label} />
+    <Bar {data} rule={data.logic.ruleText} {label} />
 
     {#if viewport.render.dragging && !data.render.inDragged}
         <Dropzones {data} />
