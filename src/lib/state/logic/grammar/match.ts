@@ -36,6 +36,7 @@ export class Match {
 		return this.matchArray(f.args, mf.args);
 	}
 	matchArray(fs: readonly Formula[], mfs: readonly Formula[]): Match | Mismatch {
+		if (fs.length !== mfs.length) return new Mismatch(MismatchType.Length, fs, mfs);
 		let m: Match | Mismatch = this;
 		for (let i = 0; i < fs.length; i++) {
 			m = m.match(fs[i], mfs[i]);
@@ -61,25 +62,28 @@ export const enum MismatchType {
 	Constructor,
 	/** Different labels (but same types, e.g. ∧ and ↔) */
 	Label,
+	/** Different array lengths in matchArray */
+	Length,
 	/** All matches failed in tryMatchArray */
 	RanOut
 }
 export class Mismatch {
-	type: MismatchType;
-	x?: Formula | Formula[];
-	mx?: Formula | Formula[] | Formula[][];
+	readonly type: MismatchType;
+	readonly x?: Formula | readonly Formula[];
+	readonly mx?: Formula | readonly Formula[] | readonly Formula[][];
 
 	constructor(
 		type: MismatchType.MetaConflict | MismatchType.Label | MismatchType.Constructor,
 		formula: Formula,
 		metaformula: Formula
 	);
-	constructor(type: MismatchType.RanOut, formula: Formula, metaformulas: Formula[]);
-	constructor(type: MismatchType.RanOut, formulas: Formula[], metaformulaArrays: Formula[][]);
+	constructor(type: MismatchType.RanOut, formula: Formula, metaformulas: readonly Formula[]);
+	constructor(type: MismatchType.Length, formula: readonly Formula[], metaformulas: readonly Formula[]);
+	constructor(type: MismatchType.RanOut, formulas: readonly Formula[], metaformulaArrays: readonly Formula[][]);
 	constructor(
 		type: MismatchType,
-		x: Formula | Formula[],
-		mx: Formula | Formula[] | Formula[] | Formula[][]
+		x: Formula | readonly Formula[],
+		mx: Formula | readonly Formula[] | readonly Formula[][]
 	) {
 		this.type = type;
 		this.x = x;
@@ -154,6 +158,14 @@ if (import.meta.vitest) {
 		it('Mismatch with chaining', () => {
 			m4 = m3.match(grammar.parse('A→V'), grammar.parse('[2]→[5]'));
 			expect((m4 as Mismatch).type).toBe(MismatchType.MetaConflict);
+		});
+		
+		it('Array length mismatch', () => {
+			const m = matchArray(
+				[grammar.parse('A'), grammar.parse('A')],
+				[grammar.parse('[2]')]
+			);
+			expect((m as Mismatch).type).toBe(MismatchType.Length);
 		});
 	});
 }
