@@ -11,6 +11,8 @@ export default class Deriv extends Parent {
 	readonly root: Deriv = $derived.by(() => {
 		return this.parent instanceof Deriv ? this.parent.root : this;
 	});
+	/** ($derived) 0 if root, 1 + parent's depth otherwise */
+	readonly depth: number = $derived.by(() => (this.derivParent?.depth ?? -1) + 1);
 
 	/** ($derived) String of childIndexes, upwards */
 	readonly address: string = $derived.by(() => {
