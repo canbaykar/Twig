@@ -5,6 +5,7 @@
 	import Deriv from "./deriv/deriv.svelte";
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
+	import { mouse } from "$lib/utils/interact/mouse.svelte";
     
     interface Props {
         viewport: Viewport;
@@ -23,6 +24,7 @@
     class="font-math w-full h-full overflow-hidden"
     class:dragging={viewport.render.dragging}
     class:hover={!viewport.render.dragging}
+    use:mouse.action
 >
     <Panzoom data={viewport.render}>
         {#each DerivRenderData.displayed as data (data)}

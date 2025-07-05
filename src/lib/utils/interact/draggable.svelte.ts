@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { mouse } from './mouse.svelte';
 
 // Used to stlye cursor on drag
 let sheet: CSSStyleSheet;
@@ -22,8 +23,6 @@ export interface DraggableOptions {
 
 // So that only one drag interaction activates at once
 let active = false;
-// Used in listeners, stores old location
-let x_ = 0, y_ = 0;
 
 export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	let {
@@ -45,8 +44,6 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	function onDown(e: MouseEvent) {
 		if (active || !checker(e.target as HTMLElement)) return;
 		active = true;
-		x_ = e.screenX;
-		y_ = e.screenY;
 		document.addEventListener('mouseup', onUp, { once: true });
 		document.addEventListener('mousemove', onDragStart, { once: true });
 		sheet.insertRule(`* { cursor: ${cursor} !important; user-select: none !important; }`);
@@ -77,14 +74,12 @@ export default function draggable(node: HTMLElement, op?: DraggableOptions) {
 	function onMove(e: MouseEvent) {
 		try {
 			move(Object.assign(e, {
-				dx: e.screenX - x_,
-				dy: e.screenY - y_,
+				dx: mouse.dx,
+				dy: mouse.dy,
 			}));
 		} catch (error) {
 			onUp(e);
 			throw error;
 		}
-		x_ = e.screenX;
-		y_ = e.screenY;
 	}
 }
