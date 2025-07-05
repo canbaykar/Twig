@@ -1,6 +1,7 @@
 import { Child, Parent } from "$lib/utils/parent.svelte";
 import type { Component, ComponentProps } from "svelte";
 import { fallbackConverter } from "./panzoom/panzoom.svelte";
+import { mouse } from "$lib/utils/interact/mouse.svelte";
 
 export default class ViewportRenderData {
     x = $state(0);
@@ -8,6 +9,12 @@ export default class ViewportRenderData {
     scale = $state(1);
     popups = popups;
     panzoomPopups = panzoomPopups;
+
+    /** World coords of mouse */
+    readonly mouse = $derived.by(() => this.cl2wrld({
+        x: mouse.clientX,
+        y: mouse.clientY,
+    }));
 
     // /** ($derived) Multiply screen length in px with this to convert to viewport length */
     // screen2viewport = $derived(DT.UNIT / this.scale);
