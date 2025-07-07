@@ -8,6 +8,7 @@
 	import { IndicatorPopup } from './indicatorPopup.svelte';
 	import { zoneTypes, type ZoneData } from './zoneData';
 	import { zoneDataFromPoint } from './dropzones.svelte';
+	import { mouse } from '$lib/utils/interact/mouse.svelte';
 
 	interface Props {
 		data: Deriv;
@@ -52,17 +53,15 @@
 					
 					// If entering caused an exit or vice versa, move viewport to prevent it;
 					// but only if dragging slowly.
-					const dx = x - xOld;
-					const dy = y - yOld;
-					const v = Math.sqrt(dx*dx + dy*dy) / DT.UNIT * viewport.render.scale;
-					if (v < 10) clip(data, sideZoneData, dx); // 10 is arbitrary
+					const dx = mouse.dx;
+					const dy = mouse.dy;
+					const v = Math.sqrt(dx*dx + dy*dy);
+					if (v < 10) clip(data, sideZoneData); // 10 is arbitrary
 				}
 
 				// if (free()) shrinkTree();
 
 				indicateBoundingRect(data, zd, indicator);
-				xOld = x;
-				yOld = y;
 			}
 
             function getTransition(x: number, y: number): false | [ZoneData | null, ZoneData | null] {
@@ -178,25 +177,24 @@
 	}
 
 	// Only in x direction
-	function clip(data: Deriv, sideZoneData: [() => number, () => number], dx: number) {
+	function clip(data: Deriv, sideZoneData: [() => number, () => number]) {
 		if (free()) {
 			// Clip into between side zones
-			clipToInterval(data, [sideZoneData[0](), sideZoneData[1]()], dx);
+			clipToInterval(data, [sideZoneData[0](), sideZoneData[1]()]);
 		} else {
 			// Clip into bounding rect
 			const r = getBoundingRect(data);
-			clipToInterval(data, [r.left, r.left + r.width], dx);
+			clipToInterval(data, [r.left, r.left + r.width]);
 		}
 	}
 
-    function clipToInterval(data: Deriv, int: [number, number], dx: number) {
+    function clipToInterval(data: Deriv, int: [number, number]) {
 		const x = data.render.x;
 		if (x >= int[0] && x <= int[1]) return;
 		const len = int[1] - int[0]; // May be infinite or NaN
 
 		// Shrink interval by padding to not have put the element too close to an edge
-		let pad = Math.min(Math.abs(dx), DT.derivRowOffsetN / 4);
-			+ Math.max(DT.derivDropZonePaddingN, DT.derivDropZonePaddingN / viewport.render.scale);
+		let pad = DT.derivRowOffsetN;
 		// For the case: width < 2 * padding
 		if (isFinite(len)) pad = Math.min(pad, (int[1] - int[0]) / 2);
 
