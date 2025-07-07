@@ -4,7 +4,8 @@ import type { AttributeRecord } from "./options";
 import Rule, { type RuleMatch } from "./rule";
 
 /** Some object capable of storing data for derivations.
- *  Not Deriv to prevent circularity in design process; this must precede Deriv. */
+ *  Not Deriv to prevent circularity in design process; this must precede Deriv.
+ * All but logic has to be reactive ($derived, etc.) */
 export declare interface IDeriv {
     readonly conc: string;
     readonly children: IDeriv[];
@@ -50,7 +51,9 @@ export class LogicData {
             };
     });
 
+    /** ($derived) */
     get rule() { return this.local.rule }
+    /** ($derived) */
     get downAttributes() { return this.local.attr; }
 
     /** ($derived) */
@@ -66,6 +69,8 @@ export class LogicData {
             )
             : defaultDownPropogateAttrs([]);
     });
+
+    /** ($derived) */
     readonly ruleText = $derived.by(() => getRuleText(this.rule, 0));
 
 
