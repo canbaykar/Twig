@@ -53,6 +53,19 @@ export class LogicData {
     get rule() { return this.local.rule }
     get downAttributes() { return this.local.attr; }
 
+    /** ($derived) */
+    readonly upAttributes: AttributeRecord = $derived.by(() => {
+        return this.deriv.derivParent
+            ? defaultUpPropogateAttrs(
+                {
+                    down: this.deriv.derivParent.logic.downAttributes,
+                    up: this.deriv.derivParent.logic.upAttributes,
+                },
+                this.deriv.childIndex,
+                this.deriv.derivParent.logic,
+            )
+            : defaultDownPropogateAttrs([]);
+    });
     readonly ruleText = $derived.by(() => getRuleText(this.rule, 0));
 
 
