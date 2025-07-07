@@ -1,4 +1,6 @@
-import grammar from "./grammar";
+import { defaultDownPropogateAttrs } from "./attributes";
+import grammar, { Formula } from "./grammar";
+import type { AttributeRecord } from "./options";
 import Rule, { type RuleMatch } from "./rule";
 
 /** Some object capable of storing data for derivations.
@@ -26,10 +28,32 @@ export class LogicData {
     readonly conc = $derived.by(() => grammar.safeParse(this.deriv.conc));
 
     readonly matches = $derived.by(() => Rule.find(this));
-    readonly rule = $derived.by(() => 
-        this.matches instanceof Error ? this.matches : choose(this.matches).rule
-    );
+
+    /** ($derived) Data belonging to this derivation, excluding context of its parent nodes.
+     *  Here, attr is downAttribute! upAttributes and label data aren't local. */
+    private readonly local: { rule: Rule | LogicError, attr: AttributeRecord } = $derived.by(() => {
+        const match = this.matches instanceof Error ? this.matches : choose(this.matches);
+        const childAttrs: AttributeRecord[] = this.deriv.children.map(c => c.logic.local.attr);
+        return match instanceof Error
+            ? {
+                rule: match,
+                attr: defaultDownPropogateAttrs(childAttrs),
+            }
+            : {
+                rule: match.rule,
+                attr: match.rule.downPropogateAttrs(
+                    childAttrs,
+                    match.match,
+                    this.conc as Formula,
+                ),
+            };
+    });
+
+    get rule() { return this.local.rule }
+    get downAttributes() { return this.local.attr; }
+
     readonly ruleText = $derived.by(() => getRuleText(this.rule, 0));
+
 
     // readonly attributes: AttributeData = { down: {}, up: {} };
     // readonly label = $state(0); // 0 means no label
@@ -126,7 +150,7 @@ function getRuleText(
     if (rule !== Rule.axiomRule)
         return rule.text;
     // Axiom rule case (possibly discharged)
-    return dischargingStepLabel 
-        ? String(dischargingStepLabel) 
+    return dischargingStepLabel
+        ? String(dischargingStepLabel)
         : '';
 }
