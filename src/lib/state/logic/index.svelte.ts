@@ -73,6 +73,13 @@ export class LogicData {
     /** ($derived) */
     readonly ruleText = $derived.by(() => getRuleText(this.rule, 0));
 
+    /** ($derived) */
+    readonly dischargedBy: LogicData | null = $derived.by(() => 
+        this.rule === Rule.axiomRule
+            ? this.upAttributes.discharged.get(this.conc) ?? null
+            : null
+    );
+
 
     // readonly attributes: AttributeData = { down: {}, up: {} };
     // readonly label = $state(0); // 0 means no label
