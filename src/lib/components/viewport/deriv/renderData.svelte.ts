@@ -5,6 +5,7 @@ import { DT } from "../../../../DT";
 import { browser } from "$app/environment";
 import { onDestroy } from "svelte";
 
+// Exported below as DerivRenderData.displayed
 const displayed = $derived(flatten(viewport.children));
 function flatten(ds: Deriv[]): Deriv[] {
     return ds.map(d => [d, ...flatten(d.children)]).flat();
@@ -43,6 +44,7 @@ export default class DerivRenderData {
     // Stuff derived from tree:
     /** ($derived) Width of formula element but can be overwritten with treeOverwrite */
     width = $derived.by(() => this.tree.width);
+    /** ($derived) Derived from tree */
     get barWidth() { return this.tree.barWidth };
     private readonly xBase: number = $derived.by(() => {
         const par = this.deriv.parent;
