@@ -9,6 +9,7 @@ export declare interface IDeriv {
     readonly conc: string;
     readonly children: IDeriv[];
     readonly derivParent: IDeriv | null;
+    readonly childIndex: number;
     /////////////////////////////////////////////////////////////////////
     // While implementing ProofData, make sure to define logic
     // after everything it depends on (conclusion, children, etc.)
