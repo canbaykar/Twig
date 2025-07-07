@@ -1,6 +1,7 @@
 import type Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
+import { defaultAnchor } from "../renderData.svelte";
 
 // Following doesn't work due to circularity, update manually
 // export type ZoneType = keyof typeof zoneTypes;
@@ -83,10 +84,10 @@ export const zoneTypes = {
         }
 
         // One elementRect (and thus one dropzone component is shared among siblings)
-        // But the ZoneData instance and rect is per child
+        // But the ZoneData instance is per child
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
             const c0r = deriv.children[0].render;
-            const left = Math.min(-deriv.render.barWidth / 2, c0r.x - c0r.xTransform - deriv.render.x - c0r.width / 2 - DT.derivDropZonePaddingN);
+            const left = Math.min(-deriv.render.barWidth / 2, defaultAnchor(c0r)[0] - deriv.render.x - c0r.width / 2 - DT.derivDropZonePaddingN);
             return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
         }
     },

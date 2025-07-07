@@ -146,8 +146,8 @@ export function addExampleProof() {
 			// rule: '→I',
 			// label: '1',
 			render: {
-				xTransform: -130,
-				yTransform: 70,
+				xTranslate: -130,
+				yTranslate: 70,
 			},
 			children: [
 				{
@@ -196,8 +196,8 @@ export function addExampleProof() {
 		new Deriv({
 			conc: 'a',
 			render: {
-				xTransform: 0,
-				yTransform: 6000
+				xTranslate: 0,
+				yTranslate: 6000
 			},
 			children: [
 				// ---- Right leaning stack ----

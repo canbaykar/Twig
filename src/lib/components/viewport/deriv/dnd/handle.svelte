@@ -8,6 +8,7 @@
 	import { IndicatorPopup } from './indicatorPopup.svelte';
 	import { zoneTypes, type ZoneData } from './zoneData';
 	import { zoneDataFromPoint } from './dropzones.svelte';
+	import { defaultAnchor, mouseAnchor } from '../renderData.svelte';
 	import { mouse } from '$lib/utils/interact/mouse.svelte';
 
 	interface Props {
@@ -32,9 +33,8 @@
 			const indicator = new IndicatorPopup();
 
 			// if (free()) shrinkTree();
-
-			let xOld = data.render.x;
-			let yOld = data.render.y;
+			
+			data.render.swapAnchor(mouseAnchor);
 
 			function updateZD() {
 				const x = data.render.x;
@@ -79,8 +79,8 @@
 			return {
 				move(e) {
 					const cl2wrld = viewport.render.cl2wrld;
-					data.render.xTransform += cl2wrld.scale(e.dx);
-					data.render.yTransform += cl2wrld.scale(e.dy);
+					// data.render.xTransform += cl2wrld.scale(e.dx);
+					// data.render.yTransform += cl2wrld.scale(e.dy);
 
 					updateZD();
 				},
@@ -93,11 +93,13 @@
 					if (zd) zd.drop(data);
 
 					// Reset stuff used for DND
-					if (data.parent !== viewport) data.render.xTransform = data.render.yTransform = 0;
+					if (data.parent !== viewport) data.render.xTranslate = data.render.yTranslate = 0;
 					data.render.treeOverwrite = null;
 
 					indicator.detach();
-					// data.render.treeOverwrite = null;
+
+					data.render.swapAnchor(defaultAnchor);
+					if (data.derivParent) data.render.resetTranslate();
 				}
 			};
 		}
@@ -108,10 +110,9 @@
 		// Half width
 		const w2 = d.render.width / 2 + padding;
 		// TODO: Change DerivRenderData so as to remove these two
-		const xBase = d.render.x - d.render.xTransform;
-		const yBase = d.render.y - d.render.yTransform;
-		let left = xBase - w2;
-		let right = xBase + w2;
+		const xy = defaultAnchor(d.render);
+		let left = xy[0] - w2;
+		let right = xy[0] + w2;
 
 		// Stretch rect to neighbouring siblings' centers or to ends
 		// of the parent's child zone
@@ -131,7 +132,7 @@
 
 		return {
 			left,
-			top: yBase - DT.derivBarBottomN - padding,
+			top: xy[1] - DT.derivBarBottomN - padding,
 			width: right - left,
 			height: DT.derivRowOffsetN + padding * 2
 		};
