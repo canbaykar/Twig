@@ -1,4 +1,4 @@
-import { defaultDownPropogateAttrs } from "./attributes";
+import { defaultDownPropogateAttrs, defaultUpPropogateAttrs } from "./attributes";
 import grammar, { Formula } from "./grammar";
 import type { AttributeRecord } from "./options";
 import Rule, { type RuleMatch } from "./rule";
