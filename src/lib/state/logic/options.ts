@@ -59,7 +59,7 @@ export interface RuleOption {
 
 // ==== DATA ====
 export const attributeOptions: AttributeOptions = {
-    // --- Up ---
+    // --- Down ---
     assumptions: {
         type: AttributeType.Down,
         default(attrs: AttributeRecord[]): Set<string> {
@@ -74,7 +74,7 @@ export const attributeOptions: AttributeOptions = {
             return new Array(attrs.length).fill(new Set());
         }
     },
-    // --- Down ---
+    // --- Up ---
     discharged: {
         type: AttributeType.Up,
         defaultRoot(): Map<string, LogicData> {
