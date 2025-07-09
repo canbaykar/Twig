@@ -1,9 +1,9 @@
 import DerivRenderData from "$lib/components/viewport/deriv/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
-import { LogicData, type IDeriv } from "./logic/index.svelte";
+import { LogicData } from "./logic/index.svelte";
 import viewport, { type Serial } from "./viewport.svelte";
 
-export default class Deriv extends Parent implements IDeriv {
+export default class Deriv extends Parent {
 	declare readonly children: Deriv[];
 	/** ($derived) Utility for parent */
 	readonly derivParent: Deriv | null = $derived(this.parent instanceof Deriv ? this.parent : null);

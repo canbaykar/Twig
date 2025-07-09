@@ -1,21 +1,8 @@
+import type Deriv from "../deriv.svelte";
 import { defaultDownPropogateAttrs, defaultUpPropogateAttrs } from "./attributes";
 import grammar, { Formula } from "./grammar";
 import type { AttributeRecord } from "./options";
 import Rule, { type RuleMatch } from "./rule";
-
-/** Some object capable of storing data for derivations.
- *  Not Deriv to prevent circularity in design process; this must precede Deriv.
- * All but logic has to be reactive ($derived, etc.) */
-export declare interface IDeriv {
-    readonly conc: string;
-    readonly children: IDeriv[];
-    readonly derivParent: IDeriv | null;
-    readonly childIndex: number;
-    /////////////////////////////////////////////////////////////////////
-    // While implementing ProofData, make sure to define logic
-    // after everything it depends on (conclusion, children, etc.)
-    readonly logic: LogicData;
-}
 
 export class LogicError extends Error {
     constructor(message?: string, options?: ErrorOptions) {
@@ -26,7 +13,7 @@ export class LogicError extends Error {
 
 /** Has inference related computed data of Deriv */
 export class LogicData {
-    readonly deriv: IDeriv;
+    readonly deriv: Deriv;
     readonly conc = $derived.by(() => grammar.safeParse(this.deriv.conc));
 
     readonly matches = $derived.by(() => Rule.find(this));
@@ -90,7 +77,7 @@ export class LogicData {
     //     = gettable(new LogicError('Loading...'));
     // // - Derived -
     // // Listening to .logic instead of ProofData doesn't work in initialisation
-    // readonly parentData: GettableNonWritable<IDeriv | null>;
+    // readonly parentData: GettableNonWritable<Deriv | null>;
     // /** Index of data as a child of proof-parent */
     // readonly index: GettableNonWritable<number | null>;
     // readonly children: GettableNonWritable<(Formula | Error)[]>;
@@ -99,7 +86,7 @@ export class LogicData {
     // readonly discharged: GettableNonWritable<boolean>
     //     = gettableDerived(this.dischargedBy, $db => $db !== null);
 
-    constructor(deriv: IDeriv) {
+    constructor(deriv: Deriv) {
         this.deriv = deriv;
         // Derived
         // this.parentData = data.parent;
