@@ -32,7 +32,7 @@ export class LogicData {
     readonly matches = $derived.by(() => Rule.find(this));
 
     /** ($derived) Data belonging to this derivation, excluding context of its parent nodes.
-     *  Here, attr is downAttribute! upAttributes and label data aren't local. */
+     *  Here, attr is downAttribute! upAttributes aren't local. */
     private readonly local: { rule: Rule | LogicError, attr: AttributeRecord } = $derived.by(() => {
         const match = this.matches instanceof Error ? this.matches : choose(this.matches);
         const childAttrs: AttributeRecord[] = this.deriv.children.map(c => c.logic.local.attr);
