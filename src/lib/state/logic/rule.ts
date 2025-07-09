@@ -14,6 +14,8 @@ export type Matcher = Formula[];
 export default class Rule {
     readonly name: string;
     readonly text: string;
+    /** If true, this rule may discharge some assumptions */
+    readonly discharging: boolean;
     /** 
      * MF arrays of form [conclusion, child1, child2, ...]
      * to match against. (Multiple to give alternatives, see →E.)
@@ -25,6 +27,7 @@ export default class Rule {
     private constructor(opt: RuleOption) {
         this.name = opt.name;
         this.text = opt.text ?? this.name;
+        this.discharging = !!opt.downPropagateAttrs;
 
         const conclusion = grammar.parseAll(opt.conclusion);
         const children = opt.children.map(arr => grammar.parseAll(arr));
