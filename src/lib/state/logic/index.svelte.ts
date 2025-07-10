@@ -1,5 +1,5 @@
 import type Deriv from "../deriv.svelte";
-import { defaultDownPropogateAttrs, defaultUpPropogateAttrs } from "./attributes";
+import { defaultDownPropogateAttrs, defaultRootUpPropogateAttrs, defaultUpPropogateAttrs } from "./attributes";
 import grammar, { Formula } from "./grammar";
 import type { AttributeRecord } from "./options";
 import Rule, { type RuleMatch } from "./rule";
@@ -54,7 +54,7 @@ export class LogicData {
                 this.deriv.childIndex,
                 this.deriv.derivParent.logic,
             )
-            : defaultDownPropogateAttrs([]);
+            : defaultRootUpPropogateAttrs();
     });
 
     /** ($derived) */
@@ -63,7 +63,7 @@ export class LogicData {
     /** ($derived) */
     readonly dischargedBy: LogicData | null = $derived.by(() => 
         this.rule === Rule.axiomRule
-            ? this.upAttributes.discharged.get(this.conc) ?? null
+            ? this.upAttributes.discharged.get(this.conc.toString()) ?? null
             : null
     );
 
