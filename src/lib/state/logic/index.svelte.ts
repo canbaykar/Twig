@@ -67,45 +67,6 @@ export class LogicData {
             : null
     );
 
-    // /** ($derived) Root calculates labels of all derivs that discharge an EXISTING assumption.
-    //  *  This is null if it's not of a root node. */
-    // private readonly dischargerLabels: Map<LogicData, number> | null = $derived.by(() => {
-    //     if (this.deriv !== this.deriv.root) return null;
-
-    //     let label = 1;
-    //     const map: Map<LogicData, number> = new Map();
-        
-    //     const crawler = new Crawler(this.deriv);
-        
-    //     // if (this.deriv.conc === '(A∧B)→C') debugger
-
-    //     let N = 0;
-
-    //     // while (crawler.find(d => !!d.logic.dischargedBy)) {
-    //     //     N++;
-    //     //     if (N > 100) return map;
-
-    //     //     const dischargee = crawler.curr.logic;
-    //     //     const discharger = dischargee.dischargedBy as LogicData;
-            
-    //     //     if (map.has(discharger)) continue;
-    //     //     map.set(discharger, label);
-    //     //     label++;
-    //     // }
-
-    //     // console.log(this.deriv.conc);
-    //     // console.log(map);
-
-    //     return map;
-    // });
-
-    // /** ($derived) */
-    // readonly label = $derived.by(() => {
-    //     if (this.rule instanceof Error || !this.rule.discharging) return '';
-    //     const label = this.deriv.root.logic.dischargerLabels!.get(this);
-    //     return label === undefined ? '' : label.toString();
-    // });
-
     /** ($derived) All derivs that discharge an EXISTING assumption in order.
      *  Sets have insertion order. */
     private readonly dischargers: Set<LogicData> = $derived.by(() =>
@@ -137,82 +98,9 @@ export class LogicData {
         return this.dischargedBy?.labelText ?? '';
     });
 
-    // readonly attributes: AttributeData = { down: {}, up: {} };
-    // readonly label = $state(0); // 0 means no label
-    // readonly dischargedBy: LogicData | null = $state(null);
-    // readonly matches: Gettable<RuleMatch[] | LogicError | SyntaxError>
-    //     = gettable(new LogicError('Loading...'));
-    // readonly rule: Gettable<Rule | LogicError | SyntaxError>
-    //     = gettable(new LogicError('Loading...'));
-    // // - Derived -
-    // // Listening to .logic instead of ProofData doesn't work in initialisation
-    // readonly parentData: GettableNonWritable<Deriv | null>;
-    // /** Index of data as a child of proof-parent */
-    // readonly index: GettableNonWritable<number | null>;
-    // readonly children: GettableNonWritable<(Formula | Error)[]>;
-    // readonly normalizedConclusionText: GettableNonWritable<string | null>;
-    // readonly ruleText: GettableNonWritable<string>;
-    // readonly discharged: GettableNonWritable<boolean>
-    //     = gettableDerived(this.dischargedBy, $db => $db !== null);
-
     constructor(deriv: Deriv) {
         this.deriv = deriv;
-        // Derived
-        // this.parentData = data.parent;
-        // this.conclusion = gettableDerived(
-        //     data.conc,
-        //     $conc => {
-        //         try { return grammar.parse($conc); }
-        //         catch (error: any) {
-        //             if (error?.name !== 'SyntaxError') throw error;
-        //             return error as Error;
-        //         }
-        //     }
-        // );
-        // this.normalizedConclusionText = gettableDerived(
-        //     this.conclusion,
-        //     $conc => isError($conc) ? null : grammar.normalizedString($conc)
-        // );
     }
-
-    // downPropogate() {
-    //     // Get matches
-    //     const matches = Rule.find(this);
-    //     this.matches.set(matches);
-    //     // Down-propogate
-    //     const childAttrs = this.data.children.get().map(c => c.logicData.attributes.down);
-    //     if (isError(matches)) {
-    //         this.rule.set(matches);
-    //         this.attributes.down = defaultDownPropogateAttrs(childAttrs);
-    //     } else {
-    //         const { rule, match } = choose(matches);
-    //         this.rule.set(rule);
-    //         this.attributes.down = rule.downPropogateAttrs(
-    //             childAttrs,
-    //             match,
-    //             this.conclusion.get() as Formula,
-    //         );
-    //     }
-    // }
-
-    // upPropogate() {
-    //     const parent = this.parentData.get()?.logicData;
-    //     this.attributes.up = parent
-    //         ? defaultUpPropogateAttrs(
-    //             parent.attributes,
-    //             this.index.get() as number,
-    //             parent,
-    //         )
-    //         : defaultRootUpPropogateAttrs();
-
-    //     // If not infered, rule text is determined by dischargedBy:
-    //     if (this.rule.get() === Rule.axiomRule) {
-    //         const dischargingStep
-    //             = (this.attributes.up.discharged as Map<string, LogicData>)
-    //                 .get(this.normalizedConclusionText.get() as string) ?? null;
-    //         (this.dischargedBy as Gettable<LogicData | null>).set(dischargingStep);
-    //     }
-    // }
 }
 
 // Will consider preferences when choosing in the future
