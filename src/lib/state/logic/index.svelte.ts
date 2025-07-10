@@ -11,6 +11,9 @@ export class LogicError extends Error {
     }
 }
 
+// See dischargers
+const emptySet: Set<LogicData> = new Set();
+
 /** Has inference related computed data of Deriv */
 export class LogicData {
     readonly deriv: Deriv;
@@ -58,15 +61,81 @@ export class LogicData {
     });
 
     /** ($derived) */
-    readonly ruleText = $derived.by(() => getRuleText(this.rule, 0));
-
-    /** ($derived) */
     readonly dischargedBy: LogicData | null = $derived.by(() => 
         this.rule === Rule.axiomRule
             ? this.upAttributes.discharged.get(this.conc.toString()) ?? null
             : null
     );
 
+    // /** ($derived) Root calculates labels of all derivs that discharge an EXISTING assumption.
+    //  *  This is null if it's not of a root node. */
+    // private readonly dischargerLabels: Map<LogicData, number> | null = $derived.by(() => {
+    //     if (this.deriv !== this.deriv.root) return null;
+
+    //     let label = 1;
+    //     const map: Map<LogicData, number> = new Map();
+        
+    //     const crawler = new Crawler(this.deriv);
+        
+    //     // if (this.deriv.conc === '(A∧B)→C') debugger
+
+    //     let N = 0;
+
+    //     // while (crawler.find(d => !!d.logic.dischargedBy)) {
+    //     //     N++;
+    //     //     if (N > 100) return map;
+
+    //     //     const dischargee = crawler.curr.logic;
+    //     //     const discharger = dischargee.dischargedBy as LogicData;
+            
+    //     //     if (map.has(discharger)) continue;
+    //     //     map.set(discharger, label);
+    //     //     label++;
+    //     // }
+
+    //     // console.log(this.deriv.conc);
+    //     // console.log(map);
+
+    //     return map;
+    // });
+
+    // /** ($derived) */
+    // readonly label = $derived.by(() => {
+    //     if (this.rule instanceof Error || !this.rule.discharging) return '';
+    //     const label = this.deriv.root.logic.dischargerLabels!.get(this);
+    //     return label === undefined ? '' : label.toString();
+    // });
+
+    /** ($derived) All derivs that discharge an EXISTING assumption in order.
+     *  Sets have insertion order. */
+    private readonly dischargers: Set<LogicData> = $derived.by(() =>
+        this.rule === Rule.axiomRule
+            ? this.dischargedBy ? new Set([this.dischargedBy]) : emptySet
+            : this.deriv.children
+                .map(c => c.logic.dischargers)
+                .reduce((set, next) => set.union(next), new Set())
+    );
+    /** ($derived) Usually only used in root **/
+    private readonly dischargersSorted: LogicData[] = $derived([...this.dischargers]);
+
+
+    /** ($derived) */
+    readonly labelText = $derived.by(() => {
+        if (this.rule instanceof Error || !this.rule.discharging) return '';
+        const index = this.deriv.root.logic.dischargersSorted.indexOf(this);
+        return index === -1 ? '' : (index + 1).toString();
+    });
+
+    
+    /** ($derived) */
+    readonly ruleText: string = $derived.by(() => {
+        // Error case
+        if (this.rule instanceof Error) return '-';
+        // Regular case
+        if (this.rule !== Rule.axiomRule) return this.rule.text;
+        // Axiom rule case (possibly discharged)
+        return this.dischargedBy?.labelText ?? '';
+    });
 
     // readonly attributes: AttributeData = { down: {}, up: {} };
     // readonly label = $state(0); // 0 means no label
@@ -149,21 +218,4 @@ export class LogicData {
 // Will consider preferences when choosing in the future
 function choose(matches: RuleMatch[]): RuleMatch {
     return matches[0];
-}
-
-function getRuleText(
-    rule: Rule | LogicError | SyntaxError,
-    /** 0 means not discharged */
-    dischargingStepLabel: number,
-) {
-    // Error case
-    if (rule instanceof Error)
-        return rule.message === 'Loading...' ? '...' : '-';
-    // Regular case
-    if (rule !== Rule.axiomRule)
-        return rule.text;
-    // Axiom rule case (possibly discharged)
-    return dischargingStepLabel
-        ? String(dischargingStepLabel)
-        : '';
 }
