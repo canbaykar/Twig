@@ -68,7 +68,7 @@
 
 <!-- Draggable button, grabbed when clicked -->
 <button
-	class="bottom-0 translate-x-[-50%] cursor-default px-(--DERIV-X-PADDING) leading-(--DERIV-LINE-HEIGHT) select-none"
+	class="bottom-0 translate-x-[-50%] cursor-default px-(--DERIV-X-PADDING) leading-(--DERIV-LINE-HEIGHT) h-(--DERIV-LINE-HEIGHT) select-none whitespace-nowrap"
 	class:bg-bg-danger-emphasis={data.logic.conc instanceof Error}
 	bind:this={element}
 	onmouseenter={enableEditor}
