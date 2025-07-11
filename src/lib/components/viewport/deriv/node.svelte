@@ -6,6 +6,10 @@
 	import Dropzones from './dnd/dropzones.svelte';
 	import viewport from '$lib/state/viewport.svelte';
 
+    // This component renders a single deriv node
+    // including the formula, rule bar, and the rule and label beside it.
+    // Use Derivs to render all derivs.
+
     interface Props {
         data: Deriv;
     }
