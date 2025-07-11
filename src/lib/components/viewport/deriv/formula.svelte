@@ -79,7 +79,7 @@
 	{ondblclick}
 	tabindex="-1"
 >
-	{data.conc}
+	<span class="contents whitespace-pre">{data.conc}</span>
 
 	<!-- EDITOR -->
 	{#if editorEnabled}
