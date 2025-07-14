@@ -127,11 +127,16 @@ if (browser) {
             if (instructions.length) instructions[i] = () => {};
         });
     }
-    document.fonts.load('12px "M PLUS 1p"').then(() => {
+    document.fonts.load('12px "M PLUS 1p"');
+    // For some reason, doing .then(() => {...}) above fires before the font is loaded
+    // but it does return 'loaded' when the font is checked but it returns 'loading'
+    // later in svelte effect wtf?! Does the font load then unload and load again or 
+    // something? Basically it doen't work :(
+    document.fonts.onloadingdone = () => {
         onFontLoad = () => {};
         for (const f of instructions) f();
         instructions = [];
-    });
+    };
 }
 
 
