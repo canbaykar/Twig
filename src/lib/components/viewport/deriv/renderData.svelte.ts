@@ -114,6 +114,13 @@ export default class DerivRenderData {
         $effect(() => { textGetter(); widthUpdater(); });
         onFontLoad(widthUpdater);
     }
+
+    // Other utils
+    readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
+    readonly hasRule = $derived.by(() => !!this.deriv.logic.ruleText);
+    readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
+    readonly hasBar = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
+    readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth

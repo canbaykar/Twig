@@ -28,21 +28,15 @@
         () => rule,
         () => render.ruleWidth = ruleElement ? ruleElement.offsetWidth : 0
     );
-
-    const hasLabel = $derived(label !== '');
-    const hasRule = $derived(rule !== '');
-    const hasChild = $derived(data.children.length !== 0);
-    const hasBar = $derived(hasRule || hasLabel || hasChild);
-    const discharged = $derived(/^\d+$/.test(rule));
 </script>
 
 <div
     class="bg-fg h-1 bottom-(--DERIV-BAR-BOTTOM) origin-left translate-x-[-50%] rounded-full select-none"
-    class:bg-transparent={!hasBar}
+    class:bg-transparent={!data.render.hasBar}
     style:width="{render.barWidth}px"
 >
     <!-- Label -->
-    {#if hasLabel}
+    {#if data.render.hasLabel}
         <div
             class="right-(--DERIV-LABEL-RIGHT) labelBase"
             bind:this={labelElement}
@@ -51,12 +45,12 @@
         </div>
     {/if}
     <!-- Rule -->
-    {#if hasRule}
+    {#if data.render.hasRule}
         <div
-            class="left-(--DERIV-LABEL-RIGHT) {discharged ? 'labelBase' : 'ruleBase'}"
+            class="left-(--DERIV-LABEL-RIGHT) {data.render.discharged ? 'labelBase' : 'ruleBase'}"
             bind:this={ruleElement}
         >
-            {discharged ? rule : '(' + rule + ')'}
+            {data.render.discharged ? rule : '(' + rule + ')'}
         </div>
     {/if}
 </div>
