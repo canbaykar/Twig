@@ -5,6 +5,9 @@ const rowOffset = 25 * UNIT;
 const barBottom = rowOffset - 3 * UNIT;
 const barGap = 3 * UNIT;
 const labelHeight = 15 * UNIT;
+const ruleSize = 12 * UNIT;
+const ruleHeight = 1.5 * ruleSize;
+const ruleBottom = -8 * UNIT;
 const dropZonePadding = 0.1 * rowOffset;
 
 // New DT system WIP
@@ -22,7 +25,7 @@ export const derivDT = {
         /** (length) Font size of formulas */
         size: fontSize + 'px',
         /** (length) Font size of rules */
-        ruleSize: 12 * UNIT + 'px',
+        ruleSize: ruleSize + 'px',
         /** (length) Font size of labels */
         labelSize: 12 * UNIT + 'px',
 
@@ -32,7 +35,7 @@ export const derivDT = {
         /** (line-height) Line height of formulas */
         lineHeight: lineHeight + 'px',
         /** (line-height) Line height of rules */
-        ruleLH: 'normal',
+        ruleLH: ruleHeight + 'px',
         /** (line-height) Line height of labels */
         labelLH: labelHeight - 2 * UNIT + 'px',
 
@@ -40,7 +43,7 @@ export const derivDT = {
         barBottom: barBottom + 'px',
 
         /** (length) (relative to rule-bar) */
-        ruleBottom: -8 * UNIT + 'px',
+        ruleBottom: ruleBottom + 'px',
         /** (length) (relative to rule-bar) */
         ruleLeft: `calc(100% + ${-0.8 * UNIT + barGap}px)`,
 
@@ -71,4 +74,20 @@ export const derivDT = {
     /** (number) Margin at the sides of the rule-bar 
      * (label and rule are counted as a part of the bar here.) */
     marginN: 10 * UNIT,
+
+    /** (number) Gap between label and bar */
+    barGapN: barGap,
+    /** (number) Height of the label */
+    labelHeightN: labelHeight,
+    /** (number) Bottom css prop of label without px. Relative to barBottom... */
+    labelBottomN: 0.5 * UNIT - labelHeight / 2,
+    /** (number) Gap between rule and bar */
+    ruleLeftN: -0.8 * UNIT + barGap,
+    /** (number) Height of the rule */
+    ruleHeightN: ruleHeight,
+    /** (number) Bottom css prop of rule without px. Relative to barBottom... */
+    ruleBottomN: ruleBottom,
+
+    /** (number) The gap between the left side of the rule element and first paranthesis */
+    ruleParanthesisGapN: 1 * UNIT,
 } as const;

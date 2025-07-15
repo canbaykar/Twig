@@ -6,6 +6,7 @@
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
+	import { bgDependency } from "./deriv/bg.svelte";
     
     interface Props {
         viewport: Viewport;
@@ -18,6 +19,8 @@
 
     onDestroy(() => DerivRenderData.onDestroy());
 </script>
+
+{@render bgDependency()}
 
 <!-- The :global(.hover) class is used to determine non-DND when hover effects should happen -->
 <div
