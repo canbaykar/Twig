@@ -38,7 +38,7 @@
 
 {#snippet bgRoot(data: Deriv)}
     <svg class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100" viewBox="0 0 1 1">
-        <g id="g" filter="url(#outlineFilter)">
+        <g id="g" filter="url(#outlineFilter)" fill={color}>
 			<Bg {data} />
 		</g>
     </svg>
@@ -62,7 +62,6 @@
     width={data.render.width + 2 * padding}
     height={DT.derivLineHeightN + 2 * padding}
     rx={Math.min(rad / viewport.render.scale, (DT.derivLineHeightN + 2 * padding) / 2)}
-    fill={color}
 />
 
 <!-- Recursion for children -->
@@ -78,7 +77,6 @@
         width={data.render.barWidth + 2 * padding}
         height={DT.UNIT + 2 * padding}
         rx={(DT.UNIT + 2 * padding) / 2}
-        fill={color}
     />
     
     <!-- For label -->
@@ -89,7 +87,6 @@
             width={data.render.labelWidth + 2 * padding}
             height={DT.derivLabelHeightN + 2 * padding}
             rx={DT.derivLabelHeightN / 2 + padding}
-            fill={color}
         />
     {/if}
 
@@ -103,7 +100,6 @@
                 width={data.render.ruleWidth + 2 * padding}
                 height={DT.derivLabelHeightN + 2 * padding}
                 rx={DT.derivLabelHeightN / 2 + padding}
-                fill={color}
             />
         {:else}
             <rect
@@ -112,7 +108,6 @@
                 width={data.render.ruleWidth + 2 * (padding - DT.derivRuleParanthesisGapN)}
                 height={DT.derivLabelHeightN + 2 * padding}
                 rx={DT.derivLabelHeightN / 2 + padding}
-                fill={color}
             />
         {/if}
     {/if}
