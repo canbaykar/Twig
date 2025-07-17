@@ -90,8 +90,7 @@
         />
     {/if}
 
-    
-    <!-- For label -->
+	<!-- For Rule -->
     {#if data.render.hasRule}
         {#if data.render.discharged}
             <rect
