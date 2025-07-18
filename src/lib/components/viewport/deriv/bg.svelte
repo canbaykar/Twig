@@ -73,20 +73,23 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100" viewBox="0 0 1 1">
-		<g id="g" filter="url(#outlineFilter)" fill={color}>
+		<g id="g" filter="url(#outlineFilter)">
 			<Bg {data} />
 		</g>
 	</svg>
 {/snippet}
 
 <!-- For formula -->
-<rect
-	x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
-	y={data.render.y + formulaOffY}
-	width={data.render.width + pad2}
-	height={formulaBgHeight}
-	rx={formulaRx}
-/>
+{#if data.render.formulaBg}	
+	<rect
+		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
+		y={data.render.y + formulaOffY}
+		width={data.render.width + pad2}
+		height={formulaBgHeight}
+		rx={formulaRx}
+		fill="var(--color-{data.render.formulaBg})"
+	/>
+{/if}
 
 <!-- Recursion for children -->
 {#each data.children as child (child)}
@@ -94,44 +97,46 @@
 {/each}
 
 <!-- For bar -->
-{#if data.render.hasBar}
-	<rect
-		x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
-		y={data.render.y + barOffY}
-		width={data.render.barWidth + pad2}
-		height={barBgHeight}
-		rx={barRx}
-	/>
-
-	<!-- For label -->
-	{#if data.render.hasLabel}
+{#if data.render.barBg && data.render.hasBar}
+	<g fill="var(--color-{data.render.barBg})">
 		<rect
-			x={data.render.x - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
-			y={data.render.y + labelOffY}
-			width={data.render.labelWidth + pad2}
-			height={labelBgHeight}
-			rx={labelRx}
+			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
+			y={data.render.y + barOffY}
+			width={data.render.barWidth + pad2}
+			height={barBgHeight}
+			rx={barRx}
 		/>
-	{/if}
-
-	<!-- For Rule -->
-	{#if data.render.hasRule}
-		{#if data.render.discharged}
+	
+		<!-- For label -->
+		{#if data.render.hasLabel}
 			<rect
-				x={data.render.x + data.render.barWidth / 2 + ruleLabelOffX}
+				x={data.render.x - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
 				y={data.render.y + labelOffY}
-				width={data.render.ruleWidth + pad2}
-				height={labelBgHeight}
-				rx={labelRx}
-			/>
-		{:else}
-			<rect
-				x={data.render.x + data.render.barWidth / 2 + ruleOffX}
-				y={data.render.y + ruleOffY}
-				width={data.render.ruleWidth + rulePad}
+				width={data.render.labelWidth + pad2}
 				height={labelBgHeight}
 				rx={labelRx}
 			/>
 		{/if}
-	{/if}
+	
+		<!-- For Rule -->
+		{#if data.render.hasRule}
+			{#if data.render.discharged}
+				<rect
+					x={data.render.x + data.render.barWidth / 2 + ruleLabelOffX}
+					y={data.render.y + labelOffY}
+					width={data.render.ruleWidth + pad2}
+					height={labelBgHeight}
+					rx={labelRx}
+				/>
+			{:else}
+				<rect
+					x={data.render.x + data.render.barWidth / 2 + ruleOffX}
+					y={data.render.y + ruleOffY}
+					width={data.render.ruleWidth + rulePad}
+					height={labelBgHeight}
+					rx={labelRx}
+				/>
+			{/if}
+		{/if}
+	</g>
 {/if}
