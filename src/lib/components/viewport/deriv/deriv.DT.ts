@@ -75,6 +75,9 @@ export const derivDT = {
      * (label and rule are counted as a part of the bar here.) */
     marginN: 10 * UNIT,
 
+    /** (number) Padding around background rectangles */
+    bgPaddingN: 3 * UNIT,
+
     /** (number) Gap between label and bar */
     barGapN: barGap,
     /** (number) Height of the label */

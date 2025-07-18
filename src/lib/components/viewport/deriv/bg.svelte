@@ -18,33 +18,31 @@
     0 0 0 1 0`;
 
 	const color = 'var(--color-bg)';
-
-	const pad = 3 * DT.UNIT;
 	
 	// Helper constants for bg dimensions are here to prevent being recalculated
 	// all the time
-	const pad2 = 2 * pad;
+	const pad2 = 2 * DT.derivBgPaddingN;
 	
-    const formulaOffY = -DT.derivLineHeightN - pad;
+    const formulaOffY = -DT.derivLineHeightN - DT.derivBgPaddingN;
 	const formulaBgHeight = DT.derivLineHeightN + pad2;
 	const formulaRx = $derived(
-		Math.min((pad + 5 * DT.UNIT) / viewport.render.scale, formulaBgHeight / 2)
+		Math.min((DT.derivBgPaddingN + 5 * DT.UNIT) / viewport.render.scale, formulaBgHeight / 2)
 	);
 
-    const barOffY = -DT.derivBarBottomN - pad - DT.UNIT;
+    const barOffY = -DT.derivBarBottomN - DT.derivBgPaddingN - DT.UNIT;
     const barBgHeight = DT.UNIT + pad2;
     const barRx = barBgHeight / 2;
 
-    const labelOffX = -DT.derivBarGapN - pad;
-    const labelOffY = -DT.derivBarBottomN + DT.derivLabelBottomN - DT.UNIT - pad;
+    const labelOffX = -DT.derivBarGapN - DT.derivBgPaddingN;
+    const labelOffY = -DT.derivBarBottomN + DT.derivLabelBottomN - DT.UNIT - DT.derivBgPaddingN;
     const labelBgHeight = DT.derivLabelHeightN + pad2;
-    const labelRx = DT.derivLabelHeightN / 2 + pad;
+    const labelRx = DT.derivLabelHeightN / 2 + DT.derivBgPaddingN;
 
-	const ruleLabelOffX = DT.derivBarGapN - pad;
+	const ruleLabelOffX = DT.derivBarGapN - DT.derivBgPaddingN;
 
-    const ruleOffX = DT.derivRuleLeftN + DT.derivRuleParanthesisGapN - pad;
-    const ruleOffY = -DT.derivBarBottomN + DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.UNIT - pad;
-	const rulePad = 2 * (pad - DT.derivRuleParanthesisGapN);
+    const ruleOffX = DT.derivRuleLeftN + DT.derivRuleParanthesisGapN - DT.derivBgPaddingN;
+    const ruleOffY = -DT.derivBarBottomN + DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.UNIT - DT.derivBgPaddingN;
+	const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN);
 </script>
 
 <script lang="ts">
@@ -83,7 +81,7 @@
 
 <!-- For formula -->
 <rect
-	x={data.render.x - data.render.width / 2 - pad}
+	x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
 	y={data.render.y + formulaOffY}
 	width={data.render.width + pad2}
 	height={formulaBgHeight}
@@ -98,7 +96,7 @@
 <!-- For bar -->
 {#if data.render.hasBar}
 	<rect
-		x={data.render.x - data.render.barWidth / 2 - pad}
+		x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 		y={data.render.y + barOffY}
 		width={data.render.barWidth + pad2}
 		height={barBgHeight}
