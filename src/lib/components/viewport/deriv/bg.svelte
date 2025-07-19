@@ -41,6 +41,18 @@
     const ruleOffX = DT.derivRuleLeftN + DT.derivRuleParanthesisGapN - DT.derivBgPaddingN;
     const ruleOffY = -DT.derivBarBottomN + DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.UNIT - DT.derivBgPaddingN;
 	const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN);
+
+	// --- Props for the two types of bg ---
+	// Non-outlined
+	const n_showFormulaBg = (data: Deriv) => !data.render.formulaBg;
+	const n_showBarBg = (data: Deriv) => !data.render.barBg && data.render.hasBar;
+	const n_formulaFill = (data: Deriv) => `var(--color-bg)`;
+	const n_barFill = (data: Deriv) => `var(--color-bg)`;
+	// Outlined
+	const o_showFormulaBg = (data: Deriv) => !!data.render.formulaBg;
+	const o_showBarBg = (data: Deriv) => !!data.render.barBg && data.render.hasBar;
+	const o_formulaFill = (data: Deriv) => `var(--color-${data.render.formulaBg})`;
+	const o_barFill = (data: Deriv) => `var(--color-${data.render.barBg})`;
 </script>
 
 <script lang="ts">
@@ -49,9 +61,13 @@
 
 	interface Props {
 		data: Deriv;
+		showFormulaBg: (data: Deriv) => boolean;
+		showBarBg: (data: Deriv) => boolean;
+		formulaFill: (data: Deriv) => string;
+		barFill: (data: Deriv) => string;
 	}
 
-	let { data }: Props = $props();
+	let { data, showFormulaBg, showBarBg, formulaFill, barFill }: Props = $props();
 </script>
 
 {#snippet bgDependency()}
@@ -71,32 +87,33 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100" viewBox="0 0 1 1">
+		<Bg {data} showFormulaBg={n_showFormulaBg} showBarBg={n_showBarBg} formulaFill={n_formulaFill} barFill={n_barFill} />
 		<g id="g" filter="url(#outlineFilter)">
-			<Bg {data} />
+			<Bg {data} showFormulaBg={o_showFormulaBg} showBarBg={o_showBarBg} formulaFill={o_formulaFill} barFill={o_barFill} />
 		</g>
 	</svg>
 {/snippet}
 
 <!-- For formula -->
-{#if data.render.formulaBg}	
+{#if showFormulaBg(data)}	
 	<rect
 		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
 		y={data.render.y + formulaOffY}
 		width={data.render.width + pad2}
 		height={formulaBgHeight}
 		rx={formulaRx}
-		fill="var(--color-{data.render.formulaBg})"
+		fill={formulaFill(data)}
 	/>
 {/if}
 
 <!-- Recursion for children -->
 {#each data.children as child (child)}
-	<Bg data={child} />
+	<Bg data={child} {showFormulaBg} {showBarBg} {formulaFill} {barFill} />
 {/each}
 
 <!-- For bar -->
-{#if data.render.barBg && data.render.hasBar}
-	<g fill="var(--color-{data.render.barBg})">
+{#if showBarBg(data)}
+	<g fill={barFill(data)}>
 		<rect
 			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={data.render.y + barOffY}
