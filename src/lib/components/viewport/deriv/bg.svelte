@@ -43,16 +43,26 @@
 	const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN);
 
 	// --- Props for the two types of bg ---
+	interface BgType {
+		showFormulaBg: (data: Deriv) => boolean;
+		showBarBg: (data: Deriv) => boolean;
+		formulaFill: (data: Deriv) => string;
+		barFill: (data: Deriv) => string;
+	};
 	// Non-outlined
-	const n_showFormulaBg = (data: Deriv) => !data.render.formulaBg;
-	const n_showBarBg = (data: Deriv) => !data.render.barBg && data.render.hasBar;
-	const n_formulaFill = (data: Deriv) => `var(--color-bg)`;
-	const n_barFill = (data: Deriv) => `var(--color-bg)`;
+	const nonOutlinedBgType: BgType = {
+		showFormulaBg: (data: Deriv) => !data.render.formulaBg,
+		showBarBg: (data: Deriv) => !data.render.barBg && data.render.hasBar,
+		formulaFill: (data: Deriv) => `var(--color-bg)`,
+		barFill: (data: Deriv) => `var(--color-bg)`
+	};
 	// Outlined
-	const o_showFormulaBg = (data: Deriv) => !!data.render.formulaBg;
-	const o_showBarBg = (data: Deriv) => !!data.render.barBg && data.render.hasBar;
-	const o_formulaFill = (data: Deriv) => `var(--color-${data.render.formulaBg})`;
-	const o_barFill = (data: Deriv) => `var(--color-${data.render.barBg})`;
+	const outlinedBgType: BgType = {
+		showFormulaBg: (data: Deriv) => !!data.render.formulaBg,
+		showBarBg: (data: Deriv) => !!data.render.barBg && data.render.hasBar,
+		formulaFill: (data: Deriv) => `var(--color-${data.render.formulaBg})`,
+		barFill: (data: Deriv) => `var(--color-${data.render.barBg})`
+	};
 </script>
 
 <script lang="ts">
@@ -61,13 +71,10 @@
 
 	interface Props {
 		data: Deriv;
-		showFormulaBg: (data: Deriv) => boolean;
-		showBarBg: (data: Deriv) => boolean;
-		formulaFill: (data: Deriv) => string;
-		barFill: (data: Deriv) => string;
+		type: BgType;
 	}
 
-	let { data, showFormulaBg, showBarBg, formulaFill, barFill }: Props = $props();
+	let { data, type }: Props = $props();
 </script>
 
 {#snippet bgDependency()}
@@ -87,33 +94,33 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100" viewBox="0 0 1 1">
-		<Bg {data} showFormulaBg={n_showFormulaBg} showBarBg={n_showBarBg} formulaFill={n_formulaFill} barFill={n_barFill} />
+		<Bg {data} type={nonOutlinedBgType} />
 		<g id="g" filter="url(#outlineFilter)">
-			<Bg {data} showFormulaBg={o_showFormulaBg} showBarBg={o_showBarBg} formulaFill={o_formulaFill} barFill={o_barFill} />
+			<Bg {data} type={outlinedBgType} />
 		</g>
 	</svg>
 {/snippet}
 
 <!-- For formula -->
-{#if showFormulaBg(data)}	
+{#if type.showFormulaBg(data)}	
 	<rect
 		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
 		y={data.render.y + formulaOffY}
 		width={data.render.width + pad2}
 		height={formulaBgHeight}
 		rx={formulaRx}
-		fill={formulaFill(data)}
+		fill={type.formulaFill(data)}
 	/>
 {/if}
 
 <!-- Recursion for children -->
 {#each data.children as child (child)}
-	<Bg data={child} {showFormulaBg} {showBarBg} {formulaFill} {barFill} />
+	<Bg data={child} type={type} />
 {/each}
 
 <!-- For bar -->
-{#if showBarBg(data)}
-	<g fill={barFill(data)}>
+{#if type.showBarBg(data)}
+	<g fill={type.barFill(data)}>
 		<rect
 			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={data.render.y + barOffY}
