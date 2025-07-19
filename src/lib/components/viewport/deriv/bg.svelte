@@ -16,8 +16,6 @@
     ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 + 0.285 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
     ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 + 0.928 * saturate) * lighten_} 0 ${lighten}
     0 0 0 1 0`;
-
-	const color = 'var(--color-bg)';
 	
 	// Helper constants for bg dimensions are here to prevent being recalculated
 	// all the time
