@@ -99,7 +99,7 @@
 		class:z-1={data.render.dragged}
 	>
 		<Bg {data} type={nonOutlinedBgType} />
-		<g id="g" filter="url(#outlineFilter)">
+		<g filter="url(#outlineFilter)">
 			<Bg {data} type={outlinedBgType} />
 		</g>
 	</svg>
