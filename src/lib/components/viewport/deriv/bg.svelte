@@ -93,7 +93,11 @@
 {/snippet}
 
 {#snippet bgRoot(data: Deriv)}
-	<svg class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100" viewBox="0 0 1 1">
+	<svg
+		class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100"
+		viewBox="0 0 1 1"
+		class:z-1={data.render.dragged}
+	>
 		<Bg {data} type={nonOutlinedBgType} />
 		<g id="g" filter="url(#outlineFilter)">
 			<Bg {data} type={outlinedBgType} />
@@ -115,7 +119,9 @@
 
 <!-- Recursion for children -->
 {#each data.children as child (child)}
-	<Bg data={child} type={type} />
+	{#if !child.render.dragged}
+		<Bg data={child} type={type} />
+	{/if}
 {/each}
 
 <!-- For bar -->

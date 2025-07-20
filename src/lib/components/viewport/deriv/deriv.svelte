@@ -20,7 +20,7 @@
 </script>
 
 <!-- Background -->
-{#if data.root === data}
+{#if data.root === data || data.render.dragged}
     {@render bgRoot(data)}
 {/if}
 
@@ -30,6 +30,7 @@
 	class:dragged={data.render.dragged}
 	class:pointer-events-none={data.render.inDragged}
 	style:translate="{data.render.x}px {data.render.y}px"
+	class:z-1={data.render.inDragged}
 	data-address={data.address}
 	onmousedown={gotoTop}
 	onfocusin={gotoTop}
