@@ -7,8 +7,8 @@
 	// Render bgRoot only on root nodes.
 	export { bgDependency, bgRoot };
 
-	const saturate = 1.5;
-	const lighten = 0.05;
+	const saturate = 2;
+	const lighten = 0.3;
 	const lighten_ = 1 - lighten;
 
 	const matrix = `
@@ -94,7 +94,7 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg
-		class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-100"
+		class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-80"
 		viewBox="0 0 1 1"
 		class:z-1={data.render.dragged}
 	>
