@@ -23,7 +23,7 @@
 </script>
 
 <div
-    class="outline-1 bg-indigo-300/10 pointer-events-none origin-top-left"
+    class="outline-1 bg-indigo-300/10 pointer-events-none origin-top-left rounded-sm"
     style:left="{popup.left}px"
     style:top="{popup.top}px"
     style:width="{popup.width / DT.UNIT * viewport.render.scale}px"
