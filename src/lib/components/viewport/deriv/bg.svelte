@@ -77,8 +77,9 @@
 	let { data, type }: Props = $props();
 </script>
 
+<!-- Not used right now bc outlines are disabled. Called in viewport comp. -->
 {#snippet bgDependency()}
-	<svg class=" invisible absolute">
+	<!-- <svg class=" invisible absolute">
 		<filter id="outlineFilter" color-interpolation-filters="sRGB">
 			<feColorMatrix in="SourceGraphic" result="lightened" type="matrix" values={matrix} />
 			<feMorphology
@@ -89,7 +90,7 @@
 			/>
 			<feComposite in="SourceGraphic" />
 		</filter>
-	</svg>
+	</svg> -->
 {/snippet}
 
 {#snippet bgRoot(data: Deriv)}
@@ -99,9 +100,9 @@
 		class:z-1={data.render.dragged}
 	>
 		<Bg {data} type={nonOutlinedBgType} />
-		<g filter="url(#outlineFilter)">
+		<!-- <g filter="url(#outlineFilter)"> -->
 			<Bg {data} type={outlinedBgType} />
-		</g>
+		<!-- </g> -->
 	</svg>
 {/snippet}
 
