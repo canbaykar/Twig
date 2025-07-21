@@ -53,8 +53,8 @@
 	const nonOutlinedBgType: BgType = {
 		showFormulaBg: (data: Deriv) => !data.render.formulaBg,
 		showBarBg: (data: Deriv) => !data.render.barBg && data.render.hasBar,
-		formulaFill: (data: Deriv) => `var(--color-bg)`,
-		barFill: (data: Deriv) => `var(--color-bg)`
+		formulaFill: () => `var(--color-bg)`,
+		barFill: () => `var(--color-bg)`
 	};
 	// Outlined
 	const outlinedBgType: BgType = {
