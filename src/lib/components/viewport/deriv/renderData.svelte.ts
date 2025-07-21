@@ -131,6 +131,17 @@ export default class DerivRenderData {
     readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
     readonly hasBar = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
     readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
+
+    /** Looks up associated deriv of closest ancestor from e.target
+     *  DerivRenderData version of Deriv.lookup */
+    static lookup(target: EventTarget | null) {
+        if (!(target instanceof Element)) return null;
+        const addressTarget = target.closest('[data-address]');
+        if (!addressTarget) return null;
+        // @ts-expect-error
+        const address = addressTarget.dataset.address as string;
+        return Deriv.lookup(address);
+	}
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth
