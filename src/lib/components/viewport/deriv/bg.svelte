@@ -95,7 +95,7 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg
-		class="pointer-events-none h-[1px] w-[1px] overflow-visible opacity-80"
+		class="h-[1px] w-[1px] overflow-visible opacity-80"
 		viewBox="0 0 1 1"
 		class:z-1={data.render.dragged}
 	>
@@ -115,6 +115,7 @@
 		height={formulaBgHeight}
 		rx={formulaRx}
 		fill={type.formulaFill(data)}
+		data-address={data.address}
 	/>
 {/if}
 
@@ -127,7 +128,7 @@
 
 <!-- For bar -->
 {#if type.showBarBg(data)}
-	<g fill={type.barFill(data)}>
+	<g fill={type.barFill(data)} data-address={data.address}>
 		<rect
 			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={data.render.y + barOffY}

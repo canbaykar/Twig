@@ -18,6 +18,20 @@
     addExampleProof();
 
     onDestroy(() => DerivRenderData.onDestroy());
+
+    // Update hovered for both viewport and derivs if its changed
+    // expect-error's are needed because the hovered props are readonly
+	function onmouseover(e: MouseEvent) { 
+        const hovered = DerivRenderData.lookup(e.target);
+        if (hovered === viewport.render.hovered) return;
+
+        // @ts-expect-error
+        if (viewport.render.hovered) viewport.render.hovered.render.hovered = false;
+        // @ts-expect-error
+        viewport.render.hovered = DerivRenderData.lookup(e.target);
+        // @ts-expect-error
+        if (hovered) hovered.render.hovered = true;
+	}
 </script>
 
 {@render bgDependency()}
@@ -29,7 +43,7 @@
     class:hover={!viewport.render.dragging}
     use:mouse.action
 >
-    <Panzoom data={viewport.render}>
+    <Panzoom data={viewport.render} {onmouseover}>
         {#each DerivRenderData.displayed as data (data)}
             <Deriv {data}></Deriv>
         {/each}

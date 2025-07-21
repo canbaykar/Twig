@@ -142,6 +142,10 @@ export default class DerivRenderData {
         const address = addressTarget.dataset.address as string;
         return Deriv.lookup(address);
 	}
+    
+    /** ($derived) Am I being hovered? Implemented in viewport.svelte
+     *  Also synced in viewport.svelte with hovered in ViewportRenderData */
+    readonly hovered: boolean = $state(false);
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth

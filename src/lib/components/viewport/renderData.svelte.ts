@@ -2,6 +2,7 @@ import { Child, Parent } from "$lib/utils/parent.svelte";
 import type { Component, ComponentProps } from "svelte";
 import { fallbackConverter } from "./panzoom/panzoom.svelte";
 import { mouse } from "$lib/utils/interact/mouse.svelte";
+import type Deriv from "$lib/state/deriv.svelte";
 
 export default class ViewportRenderData {
     x = $state(0);
@@ -36,6 +37,10 @@ export default class ViewportRenderData {
     dragLog(dragging: boolean) { // @ts-expect-error
         return this.dragging = Math.max(0, this.dragging + (dragging ? 1 : -1));
     }
+
+    /** ($derived) Hovered deriv. Implemented in viewport.svelte
+     *  Also synced in viewport.svelte with hovered in DerivRenderData */
+    readonly hovered: Deriv | null = $state(null);
 }
 
 // ---- Popups ----
