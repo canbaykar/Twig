@@ -32,6 +32,13 @@
         // @ts-expect-error
         if (hovered) hovered.render.hovered = true;
 	}
+    function onmouseleave() {
+        if (!viewport.render.hovered) return;
+        // @ts-expect-error
+        viewport.render.hovered.render.hovered = false;
+        // @ts-expect-error
+        viewport.render.hovered = null;
+    }
 </script>
 
 {@render bgDependency()}
@@ -43,7 +50,7 @@
     class:hover={!viewport.render.dragging}
     use:mouse.action
 >
-    <Panzoom data={viewport.render} {onmouseover}>
+    <Panzoom data={viewport.render} {onmouseover} {onmouseleave}>
         {#each DerivRenderData.displayed as data (data)}
             <Deriv {data}></Deriv>
         {/each}
