@@ -103,7 +103,13 @@ export default class DerivRenderData {
     readonly barBg: string | null = $derived.by(() => this.bgColor(this.deriv.logic.rule));
     // The logic
     private bgColor(val: any): string | null {
-        return (val instanceof Error) ? 'var(--color-bg-danger-emphasis)' : null;
+        return val instanceof Error 
+            ? this.hovered
+                ? 'var(--color-bg-danger-muted)'
+                : 'var(--color-bg-danger-emphasis)'
+            : this.hovered
+                ? 'var(--color-bg-muted)'
+                : null;
     }
 
     constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {

@@ -46,7 +46,7 @@
 
   --color-fg-danger: black;
   --color-bg-danger-emphasis: hsl(0 72.2% 50.6%);
-  --color-bg-danger-muted: black;
+  --color-bg-danger-muted: hsl(0, 45%, 63%);
   --color-border-danger-emphasis: black;
   --color-border-danger-muted: black;
 
