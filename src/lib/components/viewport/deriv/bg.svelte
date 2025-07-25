@@ -60,8 +60,8 @@
 	const outlinedBgType: BgType = {
 		showFormulaBg: (data: Deriv) => !!data.render.formulaBg,
 		showBarBg: (data: Deriv) => !!data.render.barBg && data.render.hasBar,
-		formulaFill: (data: Deriv) => `var(--color-${data.render.formulaBg})`,
-		barFill: (data: Deriv) => `var(--color-${data.render.barBg})`
+		formulaFill: (data: Deriv) => `${data.render.formulaBg}`,
+		barFill: (data: Deriv) => `${data.render.barBg}`
 	};
 </script>
 

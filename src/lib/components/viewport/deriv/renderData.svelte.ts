@@ -96,15 +96,15 @@ export default class DerivRenderData {
         return this.dragged || !!this.deriv.parent?.render?.inDragged;
     });
 
+    // Background colors
     /** ($derived) Background color for the formula element */
-    readonly formulaBg: string | null = $derived.by(() => 
-        (this.deriv.logic.conc instanceof Error) ? 'bg-danger-emphasis' : null
-    );
+    readonly formulaBg: string | null = $derived.by(() => this.bgColor(this.deriv.logic.conc));
     /** ($derived) Background color for the bar */
-    readonly barBg: string | null = $derived.by(() => 
-        (this.deriv.logic.rule instanceof Error) ? 'bg-danger-emphasis' : null
-    );
-
+    readonly barBg: string | null = $derived.by(() => this.bgColor(this.deriv.logic.rule));
+    // The logic
+    private bgColor(val: any): string | null {
+        return (val instanceof Error) ? 'var(--color-bg-danger-emphasis)' : null;
+    }
 
     constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {
         this.deriv = deriv;
