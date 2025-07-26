@@ -19,6 +19,7 @@ export default class Deriv extends Parent {
 		return this.parent instanceof Deriv ? this.parent.address + '.' + this.childIndex : this.childIndex + '';
 	});
 	static lookup(address: string): Deriv | null {
+		if (address === '-1') return null; // Viewport
 		const directions = address.split('.');
 		let pos: any = viewport;
 		for (let i = 0; i < directions.length; i++) {
