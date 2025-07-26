@@ -19,8 +19,10 @@
 
     onDestroy(() => DerivRenderData.onDestroy());
 
-    // Update hovered for both viewport and derivs if its changed
-    // expect-error's are needed because the hovered props are readonly
+    // Update hovered for both viewport and derivs if its changed.
+    // expect-error's are needed because the hovered props are readonly.
+    // These are also used for some drag events to cover the case of
+    // formula text selection being dragged.
 	function onmouseover(e: MouseEvent) { 
         const hovered = DerivRenderData.lookup(e.target);
         if (hovered === viewport.render.hovered) return;
@@ -50,7 +52,13 @@
     class:hover={!viewport.render.dragging}
     use:mouse.action
 >
-    <Panzoom data={viewport.render} {onmouseover} {onmouseleave}>
+    <Panzoom
+        data={viewport.render}
+        {onmouseover}
+        {onmouseleave}
+        ondragover={onmouseover}
+        ondragleave={onmouseleave}
+    >
         {#each DerivRenderData.displayed as data (data)}
             <Deriv {data}></Deriv>
         {/each}
