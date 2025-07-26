@@ -17,6 +17,8 @@
     viewport.detachAll();
     addExampleProof();
 
+    // Lifecycle hooks
+    mouse.init();
     onDestroy(() => DerivRenderData.onDestroy());
 
     // Update hovered for both viewport and derivs if its changed.
@@ -50,7 +52,6 @@
     class="font-math w-full h-full overflow-hidden"
     class:dragging={viewport.render.dragging}
     class:hover={!viewport.render.dragging}
-    use:mouse.action
 >
     <Panzoom
         data={viewport.render}

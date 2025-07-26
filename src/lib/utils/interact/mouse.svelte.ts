@@ -1,9 +1,11 @@
 // There'll be only one instance of Mouse.
 // (Because $state can't be a plain object field)
 // Uses self instead of 'this'
+
+import { onMount } from "svelte";
+
 /** All variables readonly $state */
 class Mouse {
-    element: HTMLElement | null = null;
     x = $state(0);
     y = $state(0);
     clientX = $state(0);
@@ -11,28 +13,14 @@ class Mouse {
     dx = $state(0);
     dy = $state(0);
     
-    /** Call me in some element as a svelte action */
-    action(element: HTMLElement) {
-        self.attach(element);
-        return {
-            destroy() {
-                self.detach(element);
-            }
-        };
-    }
-
-    private attach(element: HTMLElement) {
-        if (self.element) self.detach(self.element);
-        self.element = element;
-        
-        element.addEventListener('mousemove', self.mousemove);
-    }
-
-    private detach(element: HTMLElement) {
-        if (self.element !== element) return;
-        self.element = null;
-
-        element.removeEventListener('mousemove', self.mousemove);
+    /** Call me in some component */
+    init() {
+        onMount(() => {
+            document.addEventListener('mousemove', self.mousemove);
+            return () => {
+                document.removeEventListener('mousemove', self.mousemove);
+            };
+        });
     }
 
     private mousemove(e: MouseEvent) {
