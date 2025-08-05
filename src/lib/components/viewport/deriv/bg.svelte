@@ -115,7 +115,7 @@
 		height={formulaBgHeight}
 		rx={formulaRx}
 		fill={type.formulaFill(data)}
-		data-address={data.address}
+		data-uid={data.uid}
 	/>
 {/if}
 
@@ -128,7 +128,7 @@
 
 <!-- For bar -->
 {#if type.showBarBg(data)}
-	<g fill={type.barFill(data)} data-address={data.address}>
+	<g fill={type.barFill(data)} data-uid={data.uid}>
 		<rect
 			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={data.render.y + barOffY}

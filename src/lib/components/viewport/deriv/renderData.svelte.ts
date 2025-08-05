@@ -142,11 +142,11 @@ export default class DerivRenderData {
      *  DerivRenderData version of Deriv.lookup */
     static lookup(target: EventTarget | null) {
         if (!(target instanceof Element)) return null;
-        const addressTarget = target.closest('[data-address]');
-        if (!addressTarget) return null;
+        const uidTarget = target.closest('[data-uid]');
+        if (!uidTarget) return null;
         // @ts-expect-error
-        const address = addressTarget.dataset.address as string;
-        return Deriv.lookup(address);
+        const uid = uidTarget.dataset.uid as string;
+        return Deriv.lookup(uid);
 	}
     
     /** ($derived) Am I being hovered? Implemented in viewport.svelte

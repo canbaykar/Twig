@@ -1,7 +1,8 @@
 import DerivRenderData from "$lib/components/viewport/deriv/renderData.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
+import { uid } from "$lib/utils/uid";
 import { LogicData } from "./logic/index.svelte";
-import viewport, { type Serial } from "./viewport.svelte";
+import viewport, { type Serial, type Viewport } from "./viewport.svelte";
 
 export default class Deriv extends Parent {
 	declare readonly children: Deriv[];
@@ -14,19 +15,18 @@ export default class Deriv extends Parent {
 	/** ($derived) 0 if root, 1 + parent's depth otherwise */
 	readonly depth: number = $derived.by(() => (this.derivParent?.depth ?? -1) + 1);
 
-	/** ($derived) String of childIndexes, upwards */
-	readonly address: string = $derived.by(() => {
-		return this.parent instanceof Deriv ? this.parent.address + '.' + this.childIndex : this.childIndex + '';
-	});
-	static lookup(address: string): Deriv | null {
-		if (address === '-1') return null; // Viewport
-		const directions = address.split('.');
-		let pos: any = viewport;
-		for (let i = 0; i < directions.length; i++) {
-			pos = pos.children[parseInt(directions[i])];
-			if (!(pos instanceof Deriv)) return null;
-		}
-		return pos;
+	/** Unique id of deriv for a system to match DOM elements with data (with data-uid attribute)
+	 * 
+	 *  **WARNING:** Reactivity works differently with elements, so whether a deriv with a certain uid
+	 * 	is displayed may differ between DOM and viewport trees due to delay. */
+	readonly uid = uid();
+	/** Find the deriv with given uid IF IT'S DIPLAYED
+	 * 
+	 *  **WARNING:** Reactivity works differently with elements, so whether a deriv with a certain uid
+	 * 	is displayed may differ between DOM and viewport trees due to delay. */
+	static lookup(uid_: string, inside: Deriv | Viewport = viewport): Deriv | null {
+		if (uid_ === uid.null) return null; // Viewport
+		return Deriv.findDepthFirst(inside, d => d.uid === uid_);
 	}
 
 	/** ($state) */

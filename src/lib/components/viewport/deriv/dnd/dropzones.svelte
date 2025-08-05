@@ -10,10 +10,10 @@
         if (!(el instanceof HTMLElement) || !el.classList.contains('dropzone')) return null;
 
         const type = el.dataset.type as ZoneType | undefined;
-        const adr = el.dataset.address;
-        if (!type || !adr) return null;
+        const uid = el.dataset.uid;
+        if (!type || !uid) return null;
 
-        const deriv = Deriv.lookup(adr);
+        const deriv = Deriv.lookup(uid);
         if (!deriv) return null;
 
         return new zoneTypes[type](deriv, x);
@@ -51,7 +51,7 @@
         style:left="{op.left}px"
         style:width="{-2 * op.left}px"
         style:top="{op.top}px"
-        data-address={data.address}
+        data-uid={data.uid}
         data-type={type}
     ></div>
 {/snippet}
