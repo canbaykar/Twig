@@ -51,6 +51,23 @@ export default class Deriv extends Parent {
 	static find(start: Deriv, fn: (d: Deriv) => boolean, backwards = false, reverse = false, limit = Infinity): Deriv | null {
 		return Crawler.find(start, fn, backwards, reverse, limit);
 	}
+
+	/** Util for seaching depth-first recursively.
+	 * 	Limit is the height limit relative to current position, integer or Infinity. When it's 0 (or negative), doesn't go any higher. */
+	static findDepthFirst(start: Deriv, fn: (d: Deriv) => boolean, backwards = false, limit = Infinity): Deriv | null {
+		return this._findDepthFirst([start], fn, backwards, limit);
+	}
+	// If making this public, put the length check to the front!
+	private static _findDepthFirst(row: Deriv[], fn: (d: Deriv) => boolean, backwards = false, limit = Infinity): Deriv | null {
+		for (let i = 0; i < row.length; i++) {
+			const deriv = row[backwards ? row.length - 1 - i : i];
+			if (fn(deriv)) return deriv;
+		}
+		if (limit <= 0) return null;
+		const next = row.map(d => d.children).flat();
+		if (next.length === 0) return null;
+		return this._findDepthFirst(next, fn, backwards, limit - 1);
+	}
 }
 
 
