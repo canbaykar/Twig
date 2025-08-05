@@ -59,7 +59,7 @@
         {onmouseleave}
         ondragover={onmouseover}
         ondragleave={onmouseleave}
-        data-uid="-1"
+        data-uid={uid.null}
     >
         {#each DerivRenderData.displayed as data (data)}
             <Deriv {data}></Deriv>
