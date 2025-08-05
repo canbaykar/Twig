@@ -54,8 +54,9 @@ export default class Deriv extends Parent {
 
 	/** Util for seaching depth-first recursively.
 	 * 	Limit is the height limit relative to current position, integer or Infinity. When it's 0 (or negative), doesn't go any higher. */
-	static findDepthFirst(start: Deriv, fn: (d: Deriv) => boolean, backwards = false, limit = Infinity): Deriv | null {
-		return this._findDepthFirst([start], fn, backwards, limit);
+	static findDepthFirst(start: Deriv | Viewport = viewport, fn: (d: Deriv) => boolean, backwards = false, limit = Infinity): Deriv | null {
+		const row = start instanceof Deriv ? [start] : viewport.children;
+		return this._findDepthFirst(row, fn, backwards, limit);
 	}
 	// If making this public, put the length check to the front!
 	private static _findDepthFirst(row: Deriv[], fn: (d: Deriv) => boolean, backwards = false, limit = Infinity): Deriv | null {
