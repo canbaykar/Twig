@@ -7,7 +7,6 @@
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/bg.svelte";
-	import { uid } from "$lib/utils/uid";
     
     interface Props {
         viewport: Viewport;
