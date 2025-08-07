@@ -45,6 +45,10 @@ export default class ViewportRenderData {
     /** ($derived) Hovered deriv. Implemented in viewport.svelte
      *  Also synced in viewport.svelte with hovered in DerivRenderData */
     readonly hovered: Deriv | null = $state(null);
+
+    /** ($derived.raw) Selected derivs. Implemented in viewport.svelte
+     *  Also synced in viewport.svelte with selected in DerivRenderData */
+    readonly selected: Deriv[] = $state.raw([]);
 }
 
 // ---- Popups ----

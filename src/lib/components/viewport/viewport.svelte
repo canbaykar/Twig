@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { addExampleProof } from "$lib/state/deriv.svelte";
+	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
 	import type { Viewport } from "$lib/state/viewport.svelte";
 	import { onDestroy } from "svelte";
-	import Deriv from "./deriv/deriv.svelte";
+	import DerivC from "./deriv/deriv.svelte";
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/bg.svelte";
+	import { uid } from "$lib/utils/uid";
     
     interface Props {
         viewport: Viewport;
@@ -36,12 +37,36 @@
         // @ts-expect-error
         if (hovered) hovered.render.hovered = true;
 	}
-    function onmouseleave() {
-        if (!viewport.render.hovered) return;
+    function onmouseleave(e: MouseEvent) {
+		// When this is called in ondragleave, it fires in child elements too even tho
+		// this function is for leaving viewport only, hence the 2nd check
+        if (
+			!viewport.render.hovered || 
+			viewport.render.element!.contains(e.relatedTarget as any)
+		) return;
         // @ts-expect-error
         viewport.render.hovered.render.hovered = false;
         // @ts-expect-error
         viewport.render.hovered = null;
+    }
+
+    function onmousedown(e: MouseEvent) {
+        const clicked = DerivRenderData.lookup(e.target);
+        if (clicked && viewport.render.selected.includes(clicked)) return;
+        updateSelected(clicked);
+    }
+    function onmouseup(e: MouseEvent) {
+        const clicked = DerivRenderData.lookup(e.target);
+        if (!clicked) return;
+        updateSelected(clicked);
+    }
+    function updateSelected(clicked: Deriv | null) {
+        // @ts-expect-error
+        for (const deriv of viewport.render.selected) deriv.render.selected = false;
+        // @ts-expect-error
+        viewport.render.selected = clicked ? [clicked] : [];
+        // @ts-expect-error
+        if (clicked) clicked.render.selected = true;
     }
 </script>
 
@@ -58,6 +83,8 @@
 	{onmouseleave}
 	ondragover={onmouseover}
 	ondragleave={onmouseleave}
+	{onmousedown}
+	{onmouseup}
 	role="presentation"
 >
     <Panzoom
@@ -65,7 +92,7 @@
         data-uid={uid.null}
     >
         {#each DerivRenderData.displayed as data (data)}
-            <Deriv {data}></Deriv>
+            <DerivC {data}></DerivC>
         {/each}
         
         {#each viewport.render.panzoomPopups.children as popup (popup)}

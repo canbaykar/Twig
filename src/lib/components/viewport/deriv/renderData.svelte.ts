@@ -104,10 +104,10 @@ export default class DerivRenderData {
     // The logic
     private bgColor(val: any): string | null {
         return val instanceof Error 
-            ? this.hovered
+            ? this.hovered || this.selected
                 ? 'var(--color-bg-danger-muted)'
                 : 'var(--color-bg-danger-emphasis)'
-            : this.hovered
+            : this.hovered || this.selected
                 ? 'var(--color-bg-muted)'
                 : null;
     }
@@ -152,6 +152,10 @@ export default class DerivRenderData {
     /** ($derived) Am I being hovered? Implemented in viewport.svelte
      *  Also synced in viewport.svelte with hovered in ViewportRenderData */
     readonly hovered: boolean = $state(false);
+
+    /** ($derived) Am I being selected? Implemented in viewport.svelte
+     *  Also synced in viewport.svelte with selected in ViewportRenderData */
+    readonly selected: boolean = $state(false);
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth
