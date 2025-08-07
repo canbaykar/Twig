@@ -48,18 +48,20 @@
 {@render bgDependency()}
 
 <!-- The :global(.hover) class is used to determine non-DND when hover effects should happen -->
+<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
 	bind:this={viewport.render.element}
     class="font-math w-full h-full overflow-hidden"
     class:dragging={viewport.render.dragging}
     class:hover={!viewport.render.dragging}
+	{onmouseover}
+	{onmouseleave}
+	ondragover={onmouseover}
+	ondragleave={onmouseleave}
+	role="presentation"
 >
     <Panzoom
         data={viewport.render}
-        {onmouseover}
-        {onmouseleave}
-        ondragover={onmouseover}
-        ondragleave={onmouseleave}
         data-uid={uid.null}
     >
         {#each DerivRenderData.displayed as data (data)}
