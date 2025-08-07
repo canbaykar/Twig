@@ -38,7 +38,7 @@ function getListeners(op?: DraggableOptions) {
 	const l = {
 		onDown(e: MouseEvent) {
 			if (!checker(e.target as HTMLElement)) return;
-			this._onDown();
+			l._onDown();
 		},
 		// Used in draggable.once that force-starts an onDown without e
 		_onDown() {
