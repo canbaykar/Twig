@@ -27,13 +27,13 @@
     // These are also used for some drag events to cover the case of
     // formula text selection being dragged.
 	function onmouseover(e: MouseEvent) { 
-        const hovered = DerivRenderData.lookup(e.target);
+        const hovered = DerivRenderData.lookup(e.target).deriv;
         if (hovered === viewport.render.hovered) return;
 
         // @ts-expect-error
         if (viewport.render.hovered) viewport.render.hovered.render.hovered = false;
         // @ts-expect-error
-        viewport.render.hovered = DerivRenderData.lookup(e.target);
+        viewport.render.hovered = DerivRenderData.lookup(e.target).deriv;
         // @ts-expect-error
         if (hovered) hovered.render.hovered = true;
 	}
@@ -51,12 +51,12 @@
     }
 
     function onmousedown(e: MouseEvent) {
-        const clicked = DerivRenderData.lookup(e.target);
+        const clicked = DerivRenderData.lookup(e.target).deriv;
         if (clicked && viewport.render.selected.includes(clicked)) return;
         updateSelected(clicked);
     }
     function onmouseup(e: MouseEvent) {
-        const clicked = DerivRenderData.lookup(e.target);
+        const clicked = DerivRenderData.lookup(e.target).deriv;
         if (!clicked) return;
         updateSelected(clicked);
     }
@@ -73,6 +73,7 @@
 {@render bgDependency()}
 
 <!-- The :global(.hover) class is used to determine when non-DND hover effects should happen -->
+<!-- See deriv.renderData.lookup for data-part -->
 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
 	bind:this={viewport.render.element}
@@ -86,10 +87,10 @@
 	{onmousedown}
 	{onmouseup}
 	role="presentation"
+	data-part="viewport"
 >
     <Panzoom
         data={viewport.render}
-        data-uid={uid.null}
     >
         {#each DerivRenderData.displayed as data (data)}
             <DerivC {data}></DerivC>

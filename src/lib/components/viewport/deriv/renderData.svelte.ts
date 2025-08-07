@@ -138,15 +138,34 @@ export default class DerivRenderData {
     readonly hasBar = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
     readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
 
+	// --- Part + UID System ---
+	// Viewport element has data-part='viewport' and for derivs:
+	// - Every element of a deriv is or is in some element with poth data-part and data-uid
+	// - UID is defined in Deriv for this system. This is used in viewport to define interactions
+	//   using its hover & selected system to avoid defining listeners in too many places.
+	//   (Because they interfere with each other and complicate things)
     /** Looks up associated deriv of closest ancestor from e.target
      *  DerivRenderData version of Deriv.lookup */
     static lookup(target: EventTarget | null) {
-        if (!(target instanceof Element)) return null;
-        const uidTarget = target.closest('[data-uid]');
-        if (!uidTarget) return null;
-        // @ts-expect-error
-        const uid = uidTarget.dataset.uid as string;
-        return Deriv.lookup(uid);
+        if (!(target instanceof Element)) return { part: null, deriv: null };
+
+		// Find part
+        const partTarget = target.closest('[data-part]') as HTMLElement | null;
+        if (!partTarget) return { part: null, deriv: null };
+        const part = partTarget.dataset.part as string;
+		if (part === 'viewport') return { part, deriv: null };
+		
+		// Find uid
+		let uid = partTarget.dataset.uid;
+		if (!uid) {
+			const uidTarget = partTarget.closest('[data-uid]') as HTMLElement | null;
+			if (!uidTarget) return { part, deriv: null };
+			uid = uidTarget.dataset.uid as string;
+		}
+
+		// Find deriv
+        const deriv = Deriv.lookup(uid);
+		return { part, deriv };
 	}
     
     /** ($derived) Am I being hovered? Implemented in viewport.svelte

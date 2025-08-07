@@ -24,6 +24,7 @@
     {@render bgRoot(data)}
 {/if}
 
+<!-- See deriv.renderData.lookup for data-part -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="deriv"
@@ -32,6 +33,7 @@
 	style:translate="{data.render.x}px {data.render.y}px"
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
+	data-part="body"
 	onmousedown={gotoTop}
 	onfocusin={gotoTop}
 >

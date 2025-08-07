@@ -34,6 +34,7 @@
     class="pointer-events-none bg-fg h-1 bottom-(--DERIV-BAR-BOTTOM) origin-left translate-x-[-50%] rounded-full select-none"
     class:bg-transparent={!data.render.hasBar}
     style:width="{render.barWidth}px"
+	data-part="bar"
 >
     <!-- Label -->
     {#if data.render.hasLabel}

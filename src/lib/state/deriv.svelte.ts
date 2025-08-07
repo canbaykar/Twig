@@ -25,7 +25,6 @@ export default class Deriv extends Parent {
 	 *  **WARNING:** Reactivity works differently with elements, so whether a deriv with a certain uid
 	 * 	is displayed may differ between DOM and viewport trees due to delay. */
 	static lookup(uid_: string, inside: Deriv | Viewport = viewport): Deriv | null {
-		if (uid_ === uid.null) return null; // Viewport
 		return Deriv.findDepthFirst(inside, d => d.uid === uid_);
 	}
 

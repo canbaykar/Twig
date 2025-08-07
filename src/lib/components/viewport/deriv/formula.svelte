@@ -94,6 +94,7 @@
 			bind:this={editorElement}
 			{onblur}
 			rows="1"
+			data-part="formula"
 		></textarea>
 	{/if}
 
