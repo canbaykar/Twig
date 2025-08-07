@@ -49,6 +49,7 @@
 
 <!-- The :global(.hover) class is used to determine non-DND when hover effects should happen -->
 <div
+	bind:this={viewport.render.element}
     class="font-math w-full h-full overflow-hidden"
     class:dragging={viewport.render.dragging}
     class:hover={!viewport.render.dragging}

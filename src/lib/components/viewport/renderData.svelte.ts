@@ -8,6 +8,10 @@ export default class ViewportRenderData {
     x = $state(0);
     y = $state(0);
     scale = $state(1);
+
+	/** ($state) */
+	element: HTMLElement | null = $state(null);
+
     popups = popups;
     panzoomPopups = panzoomPopups;
 
