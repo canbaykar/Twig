@@ -7,15 +7,15 @@
 	// Render bgRoot only on root nodes.
 	export { bgDependency, bgRoot };
 
-	const saturate = 2;
-	const lighten = 0.3;
-	const lighten_ = 1 - lighten;
+	// const saturate = 2;
+	// const lighten = 0.3;
+	// const lighten_ = 1 - lighten;
 
-	const matrix = `
-    ${(0.213 + 0.787 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
-    ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 + 0.285 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
-    ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 + 0.928 * saturate) * lighten_} 0 ${lighten}
-    0 0 0 1 0`;
+	// const matrix = `
+    // ${(0.213 + 0.787 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
+    // ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 + 0.285 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
+    // ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 + 0.928 * saturate) * lighten_} 0 ${lighten}
+    // 0 0 0 1 0`;
 	
 	// Helper constants for bg dimensions are here to prevent being recalculated
 	// all the time
