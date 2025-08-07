@@ -2,7 +2,7 @@
 	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
 	import type { Viewport } from "$lib/state/viewport.svelte";
 	import { onDestroy } from "svelte";
-	import DerivC from "./deriv/deriv.svelte";
+	import DerivC from "./deriv/derivC.svelte";
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
