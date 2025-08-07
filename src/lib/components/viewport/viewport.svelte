@@ -72,7 +72,7 @@
 
 {@render bgDependency()}
 
-<!-- The :global(.hover) class is used to determine non-DND when hover effects should happen -->
+<!-- The :global(.hover) class is used to determine when non-DND hover effects should happen -->
 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
 	bind:this={viewport.render.element}
