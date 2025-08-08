@@ -1,13 +1,37 @@
-<script lang="ts">
+<script module lang="ts">
 	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
 	import type { Viewport } from "$lib/state/viewport.svelte";
 	import { onDestroy } from "svelte";
-	import DerivC from "./deriv/derivC.svelte";
+	import DerivC, { listeners } from "./deriv/derivC.svelte";
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/bg.svelte";
-    
+
+	type Listener<K extends keyof HTMLElementEventMap> 
+		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
+	type LayoutListener <K extends keyof HTMLElementEventMap> 
+		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }, listener: Listener<K>) => void;
+
+	/** 
+	 * Type for different parts' listeners to be managed by viewport. (See part + uid 
+	 * system in deriv render data.) Only listeners in part "layout" can take a 2nd 
+	 * argument, I just couldn't enfore it with TS.
+	 */
+	export type Listeners = {
+		[part: string]: {
+			[K in keyof HTMLElementEventMap]?: LayoutListener<K>;
+		};
+	};
+
+	function callListener<K extends keyof HTMLElementEventMap>(type: K, part: string, deriv: Deriv, evt: HTMLElementEventMap[K]) {
+		const e = Object.assign(evt, { deriv });
+		const layoutListener = listeners["layout"]?.[type] ?? ((e, l) => l(e));
+		layoutListener(e, listeners[part]?.[type] ?? (() => {}) as any);
+	}
+</script>
+
+<script lang="ts">
     interface Props {
         viewport: Viewport;
     }
@@ -46,24 +70,25 @@
         viewport.render.hovered = null;
     }
 
-    function onmousedown(e: MouseEvent) {
-        const clicked = DerivRenderData.lookup(e.target).deriv;
-        if (clicked && viewport.render.selected.includes(clicked)) return;
-        updateSelected(clicked);
-    }
-    function onmouseup(e: MouseEvent) {
-        const clicked = DerivRenderData.lookup(e.target).deriv;
-        if (!clicked) return;
-        updateSelected(clicked);
-    }
-    function updateSelected(clicked: Deriv | null) {
-        // @ts-expect-error
-        for (const deriv of viewport.render.selected) deriv.render.selected = false;
-        // @ts-expect-error
-        viewport.render.selected = clicked ? [clicked] : [];
-        // @ts-expect-error
-        if (clicked) clicked.render.selected = true;
-    }
+	function onmousedown(e: MouseEvent) {
+		const { deriv, part } = DerivRenderData.lookup(e.target);
+		if (!deriv || !viewport.render.selected.includes(deriv)) updateSelected(deriv);
+		if (deriv) callListener("mousedown", part, deriv, e);
+	}
+	function onmouseup(e: MouseEvent) {
+		const { deriv, part } = DerivRenderData.lookup(e.target);
+		if (!deriv) return;
+		updateSelected(deriv);
+		callListener("mouseup", part, deriv, e);
+	}
+	function updateSelected(clicked: Deriv | null) {
+		// @ts-expect-error
+		for (const deriv of viewport.render.selected) deriv.render.selected = false;
+		// @ts-expect-error
+		viewport.render.selected = clicked ? [clicked] : [];
+		// @ts-expect-error
+		if (clicked) clicked.render.selected = true;
+	}
 </script>
 
 {@render bgDependency()}

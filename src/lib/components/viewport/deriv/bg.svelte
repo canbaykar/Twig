@@ -109,6 +109,7 @@
 <!-- For formula -->
 {#if type.showFormulaBg(data)}	
 	<rect
+		class="cursor-all-scroll"
 		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
 		y={data.render.y + formulaOffY}
 		width={data.render.width + pad2}
@@ -116,7 +117,7 @@
 		rx={formulaRx}
 		fill={type.formulaFill(data)}
 		data-uid={data.uid}
-		data-part="body"
+		data-part="bg"
 	/>
 {/if}
 
@@ -129,7 +130,7 @@
 
 <!-- For bar -->
 {#if type.showBarBg(data)}
-	<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar">
+	<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar-bg">
 		<rect
 			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={data.render.y + barOffY}
