@@ -39,10 +39,7 @@
     function onmouseleave(e: MouseEvent) {
 		// When this is called in ondragleave, it fires in child elements too even tho
 		// this function is for leaving viewport only, hence the 2nd check
-        if (
-			!viewport.render.hovered || 
-			viewport.render.element!.contains(e.relatedTarget as any)
-		) return;
+		if (!viewport.render.hovered || e.relatedTarget) return;
         // @ts-expect-error
         viewport.render.hovered.render.hovered = false;
         // @ts-expect-error
