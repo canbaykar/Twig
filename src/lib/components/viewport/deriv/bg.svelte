@@ -95,7 +95,7 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg
-		class="h-[1px] w-[1px] overflow-visible opacity-80"
+		class="h-[1px] w-[1px] overflow-visible opacity-80 select-none"
 		viewBox="0 0 1 1"
 		class:z-1={data.render.dragged}
 	>
