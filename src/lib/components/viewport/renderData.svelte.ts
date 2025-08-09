@@ -3,6 +3,7 @@ import type { Component, ComponentProps } from "svelte";
 import { fallbackConverter } from "./panzoom/panzoom.svelte";
 import { mouse } from "$lib/utils/interact/mouse.svelte";
 import type Deriv from "$lib/state/deriv.svelte";
+import viewport from "$lib/state/viewport.svelte";
 
 export default class ViewportRenderData {
     x = $state(0);
@@ -46,9 +47,17 @@ export default class ViewportRenderData {
      *  Also synced in viewport.svelte with hovered in DerivRenderData */
     readonly hovered: Deriv | null = $state(null);
 
+    private selected_: Deriv[] = $state.raw([]);
     /** ($derived.raw) Selected derivs. Implemented in viewport.svelte
      *  Also synced in viewport.svelte with selected in DerivRenderData */
-    readonly selected: Deriv[] = $state.raw([]);
+	get selected() { return this.selected_ }
+	set selected(val: Deriv[]) {
+		// @ts-expect-error
+		for (const deriv of viewport.render.selected) deriv.render.selected = false;
+		viewport.render.selected_ = val;
+		// @ts-expect-error
+		for (const d of val) d.render.selected = true;
+	}
 }
 
 // ---- Popups ----

@@ -72,22 +72,15 @@
 
 	function onmousedown(e: MouseEvent) {
 		const { deriv, part } = DerivRenderData.lookup(e.target);
-		if (!deriv || !viewport.render.selected.includes(deriv)) updateSelected(deriv);
+		if (!deriv || !viewport.render.selected.includes(deriv)) 
+			viewport.render.selected = deriv ? [deriv] : [];
 		if (deriv) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part } = DerivRenderData.lookup(e.target);
 		if (!deriv || viewport.render.dragging) return;
-		updateSelected(deriv);
+		viewport.render.selected = [deriv];
 		callListener("mouseup", part, deriv, e);
-	}
-	function updateSelected(clicked: Deriv | null) {
-		// @ts-expect-error
-		for (const deriv of viewport.render.selected) deriv.render.selected = false;
-		// @ts-expect-error
-		viewport.render.selected = clicked ? [clicked] : [];
-		// @ts-expect-error
-		if (clicked) clicked.render.selected = true;
 	}
 </script>
 
