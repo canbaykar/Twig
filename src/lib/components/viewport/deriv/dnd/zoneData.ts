@@ -48,6 +48,7 @@ export const zoneTypes = {
 
         enter(dragged: Deriv): void {
             dragged.attach(this.deriv);
+			this.deriv.render.goToTop();
         }
         exit(dragged: Deriv): void {
             dragged.attach(viewport);
@@ -78,6 +79,7 @@ export const zoneTypes = {
         enter(dragged: Deriv): void {
             const i = this.prevSib ? this.deriv.children.indexOf(this.prevSib) + 1 : 0;
             dragged.attach(this.deriv, i);
+			this.deriv.render.goToTop();
         }
         exit(dragged: Deriv): void {
             dragged.attach(viewport);
