@@ -51,7 +51,7 @@
     // formula text selection being dragged.
 	function onmouseover(e: MouseEvent) { 
         const hovered = DerivRenderData.lookup(e.target).deriv;
-        if (hovered === viewport.render.hovered) return;
+        if (hovered === viewport.render.hovered || viewport.render.dragging) return;
 
         // @ts-expect-error
         if (viewport.render.hovered) viewport.render.hovered.render.hovered = false;
@@ -77,7 +77,7 @@
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part } = DerivRenderData.lookup(e.target);
-		if (!deriv) return;
+		if (!deriv || viewport.render.dragging) return;
 		updateSelected(deriv);
 		callListener("mouseup", part, deriv, e);
 	}
