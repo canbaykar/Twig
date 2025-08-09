@@ -14,19 +14,13 @@
 	export const listeners: Listeners = {
 		layout: {
 			mousedown(e, l) {
-				gotoTop(e.deriv);
+				e.deriv.render.goToTop();
 				l(e);
 			},
 		},
 		
 		...dndListeners,
 	};
-
-    function gotoTop(data: Deriv) { 
-		// If not last child, reattach to be last
-        if (viewport.children.length - 1 > data.root.childIndex)
-            data.root.attach(viewport);
-	}
 </script>
 
 <script lang="ts">
@@ -52,7 +46,7 @@
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
 	data-part="body"
-	onfocusin={() => gotoTop(data)}
+	onfocusin={() => data.render.goToTop()}
 >
 	<Formula {data}>
 		<!-- <Handle {data} class="right-[100%]" />
