@@ -10,7 +10,6 @@
 
 	// When there are more listeners to be sent to viewport, 
 	// they are going to be merged here.
-	// TODO: Add focus listener and remove the listener for it below
 	export const listeners: Listeners = {
 		layout: {
 			mousedown(e, l) {
@@ -29,6 +28,11 @@
 	}
 
 	let { data }: Props = $props();
+
+	function onfocus() {
+		if (viewport.render.selected.includes(data))
+			viewport.render.selected = [data]
+	}
 </script>
 
 <!-- Background -->
@@ -46,7 +50,7 @@
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
 	data-part="body"
-	onfocus={() => data.render.goToTop()}
+	{onfocus}
 >
 	<Formula {data}>
 		<!-- <Handle {data} class="right-[100%]" />
