@@ -46,7 +46,7 @@
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
 	data-part="body"
-	onfocusin={() => data.render.goToTop()}
+	onfocus={() => data.render.goToTop()}
 >
 	<Formula {data}>
 		<!-- <Handle {data} class="right-[100%]" />
