@@ -66,7 +66,7 @@
 </script>
 
 <script lang="ts">
-	import { DT } from '../../../../DT';
+	import { DT } from '../../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
 
 	interface Props {

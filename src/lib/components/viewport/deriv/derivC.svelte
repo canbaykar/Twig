@@ -4,7 +4,7 @@
 	import Formula from './formula.svelte';
 	import Dropzones from './dnd/dropzones.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { bgRoot } from './bg.svelte';
+	import { bgRoot } from './dnd/bg.svelte';
 	import { dndListeners } from './dnd/dndListeners';
 	import type { Listeners } from '../viewportC.svelte';
 

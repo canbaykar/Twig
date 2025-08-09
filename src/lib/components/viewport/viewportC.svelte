@@ -6,7 +6,7 @@
 	import DerivRenderData from "./deriv/renderData.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
-	import { bgDependency } from "./deriv/bg.svelte";
+	import { bgDependency } from "./deriv/dnd/bg.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
