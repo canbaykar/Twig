@@ -28,11 +28,6 @@
 	}
 
 	let { data }: Props = $props();
-
-	function onfocus() {
-		if (viewport.render.selected.includes(data))
-			viewport.render.selected = [data]
-	}
 </script>
 
 <!-- Background -->
@@ -50,7 +45,6 @@
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
 	data-part="body"
-	{onfocus}
 >
 	<Formula {data}>
 		<!-- <Handle {data} class="right-[100%]" />
