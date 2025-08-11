@@ -71,15 +71,15 @@
     }
 
 	function onmousedown(e: MouseEvent) {
-		const { deriv, part } = DerivRenderData.lookup(e.target);
-		if (!deriv || !viewport.render.selected.includes(deriv)) 
-			viewport.render.selected = deriv ? [deriv] : [];
+		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
+		if (!deriv || !deriv.render.isSelected(bar)) 
+			viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
-		const { deriv, part } = DerivRenderData.lookup(e.target);
+		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
 		if (!deriv || viewport.render.dragging) return;
-		viewport.render.selected = [deriv];
+		viewport.render.selectOnly(deriv, bar);
 		callListener("mouseup", part, deriv, e);
 	}
 </script>

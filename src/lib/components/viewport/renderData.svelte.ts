@@ -47,16 +47,28 @@ export default class ViewportRenderData {
      *  Also synced in viewport.svelte with hovered in DerivRenderData */
     readonly hovered: Deriv | null = $state(null);
 
-    private selected_: Deriv[] = $state.raw([]);
-    /** ($derived.raw) Selected derivs. Implemented in viewport.svelte
-     *  Also synced in viewport.svelte with selected in DerivRenderData */
-	get selected() { return this.selected_ }
-	set selected(val: Deriv[]) {
+    // private selected_: Deriv[] = $state.raw([]);
+    // /** ($derived.raw) Selected derivs. Implemented in viewport.svelte
+    //  *  Also synced in viewport.svelte with selected in DerivRenderData */
+	// get selected() { return this.selected_ }
+	// set selected(val: Deriv[]) {
+	// 	// @ts-expect-error
+	// 	for (const deriv of viewport.render.selected) deriv.render.selected = false;
+	// 	viewport.render.selected_ = val;
+	// 	// @ts-expect-error
+	// 	for (const d of val) d.render.selected = true;
+	// }
+
+	/** ($raw) DO NOT modify directly! Use related methods instead.
+	 *  Implemented in viewport.svelte, synced in viewport.svelte with 
+	 *  selected in DerivRenderData */
+	readonly selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
+	selectOnly(deriv?: Deriv | null, bar = false) {
+		for (const { deriv } of viewport.render.selection)
+			deriv.render.clearSelection();
 		// @ts-expect-error
-		for (const deriv of viewport.render.selected) deriv.render.selected = false;
-		viewport.render.selected_ = val;
-		// @ts-expect-error
-		for (const d of val) d.render.selected = true;
+		this.selection = deriv ? [{ deriv, bar }] : [];
+		if (deriv) deriv.render.select(bar);
 	}
 }
 

@@ -98,16 +98,20 @@ export default class DerivRenderData {
 
     // Background colors
     /** ($derived) Background color for the formula element */
-    readonly formulaBg: string | null = $derived.by(() => this.bgColor(this.deriv.logic.conc));
+    readonly formulaBg: string | null = $derived.by(() => 
+		this.bgColor(this.deriv.logic.conc, this.bodySelected)
+	);
     /** ($derived) Background color for the bar */
-    readonly barBg: string | null = $derived.by(() => this.bgColor(this.deriv.logic.rule));
+    readonly barBg: string | null = $derived.by(() => 
+		this.bgColor(this.deriv.logic.rule, this.barSelected)
+	);
     // The logic
-    private bgColor(val: any): string | null {
+    private bgColor(val: any, selected: boolean): string | null {
         return val instanceof Error 
-            ? this.hovered || this.selected
+            ? this.hovered || selected
                 ? 'var(--color-bg-danger-muted)'
                 : 'var(--color-bg-danger-emphasis)'
-            : this.hovered || this.selected
+            : this.hovered || selected
                 ? 'var(--color-bg-muted)'
                 : null;
     }
@@ -147,34 +151,52 @@ export default class DerivRenderData {
     /** Looks up associated deriv of closest ancestor from e.target
      *  DerivRenderData version of Deriv.lookup */
     static lookup(target: EventTarget | null) {
-        if (!(target instanceof Element)) return { part: null, deriv: null };
+        if (!(target instanceof Element)) 
+			return { part: null, deriv: null, bar: false };
 
 		// Find part
         const partTarget = target.closest('[data-part]') as HTMLElement | null;
-        if (!partTarget) return { part: null, deriv: null };
+        if (!partTarget) 
+			return { part: null, deriv: null, bar: false };
         const part = partTarget.dataset.part as string;
-		if (part === 'viewport') return { part, deriv: null };
+		if (part === 'viewport') 
+			return { part, deriv: null, bar: false };
 		
 		// Find uid
 		let uid = partTarget.dataset.uid;
 		if (!uid) {
 			const uidTarget = partTarget.closest('[data-uid]') as HTMLElement | null;
-			if (!uidTarget) return { part, deriv: null };
+			if (!uidTarget) 
+				return { part, deriv: null, bar: false };
 			uid = uidTarget.dataset.uid as string;
 		}
 
 		// Find deriv
         const deriv = Deriv.lookup(uid);
-		return { part, deriv };
+		return { part, deriv, bar: !!part.match(/^bar/) };
 	}
     
-    /** ($derived) Am I being hovered? Implemented in viewport.svelte
+    /** ($state) Am I being hovered? Implemented in viewport.svelte
      *  Also synced in viewport.svelte with hovered in ViewportRenderData */
     readonly hovered: boolean = $state(false);
 
-    /** ($derived) Am I being selected? Implemented in viewport.svelte
+    /** ($state) Implemented in viewport.svelte
      *  Also synced in viewport.svelte with selected in ViewportRenderData */
-    readonly selected: boolean = $state(false);
+	readonly bodySelected = $state(false);
+    /** ($state) Implemented in viewport.svelte
+     *  Also synced in viewport.svelte with selected in ViewportRenderData */
+	readonly barSelected = $state(false);
+	clearSelection() {             // @ts-expect-error
+		this.bodySelected = false; // @ts-expect-error
+		this.barSelected = false;
+	}
+	select(bar = false, value = true) { // @ts-expect-error
+		bar ? this.barSelected  = value // @ts-expect-error
+			: this.bodySelected = value;
+	}
+	isSelected(bar = false) {
+		return bar ? this.barSelected : this.bodySelected;
+	}
 
 	/** Util that brings the root of this deriv to the front */
 	goToTop() {
