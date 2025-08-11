@@ -62,15 +62,15 @@
 
 	function onmousedown(e: MouseEvent) {
 		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
-		if (!deriv || !deriv.render.isSelected(bar)) 
+		if (deriv && !deriv.render.isSelected(bar)) 
 			viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
-		if (!deriv || viewport.render.dragging) return;
+		if (viewport.render.dragging) return;
 		viewport.render.selectOnly(deriv, bar);
-		callListener("mouseup", part, deriv, e);
+		if (deriv) callListener("mouseup", part, deriv, e);
 	}
 </script>
 
@@ -95,6 +95,8 @@
 >
     <Panzoom
         data={viewport.render}
+		onStart={() => viewport.render.dragLog(true)}
+		onEnd={() => viewport.render.dragLog(false)}
     >
         {#each DerivRenderData.displayed as data (data)}
             <DerivC {data}></DerivC>
