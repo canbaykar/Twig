@@ -43,8 +43,7 @@ export default class ViewportRenderData {
         return this.dragging = Math.max(0, this.dragging + (dragging ? 1 : -1));
     }
 
-    /** ($derived) Hovered deriv. Implemented in viewport.svelte
-     *  Also synced in viewport.svelte with hovered in DerivRenderData */
+    /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
     readonly hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
 	hover(deriv: Deriv | null, bar = false) {
 		// If hover state's already what we want, return

@@ -170,11 +170,11 @@ export default class DerivRenderData {
 	}
     
 	// --- Hovered ---
-    /** ($state) (Hovered is divided into body & bar) Implemented in viewport.svelte
-     *  Also synced in viewport.svelte with hovered in ViewportRenderData */
+    /** ($state) (Hovered is divided into body & bar)
+     *  Partially implemented in viewportC and viewport.render */
     readonly bodyHovered: boolean = $state(false);
-    /** ($state) (Hovered is divided into body & bar) Implemented in viewport.svelte
-     *  Also synced in viewport.svelte with hovered in ViewportRenderData */
+    /** ($state) (Hovered is divided into body & bar)
+     *  Partially implemented in viewportC and viewport.render */
     readonly barHovered: boolean = $state(false);
 	/** Util for checking bodyHovered & barHovered */
 	isHovered(bar = false) { return bar ? this.barHovered : this.bodyHovered; }

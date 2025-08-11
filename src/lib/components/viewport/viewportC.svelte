@@ -46,10 +46,8 @@
     onDestroy(() => DerivRenderData.onDestroy());
 
 	// --- Implementations of hovered & Selected ---
-    // Update hovered for both viewport and derivs if its changed.
-    // expect-error's are needed because the hovered props are readonly.
-    // These are also used for some drag events to cover the case of
-    // formula text selection being dragged.
+    // Update hovered for both viewport and derivs if its changed. These are also used for
+	// some drag events below to cover the case of formula text selection being dragged.
 	function onmouseover(e: MouseEvent) { 
         const { deriv, bar } = DerivRenderData.lookup(e.target);
         if (viewport.render.dragging) return;
