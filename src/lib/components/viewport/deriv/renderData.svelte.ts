@@ -180,23 +180,12 @@ export default class DerivRenderData {
 	isHovered(bar = false) { return bar ? this.barHovered : this.bodyHovered; }
 
 	// --- Selected ---
-    /** ($state) Implemented in viewport.svelte
-     *  Also synced in viewport.svelte with selected in ViewportRenderData */
+    /** ($state) Partially implemented in viewportC and viewport.render */
 	readonly bodySelected = $state(false);
-    /** ($state) Implemented in viewport.svelte
-     *  Also synced in viewport.svelte with selected in ViewportRenderData */
+    /** ($state) Partially implemented in viewportC and viewport.render */
 	readonly barSelected = $state(false);
-	clearSelection() {             // @ts-expect-error
-		this.bodySelected = false; // @ts-expect-error
-		this.barSelected = false;
-	}
-	select(bar = false, value = true) { // @ts-expect-error
-		bar ? this.barSelected  = value // @ts-expect-error
-			: this.bodySelected = value;
-	}
-	isSelected(bar = false) {
-		return bar ? this.barSelected : this.bodySelected;
-	}
+	/** Util for checking bodySelected & barSelected */
+	isSelected(bar = false) { return bar ? this.barSelected : this.bodySelected; }
 
     // --- Other utils ---
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
