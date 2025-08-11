@@ -54,11 +54,11 @@ export default class ViewportRenderData {
 			this.hovered.deriv.render.bodyHovered = false;
 		}
 		// Set hovered and update deriv.render side if needed
-		if (deriv) {                              // @ts-expect-error
-			this.hovered = { deriv, bar };        // @ts-expect-error
-			bar ? deriv.render.barHovered =  true // @ts-expect-error
-				: deriv.render.bodyHovered = true;
-		}
+		if (deriv) {                               // @ts-expect-error
+			this.hovered = { deriv, bar };         // @ts-expect-error
+			bar ? deriv.render.barHovered =  true  // @ts-expect-error
+				: deriv.render.bodyHovered = true; // @ts-expect-error
+		} else this.hovered = null;
 	}
 	/** Util for if a value mathces hovered (since === can't be used for this) */
 	isHovered(deriv: Deriv | null, bar = false) {
