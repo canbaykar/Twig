@@ -1,8 +1,8 @@
 const UNIT = 32;
 const fontSize = 16 * UNIT;
 const lineHeight = 20 * UNIT;
-const rowOffset = 25 * UNIT;
-const barBottom = rowOffset - 3 * UNIT;
+const rowOffset = 27 * UNIT;
+const barBottom = rowOffset - 4 * UNIT;
 const barGap = 3 * UNIT;
 const labelHeight = 15 * UNIT;
 const ruleSize = 12 * UNIT;
