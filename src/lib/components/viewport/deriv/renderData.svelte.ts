@@ -88,6 +88,19 @@ export default class DerivRenderData {
         this.xTranslate = 0;
         this.yTranslate = 0;
     }
+	
+    // For maintaining width, ruleWidth and labelWidth:
+    /**
+     * Utility to maintain a width variable for an inline text element that only
+     * changes when text changes. (text variable has to be reactive e.g. $state)
+     * Accounts for width change with font load (M PLUS 1p).
+     * @param textGetter Function that gets text value for reactivity in $effect
+     * @param widthUpdater Function that updates the width variable
+     */
+    static maintainWidth(textGetter: () => any, widthUpdater: () => void) {
+        $effect(() => { textGetter(); widthUpdater(); });
+        onFontLoad(widthUpdater);
+    }
     
     /** ($state) Am I being dragged? */
     dragged = $state(false);
@@ -96,7 +109,7 @@ export default class DerivRenderData {
         return this.dragged || !!this.deriv.parent?.render?.inDragged;
     });
 
-    // Background colors
+    // --- Background colors ---
     /** ($derived) Background color for the formula element */
     readonly formulaBg: string | null = $derived.by(() => 
 		this.bgColor(this.deriv.logic.conc, this.bodySelected)
@@ -121,26 +134,6 @@ export default class DerivRenderData {
         if (s.xTranslate) this.xTranslate = s.xTranslate;
         if (s.yTranslate) this.yTranslate = s.yTranslate;
     }
-
-    // For maintaining width, ruleWidth and labelWidth:
-    /**
-     * Utility to maintain a width variable for an inline text element that only
-     * changes when text changes. (text variable has to be reactive e.g. $state)
-     * Accounts for width change with font load (M PLUS 1p).
-     * @param textGetter Function that gets text value for reactivity in $effect
-     * @param widthUpdater Function that updates the width variable
-     */
-    static maintainWidth(textGetter: () => any, widthUpdater: () => void) {
-        $effect(() => { textGetter(); widthUpdater(); });
-        onFontLoad(widthUpdater);
-    }
-
-    // Other utils
-    readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
-    readonly hasRule = $derived.by(() => !!this.deriv.logic.ruleText);
-    readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
-    readonly hasBar = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
-    readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
 
 	// --- Part + UID System ---
 	// Viewport element has data-part='viewport' and for derivs:
@@ -176,10 +169,12 @@ export default class DerivRenderData {
 		return { part, deriv, bar: !!part.match(/^bar/) };
 	}
     
+	// --- Hovered ---
     /** ($state) Am I being hovered? Implemented in viewport.svelte
      *  Also synced in viewport.svelte with hovered in ViewportRenderData */
     readonly hovered: boolean = $state(false);
 
+	// --- Selected ---
     /** ($state) Implemented in viewport.svelte
      *  Also synced in viewport.svelte with selected in ViewportRenderData */
 	readonly bodySelected = $state(false);
@@ -197,6 +192,13 @@ export default class DerivRenderData {
 	isSelected(bar = false) {
 		return bar ? this.barSelected : this.bodySelected;
 	}
+
+    // --- Other utils ---
+    readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
+    readonly hasRule = $derived.by(() => !!this.deriv.logic.ruleText);
+    readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
+    readonly hasBar = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
+    readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
 
 	/** Util that brings the root of this deriv to the front */
 	goToTop() {
