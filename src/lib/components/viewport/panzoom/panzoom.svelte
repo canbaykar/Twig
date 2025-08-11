@@ -55,11 +55,15 @@
         /** Place elements here to still have the wheel event listeners
          *  for panzoom act on them */
         noPanzoom?: Snippet;
+		// Events
+		onStart?(e: MouseEvent & { dx: number, dy: number; }): void;
+		onEnd?(e: MouseEvent & { dx: number, dy: number; }): void;
         [key: string]: any;
     }
 
 	let { 
         data, children, noPanzoom, 
+		onStart = () => {}, onEnd = () => {},
         ...restProps 
     }: Props = $props();
     let element: HTMLElement;
@@ -70,10 +74,12 @@
     }) as DOMRect;
 
     const draggableOptions: DraggableOptions = {
+		start: onStart,
         move(e) {
             data.x += e.dx;
             data.y += e.dy;
         },
+		end: onEnd,
         checker(target) {
             return target.classList.contains('panzoom-background');
         },
