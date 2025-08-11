@@ -45,29 +45,21 @@
     mouse.init();
     onDestroy(() => DerivRenderData.onDestroy());
 
+	// --- Implementations of hovered & Selected ---
     // Update hovered for both viewport and derivs if its changed.
     // expect-error's are needed because the hovered props are readonly.
     // These are also used for some drag events to cover the case of
     // formula text selection being dragged.
 	function onmouseover(e: MouseEvent) { 
-        const hovered = DerivRenderData.lookup(e.target).deriv;
-        if (hovered === viewport.render.hovered || viewport.render.dragging) return;
-
-        // @ts-expect-error
-        if (viewport.render.hovered) viewport.render.hovered.render.hovered = false;
-        // @ts-expect-error
-        viewport.render.hovered = DerivRenderData.lookup(e.target).deriv;
-        // @ts-expect-error
-        if (hovered) hovered.render.hovered = true;
+        const { deriv, bar } = DerivRenderData.lookup(e.target);
+        if (viewport.render.dragging) return;
+		viewport.render.hover(deriv, bar);
 	}
     function onmouseleave(e: MouseEvent) {
 		// When this is called in ondragleave, it fires in child elements too even tho
 		// this function is for leaving viewport only, hence the 2nd check
 		if (!viewport.render.hovered || e.relatedTarget) return;
-        // @ts-expect-error
-        viewport.render.hovered.render.hovered = false;
-        // @ts-expect-error
-        viewport.render.hovered = null;
+        viewport.render.hover(null);
     }
 
 	function onmousedown(e: MouseEvent) {

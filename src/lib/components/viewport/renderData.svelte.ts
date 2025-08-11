@@ -45,7 +45,27 @@ export default class ViewportRenderData {
 
     /** ($derived) Hovered deriv. Implemented in viewport.svelte
      *  Also synced in viewport.svelte with hovered in DerivRenderData */
-    readonly hovered: Deriv | null = $state(null);
+    readonly hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
+	hover(deriv: Deriv | null, bar = false) {
+		// If hover state's already what we want, return
+		if (this.isHovered(deriv, bar)) return;
+		// Clear the previous hover on deriv.render side
+		if (this.hovered) {                               // @ts-expect-error
+			this.hovered.deriv.render.barHovered = false; // @ts-expect-error
+			this.hovered.deriv.render.bodyHovered = false;
+		}
+		// Set hovered and update deriv.render side if needed
+		if (deriv) {                              // @ts-expect-error
+			this.hovered = { deriv, bar };        // @ts-expect-error
+			bar ? deriv.render.barHovered =  true // @ts-expect-error
+				: deriv.render.bodyHovered = true;
+		}
+	}
+	/** Util for if a value mathces hovered (since === can't be used for this) */
+	isHovered(deriv: Deriv | null, bar = false) {
+		return deriv === null ? this.hovered === null
+			: deriv === this.hovered?.deriv && bar === this.hovered.bar;
+	}
 
     // private selected_: Deriv[] = $state.raw([]);
     // /** ($derived.raw) Selected derivs. Implemented in viewport.svelte

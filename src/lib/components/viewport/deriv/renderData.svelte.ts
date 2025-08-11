@@ -112,19 +112,19 @@ export default class DerivRenderData {
     // --- Background colors ---
     /** ($derived) Background color for the formula element */
     readonly formulaBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.conc, this.bodySelected)
+		this.bgColor(this.deriv.logic.conc, this.bodyHovered, this.bodySelected)
 	);
     /** ($derived) Background color for the bar */
     readonly barBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.rule, this.barSelected)
+		this.bgColor(this.deriv.logic.rule, this.barHovered, this.barSelected)
 	);
     // The logic
-    private bgColor(val: any, selected: boolean): string | null {
+    private bgColor(val: any, hovered: boolean, selected: boolean): string | null {
         return val instanceof Error 
-            ? this.hovered || selected
+            ? hovered || selected
                 ? 'var(--color-bg-danger-muted)'
                 : 'var(--color-bg-danger-emphasis)'
-            : this.hovered || selected
+            : hovered || selected
                 ? 'var(--color-bg-muted)'
                 : null;
     }
@@ -170,9 +170,14 @@ export default class DerivRenderData {
 	}
     
 	// --- Hovered ---
-    /** ($state) Am I being hovered? Implemented in viewport.svelte
+    /** ($state) (Hovered is divided into body & bar) Implemented in viewport.svelte
      *  Also synced in viewport.svelte with hovered in ViewportRenderData */
-    readonly hovered: boolean = $state(false);
+    readonly bodyHovered: boolean = $state(false);
+    /** ($state) (Hovered is divided into body & bar) Implemented in viewport.svelte
+     *  Also synced in viewport.svelte with hovered in ViewportRenderData */
+    readonly barHovered: boolean = $state(false);
+	/** Util for checking bodyHovered & barHovered */
+	isHovered(bar = false) { return bar ? this.barHovered : this.bodyHovered; }
 
 	// --- Selected ---
     /** ($state) Implemented in viewport.svelte
