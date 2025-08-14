@@ -31,11 +31,13 @@
 </script>
 
 <div
-    class="pointer-events-none bg-fg h-1 bottom-(--DERIV-BAR-BOTTOM) origin-left translate-x-[-50%] rounded-full select-none"
+    class="bg-fg h-1 bottom-(--DERIV-BAR-BOTTOM) origin-left translate-x-[-50%] rounded-full select-none"
     class:bg-transparent={!data.render.hasBar}
     style:width="{render.barWidth}px"
 	data-part="bar"
 >
+	<!-- Hitbox -->
+	<div class="hitbox"></div>
     <!-- Label -->
     {#if data.render.hasLabel}
         <div
@@ -57,6 +59,12 @@
 </div>
 
 <style>
+	.hitbox {
+		width: 100%;
+		top: calc(-1 * var(--DERIV-BG-PADDING));
+		height: var(--DERIV-BAR-BG-HEIGHT);
+	}
+
     .labelBase {
         font-size: var(--DERIV-LABEL-SIZE);
         bottom: var(--DERIV-LABEL-BOTTOM);
