@@ -8,9 +8,12 @@ const labelHeight = 15 * UNIT;
 const ruleSize = 12 * UNIT;
 const ruleHeight = 1.5 * ruleSize;
 const ruleBottom = -8 * UNIT;
-const dropZonePadding = 0.1 * rowOffset;
+const bgPadding = 3 * UNIT;
+const dropZonePadding = bgPadding;
 
-// New DT system WIP
+// If you change anything with '(derived)', you may not get the effect expected from its title.
+// They are doing the job of an intermediate variable while others are independent parameters.
+// (Although the versions with and without -N prefix are of course dependent.)
 export const derivDT = {
     prefix: 'deriv',
     noprefix: ['UNIT', 'UNITPX'],
@@ -31,6 +34,8 @@ export const derivDT = {
 
         /** (length) Left-right padding of conc */
         xPadding: 4 * UNIT + 'px',
+		/** (length) Padding around background rectangles */
+		bgPadding: bgPadding + 'px',
         
         /** (line-height) Line height of formulas */
         lineHeight: lineHeight + 'px',
@@ -41,6 +46,8 @@ export const derivDT = {
 
         /** (length) Bottom css prop of bar */
         barBottom: barBottom + 'px',
+		/** (length) (derived) Height of the background of bar */
+		barBgHeight: UNIT + 2 * bgPadding + 'px',
 
         /** (length) (relative to rule-bar) */
         ruleBottom: ruleBottom + 'px',
@@ -76,7 +83,7 @@ export const derivDT = {
     marginN: 10 * UNIT,
 
     /** (number) Padding around background rectangles */
-    bgPaddingN: 3 * UNIT,
+    bgPaddingN: bgPadding,
 
     /** (number) Gap between label and bar */
     barGapN: barGap,
