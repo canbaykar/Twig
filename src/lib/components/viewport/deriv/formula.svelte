@@ -33,7 +33,8 @@
 	bind:this={element}
 	tabindex="-1"
 >
-	<span class="contents whitespace-pre">{data.conc}</span>
+	<!-- For some reason this element's slightly taller than expected so we need pointer-events-none to avoid covering bars -->
+	<span class="contents whitespace-pre pointer-events-none">{data.conc}</span>
 
 	<!-- EDITOR -->
 	{#if data.render.bodyHovered || data.render.bodySelected}
