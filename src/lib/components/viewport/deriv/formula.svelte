@@ -37,7 +37,7 @@
 	<span class="contents whitespace-pre pointer-events-none">{data.conc}</span>
 
 	<!-- EDITOR -->
-	{#if data.render.bodyHovered || data.render.bodySelected}
+	{#if data.render.bodyAwake}
 		<textarea
 			bind:value={data.conc}
 			class="caret-fg absolute top-0 left-0 origin-top-left resize-none overflow-hidden text-center text-transparent"

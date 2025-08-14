@@ -112,19 +112,19 @@ export default class DerivRenderData {
     // --- Background colors ---
     /** ($derived) Background color for the formula element */
     readonly formulaBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.conc, this.bodyHovered, this.bodySelected)
+		this.bgColor(this.deriv.logic.conc, this.bodyHovered, this.bodySelected, this.bodyAwake)
 	);
     /** ($derived) Background color for the bar */
     readonly barBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.rule, this.barHovered, this.barSelected)
+		this.bgColor(this.deriv.logic.rule, this.barHovered, this.barSelected, this.barAwake)
 	);
     // The logic
-    private bgColor(val: any, hovered: boolean, selected: boolean): string | null {
+    private bgColor(val: any, hovered: boolean, selected: boolean, awake: boolean): string | null {
         return val instanceof Error 
-            ? hovered || selected
+            ? awake
                 ? 'var(--color-bg-danger-muted)'
                 : 'var(--color-bg-danger-emphasis)'
-            : hovered || selected
+            : awake
                 ? 'var(--color-bg-muted)'
                 : null;
     }
@@ -186,6 +186,14 @@ export default class DerivRenderData {
 	readonly barSelected = $state(false);
 	/** Util for checking bodySelected & barSelected */
 	isSelected(bar = false) { return bar ? this.barSelected : this.bodySelected; }
+
+	// --- Awake ---
+	// Would be called active but that's already used for focus in HTML
+	/** ($derived) Is body selected or hovered? */
+    readonly bodyAwake = $derived.by(() => this.bodySelected || this.bodyHovered);
+	/** ($derived) Is bar selected or hovered? */
+    readonly barAwake = $derived.by(() => this.barSelected || this.barHovered);
+	
 
     // --- Other utils ---
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
