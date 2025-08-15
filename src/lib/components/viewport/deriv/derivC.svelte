@@ -7,6 +7,8 @@
 	import { bgRoot } from './dnd/bg.svelte';
 	import { dndListeners } from './dnd/dndListeners';
 	import type { Listeners } from '../viewportC.svelte';
+	import Grip from './dnd/grip.svelte';
+	import { DT } from '../../../../DT';
 
 	// When there are more listeners to be sent to viewport, 
 	// they are going to be merged here.
@@ -28,6 +30,8 @@
 	}
 
 	let { data }: Props = $props();
+
+	const gripX = $derived((data.render.width + DT.UNIT) / 2 + DT.derivBgPaddingN);
 </script>
 
 <!-- Background -->
@@ -51,6 +55,11 @@
 		<Handle {data} class="left-[100%]" /> -->
 	</Formula>
 	<Bar {data} rule={data.logic.ruleText} label={data.logic.labelText} />
+
+	{#if data.render.bodyAwake}
+		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px" data-part="bg"/>
+		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px" data-part="bg"/>
+	{/if}
 
 	{#if viewport.render.dragging && !data.render.inDragged}
 		<Dropzones {data} />
