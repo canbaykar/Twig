@@ -1,17 +1,14 @@
 <script lang="ts">
 	import type Deriv from '$lib/state/deriv.svelte';
-	import { tick, type Snippet } from 'svelte';
 	import { DT } from '../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
 	import DerivRenderData from './renderData.svelte';
 
 	interface Props {
 		data: Deriv;
-		/** For putting any extra elements such as DND handles in the display element */
-        children?: Snippet;
 	}
 
-	let { data, children }: Props = $props();
+	let { data }: Props = $props();
 
 	let element: HTMLElement;
 	DerivRenderData.maintainWidth(
@@ -51,6 +48,4 @@
 			data-part="formula"
 		></textarea>
 	{/if}
-
-	{@render children?.()}
 </button>
