@@ -50,10 +50,7 @@
 	data-uid={data.uid}
 	data-part="body"
 >
-	<Formula {data}>
-		<!-- <Handle {data} class="right-[100%]" />
-		<Handle {data} class="left-[100%]" /> -->
-	</Formula>
+	<Formula {data} />
 	<Bar {data} rule={data.logic.ruleText} label={data.logic.labelText} />
 
 	{#if data.render.bodyAwake}
