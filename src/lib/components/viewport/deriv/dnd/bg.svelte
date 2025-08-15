@@ -42,6 +42,12 @@
     const ruleOffY = -DT.derivBarBottomN + DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.UNIT - DT.derivBgPaddingN;
 	const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN);
 
+	// For handles
+	// The whole handle section should be as thick as bar bg
+	// This padding covers what need to be added on top of the regular padding (bgPadding)
+	const handlePadding = DT.UNIT + DT.derivBgPaddingN;
+	const handlePadding2 = handlePadding * 2;
+
 	// --- Props for the two types of bg ---
 	interface BgType {
 		showFormulaBg: (data: Deriv) => boolean;
@@ -110,9 +116,9 @@
 {#if type.showFormulaBg(data)}	
 	<rect
 		class="cursor-all-scroll"
-		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN}
+		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN - (+data.render.bodyAwake) * handlePadding}
 		y={data.render.y + formulaOffY}
-		width={data.render.width + pad2}
+		width={data.render.width + pad2 + (+data.render.bodyAwake) * handlePadding2}
 		height={formulaBgHeight}
 		rx={formulaRx}
 		fill={type.formulaFill(data)}
