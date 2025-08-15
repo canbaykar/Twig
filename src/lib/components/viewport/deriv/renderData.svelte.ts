@@ -112,14 +112,14 @@ export default class DerivRenderData {
     // --- Background colors ---
     /** ($derived) Background color for the formula element */
     readonly formulaBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.conc, this.bodyHovered, this.bodySelected, this.bodyAwake)
+		this.bgColor(this.deriv.logic.conc, this.bodyAwake)
 	);
     /** ($derived) Background color for the bar */
     readonly barBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.rule, this.barHovered, this.barSelected, this.barAwake)
+		this.bgColor(this.deriv.logic.rule, this.barAwake || this.bodyAwake)
 	);
     // The logic
-    private bgColor(val: any, hovered: boolean, selected: boolean, awake: boolean): string | null {
+    private bgColor(val: any, awake: boolean): string | null {
         return val instanceof Error 
             ? awake
                 ? 'var(--color-bg-danger-muted)'
