@@ -79,7 +79,7 @@
 		showBarBg: (data) => !!data.render.barBg && data.render.hasBar,
 		formulaFill: () => ``,
 		barFill: () => ``,
-		extended: (data) => true,
+		extended: () => true,
 	};
 </script>
 
