@@ -54,20 +54,32 @@
 		showBarBg: (data: Deriv) => boolean;
 		formulaFill: (data: Deriv) => string;
 		barFill: (data: Deriv) => string;
+		// Are the sides extended for the grip handles?
+		extended: (data: Deriv) => boolean;
 	};
 	// Non-outlined
 	const nonOutlinedBgType: BgType = {
 		showFormulaBg: (data: Deriv) => !data.render.formulaBg,
 		showBarBg: (data: Deriv) => !data.render.barBg && data.render.hasBar,
 		formulaFill: () => `var(--color-bg)`,
-		barFill: () => `var(--color-bg)`
+		barFill: () => `var(--color-bg)`,
+		extended: () => false,
 	};
 	// Outlined
 	const outlinedBgType: BgType = {
 		showFormulaBg: (data: Deriv) => !!data.render.formulaBg,
 		showBarBg: (data: Deriv) => !!data.render.barBg && data.render.hasBar,
 		formulaFill: (data: Deriv) => `${data.render.formulaBg}`,
-		barFill: (data: Deriv) => `${data.render.barBg}`
+		barFill: (data: Deriv) => `${data.render.barBg}`,
+		extended: (data: Deriv) => data.render.bodyAwake,
+	};
+	// Hitbox
+	const hitboxBgType: BgType = {
+		showFormulaBg: () => true,
+		showBarBg: (data: Deriv) => !!data.render.barBg && data.render.hasBar,
+		formulaFill: () => ``,
+		barFill: () => ``,
+		extended: (data: Deriv) => true,
 	};
 </script>
 
@@ -105,10 +117,15 @@
 		viewBox="0 0 1 1"
 		class:z-1={data.render.dragged}
 	>
-		<Bg {data} type={nonOutlinedBgType} />
-		<!-- <g filter="url(#outlineFilter)"> -->
-			<Bg {data} type={outlinedBgType} />
-		<!-- </g> -->
+		<g class="pointer-events-none">
+			<Bg {data} type={nonOutlinedBgType}/>
+			<!-- <g filter="url(#outlineFilter)"> -->
+				<Bg {data} type={outlinedBgType} />
+			<!-- </g> -->
+		</g>
+		<g class="opacity-0">
+			<Bg {data} type={hitboxBgType}/>
+		</g>
 	</svg>
 {/snippet}
 
@@ -116,9 +133,9 @@
 {#if type.showFormulaBg(data)}	
 	<rect
 		class="cursor-all-scroll"
-		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN - (+data.render.bodyAwake) * handlePadding}
+		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN - (+type.extended(data)) * handlePadding}
 		y={data.render.y + formulaOffY}
-		width={data.render.width + pad2 + (+data.render.bodyAwake) * handlePadding2}
+		width={data.render.width + pad2 + (+type.extended(data)) * handlePadding2}
 		height={formulaBgHeight}
 		rx={formulaRx}
 		fill={type.formulaFill(data)}
