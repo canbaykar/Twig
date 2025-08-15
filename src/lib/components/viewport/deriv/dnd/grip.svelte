@@ -5,7 +5,7 @@
 		[key: string]: any;
 	}
 
-	let { x = "0", y = "0", ...restProps }: Props = $props();
+	let { x = "", y = "", ...restProps }: Props = $props();
 </script>
 
 <svg viewBox="6 2 12 20" style="top: {y}; left: {x}" height="0.5em" {...restProps}>
