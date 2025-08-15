@@ -59,27 +59,27 @@
 	};
 	// Non-outlined
 	const nonOutlinedBgType: BgType = {
-		showFormulaBg: (data: Deriv) => !data.render.formulaBg,
-		showBarBg: (data: Deriv) => !data.render.barBg && data.render.hasBar,
+		showFormulaBg: (data) => !data.render.formulaBg,
+		showBarBg: (data) => !data.render.barBg && data.render.hasBar,
 		formulaFill: () => `var(--color-bg)`,
 		barFill: () => `var(--color-bg)`,
 		extended: () => false,
 	};
 	// Outlined
 	const outlinedBgType: BgType = {
-		showFormulaBg: (data: Deriv) => !!data.render.formulaBg,
-		showBarBg: (data: Deriv) => !!data.render.barBg && data.render.hasBar,
-		formulaFill: (data: Deriv) => `${data.render.formulaBg}`,
-		barFill: (data: Deriv) => `${data.render.barBg}`,
-		extended: (data: Deriv) => data.render.bodyAwake,
+		showFormulaBg: (data) => !!data.render.formulaBg,
+		showBarBg: (data) => !!data.render.barBg && data.render.hasBar,
+		formulaFill: (data) => `${data.render.formulaBg}`,
+		barFill: (data) => `${data.render.barBg}`,
+		extended: (data) => data.render.bodyAwake,
 	};
 	// Hitbox
 	const hitboxBgType: BgType = {
 		showFormulaBg: () => true,
-		showBarBg: (data: Deriv) => !!data.render.barBg && data.render.hasBar,
+		showBarBg: (data) => !!data.render.barBg && data.render.hasBar,
 		formulaFill: () => ``,
 		barFill: () => ``,
-		extended: (data: Deriv) => true,
+		extended: (data) => true,
 	};
 </script>
 
