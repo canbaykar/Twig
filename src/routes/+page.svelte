@@ -2,6 +2,9 @@
 	import './global.css';
 	import ViewportC from "$lib/components/viewport/viewportC.svelte";
 	import viewport from "$lib/state/viewport.svelte";
+	import { browser } from '$app/environment';
 </script>
 
-<ViewportC {viewport} />
+{#if browser}
+	<ViewportC {viewport} />
+{/if}
