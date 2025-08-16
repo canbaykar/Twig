@@ -60,15 +60,23 @@
         viewport.render.hover(null);
     }
 
+	let lastTarget: ReturnType<typeof DerivRenderData.lookup> 
+		= { deriv: null, part: null, bar: false };
 	function onmousedown(e: MouseEvent) {
-		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
+		const { deriv, part, bar } = lastTarget = DerivRenderData.lookup(e.target);
 		if (deriv && !deriv.render.isSelected(bar)) 
 			viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
-		if (viewport.render.dragging) return;
+		if (
+			viewport.render.dragging ||
+			// When you start a text selection and move cursor to viewport, it should deselect.
+			// Although this doesn't solve the problem of cursor changing.
+			lastTarget.deriv !== deriv || 
+			lastTarget.part !== part
+		) return;
 		viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mouseup", part, deriv, e);
 	}
