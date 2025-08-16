@@ -5,6 +5,10 @@ import { mouse } from "$lib/utils/interact/mouse.svelte";
 import type Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 
+export enum DragggableType {
+	None, Panzoom, Deriv, Bar
+}
+
 export default class ViewportRenderData {
     x = $state(0);
     y = $state(0);
@@ -35,13 +39,10 @@ export default class ViewportRenderData {
     /** Convert world (UNIT) to client (px) */
     wrld2cl = fallbackConverter;
 
-    /** ($state) Number of dragged derivs (0 or 1 under expected conditions). Set with dragLog */
-    readonly dragging: number = $state(0);
-    /** Log start and stop (don't forget!) of dragging a Deriv to maintain dropzones.
-     *  @param dragging Is this the start of the DND interaction? */
-    dragLog(dragging: boolean) { // @ts-expect-error
-        return this.dragging = Math.max(0, this.dragging + (dragging ? 1 : -1));
-    }
+    /** ($state) DraggableType of what's being dragged */
+    dragType: DragggableType = $state(DragggableType.None);
+	/** ($derived) Is the viewport or a deriv or bar being dragged right now? */
+	get dragging() { return this.dragType !== DragggableType.None }
 
     /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
     readonly hovered: { deriv: Deriv, bar: boolean } | null = $state(null);

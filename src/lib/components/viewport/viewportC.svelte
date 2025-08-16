@@ -7,6 +7,7 @@
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/dnd/bg.svelte";
+	import { DragggableType } from "./renderData.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
@@ -103,8 +104,8 @@
 >
     <Panzoom
         data={viewport.render}
-		onStart={() => viewport.render.dragLog(true)}
-		onEnd={() => viewport.render.dragLog(false)}
+		onStart={() => viewport.render.dragType = DragggableType.Panzoom}
+		onEnd={() => viewport.render.dragType = DragggableType.None}
     >
         {#each DerivRenderData.displayed as data (data)}
             <DerivC {data}></DerivC>

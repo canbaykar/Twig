@@ -9,6 +9,7 @@ import { zoneTypes, type ZoneData } from './zoneData';
 import { zoneDataFromPoint } from './dropzones.svelte';
 import { defaultAnchor, mouseAnchor } from '../renderData.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
+import { DragggableType } from "../../renderData.svelte";
 
 // null: free, else: bound (assumes parent can't be null while dragging!)
 const free = (data: Deriv) => data.parent === viewport;
@@ -17,7 +18,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 	cursor: 'all-scroll',
 	start() {
 		data.render.dragged = true;
-		viewport.render.dragLog(true);
+		viewport.render.dragType = DragggableType.Deriv;
 
 		let zd: ZoneData | null = free(data) ? null : new zoneTypes.initial(data);
 
@@ -79,7 +80,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 
 			end(e) {
 				data.render.dragged = false;
-				viewport.render.dragLog(false);
+				viewport.render.dragType = DragggableType.None
 
 				updateZD();
 				if (zd) zd.drop(data);
