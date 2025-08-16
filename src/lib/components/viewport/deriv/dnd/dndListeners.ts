@@ -122,11 +122,13 @@ function getBoundingRect(d: Deriv) {
 		);
 	}
 
+	// There's extra 1 UNIT top padding to make height cover both a bottom bar and top bar
+	// (rowOffset is distance between bars + 1 UNIT bar width, add another UNIT for 2nd bar)
 	return {
 		left,
-		top: xy[1] - DT.derivBarBottomN - padding,
+		top: xy[1] - DT.derivBarBottomN - padding - DT.UNIT,
 		width: right - left,
-		height: DT.derivRowOffsetN + padding * 2
+		height: DT.derivRowOffsetN + padding * 2 + DT.UNIT,
 	};
 }
 
