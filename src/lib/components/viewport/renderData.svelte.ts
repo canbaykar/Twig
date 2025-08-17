@@ -5,7 +5,7 @@ import { mouse } from "$lib/utils/interact/mouse.svelte";
 import type Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 
-export enum DragggableType {
+export enum DraggableType {
 	None, Panzoom, Deriv, Bar
 }
 
@@ -40,9 +40,9 @@ export default class ViewportRenderData {
     wrld2cl = fallbackConverter;
 
     /** ($state) DraggableType of what's being dragged */
-    dragType: DragggableType = $state(DragggableType.None);
+    dragType: DraggableType = $state(DraggableType.None);
 	/** ($derived) Is the viewport or a deriv or bar being dragged right now? */
-	get dragging() { return this.dragType !== DragggableType.None }
+	get dragging() { return this.dragType !== DraggableType.None }
 
     /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
     readonly hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
