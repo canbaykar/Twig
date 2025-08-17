@@ -285,7 +285,7 @@ export function defaultAnchor(rd: DerivRenderData): [number, number] {
 
 export function defaultBarAnchor(rd: DerivRenderData): [number, number] {
     const [x, y] = rd.xy;
-	return [x - rd.barWidth / 2, y - DT.derivBarYN];
+	return [x, y - DT.derivBarYN];
 };
 
 export function mouseAnchor(rd: DerivRenderData): [number, number] {
