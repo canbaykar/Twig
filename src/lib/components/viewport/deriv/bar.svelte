@@ -36,6 +36,7 @@
     style:width="{render.barWidth}px"
     class:bg-transparent={!data.render.hasBar}
 	class:z-1={data.render.inDragged}
+	data-uid={data.uid}
 	data-part="bar"
 >
 	<!-- Hitbox -->
