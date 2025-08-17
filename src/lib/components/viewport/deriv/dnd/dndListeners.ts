@@ -146,7 +146,7 @@ function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null])
 	const y = data.render.y;
 
 	// Number of rows over root that are relevant
-	const limit = Math.floor((data.root.render.y + DT.derivBarTopN - y) / DT.derivRowOffsetN);
+	const limit = Math.floor((data.root.render.y + DT.derivBgPaddingN - y) / DT.derivRowOffsetN);
 
 	// Helper functions
 	const getRect = (d: Deriv) => {
@@ -156,8 +156,8 @@ function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null])
 	}
 	const rectRight = (r: any) => r.left + r.width;
 	const oneRowBelow = (d: Deriv) =>
-		y >= d.render.y + DT.derivBarTopN - 2 * DT.derivRowOffsetN
-		&& y <= d.render.y + DT.derivBarTopN - DT.derivRowOffsetN;
+		y >= d.render.y + DT.derivBgPaddingN - 2 * DT.derivRowOffsetN
+		&& y <= d.render.y + DT.derivBgPaddingN - DT.derivRowOffsetN;
 	const atRight = (d: Deriv) => oneRowBelow(d) && x < getRect(d).left;
 	const atLeft = (d: Deriv) => oneRowBelow(d) && x > rectRight(getRect(d));
 

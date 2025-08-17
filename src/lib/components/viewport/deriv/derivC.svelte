@@ -51,14 +51,16 @@
 	data-part="body"
 >
 	<Formula {data} />
-	<Bar {data} rule={data.logic.ruleText} label={data.logic.labelText} />
 
 	{#if data.render.bodyAwake}
 		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px" data-part="bg"/>
 		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px" data-part="bg"/>
 	{/if}
 
+	<!-- TODO: Place dropzones in front of Bar -->
 	{#if viewport.render.dragging && !data.render.inDragged}
 		<Dropzones {data} />
 	{/if}
 </div>
+
+<Bar {data} rule={data.logic.ruleText} label={data.logic.labelText} />

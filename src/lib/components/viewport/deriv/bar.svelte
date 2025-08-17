@@ -31,9 +31,11 @@
 </script>
 
 <div
-    class="bg-fg h-1 bottom-(--DERIV-BAR-BOTTOM) origin-left translate-x-[-50%] rounded-full select-none"
-    class:bg-transparent={!data.render.hasBar}
+    class="bg-fg h-1 origin-left translate-x-[-50%] rounded-full select-none"
+	style:translate="{data.render.xBar}px {data.render.yBar}px"
     style:width="{render.barWidth}px"
+    class:bg-transparent={!data.render.hasBar}
+	class:z-1={data.render.inDragged}
 	data-part="bar"
 >
 	<!-- Hitbox -->

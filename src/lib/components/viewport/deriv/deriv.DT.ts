@@ -8,7 +8,7 @@ const ruleSize = 12 * UNIT;
 const ruleHeight = 1.5 * ruleSize;
 const ruleBottom = -8 * UNIT;
 const bgPadding = 3 * UNIT;
-const barBottom = lineHeight + bgPadding;
+const barY = lineHeight + bgPadding + UNIT; // (UNIT is the bar width)
 const dropZonePadding = bgPadding;
 
 // If you change anything with '(derived)', you may not get the effect expected from its title.
@@ -44,8 +44,6 @@ export const derivDT = {
         /** (line-height) Line height of labels */
         labelLH: labelHeight - 2 * UNIT + 'px',
 
-        /** (length) (derived) Bottom css prop of bar */
-        barBottom: barBottom + 'px',
 		/** (length) (derived) Height of the background of bar */
 		barBgHeight: UNIT + 2 * bgPadding + 'px',
 
@@ -65,10 +63,10 @@ export const derivDT = {
     /** (number) Height of a row of deriv */
     rowOffsetN: rowOffset,
     
-    /** (number) (derived) Bottom css prop of bar */
-    barBottomN: barBottom,
-    /** (number) rowOffsetN - barBottomN */
-    barTopN: rowOffset - barBottom,
+	/** (number) Relative y coord of bar (top edge) */
+	barYN: barY,
+    /** (number) (derived) Relative y coord of bar (bottom edge) */
+    barBottomN: barY - UNIT,
 
     /** (number) Formula line height / 1px */
     lineHeightN: lineHeight,

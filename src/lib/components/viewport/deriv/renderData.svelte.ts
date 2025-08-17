@@ -52,41 +52,79 @@ export default class DerivRenderData {
         return par ? par.render.tree.offsets[this.deriv.childIndex] : 0;
     });
 
+	// - Anchors -
+    /** ($state) Function that determines the base coords of a deriv */
+    anchor: Anchor = $state(defaultAnchor);
+    /** ($state) Function that determines the base coords of the bar */
+    barAnchor: Anchor = $state(defaultBarAnchor);
+
+	// - Base Locations -
+    /** ($derived) */
+    readonly xyBase = $derived.by(() => this.anchor(this));
+    /** ($derived) */
+    readonly xyBaseBar = $derived.by(() => this.barAnchor(this));
+
+	// - Translation -
     /** ($state) */
     xTranslate = $state(0);
     /** ($state) */
     yTranslate = $state(0);
+    /** ($state) */
+    xTranslateBar = $state(0);
+    /** ($state) */
+    yTranslateBar = $state(0);
 
-    /** ($state) Function that determines the final coords of a deriv */
-    anchor: Anchor = $state(defaultAnchor);
-    /** ($derived) */
-    readonly xyBase = $derived.by(() => this.anchor(this));
+	// - Final Coords -
     /** ($derived) */
     readonly xy = $derived.by(() => [
         this.xyBase[0] + this.xTranslate, 
         this.xyBase[1] + this.yTranslate
     ]);
     /** ($derived) */
+    readonly xyBar = $derived.by(() => [
+        this.xyBaseBar[0] + this.xTranslateBar, 
+        this.xyBaseBar[1] + this.yTranslateBar
+    ]);
+    /** ($derived) */
     get x() { return this.xy[0] }
     /** ($derived) */
     get y() { return this.xy[1] }
+    /** ($derived) */
+    get xBar() { return this.xyBar[0] }
+    /** ($derived) */
+    get yBar() { return this.xyBar[1] }
 
+	// - Movement Utils -
     /** Takes world coordinates */
-    moveTo(x: number, y: number) {
-        this.xTranslate += x - this.x;
-        this.yTranslate += y - this.y;
+    moveTo(x: number, y: number, bar = false) {
+        if (!bar) {
+			this.xTranslate += x - this.x;
+        	this.yTranslate += y - this.y;
+		} else {
+			this.xTranslateBar += x - this.xBar;
+        	this.yTranslateBar += y - this.yBar;
+		}
     }
     /** Util for changing anchor without moving element */
-    swapAnchor(a: Anchor) {
-        const x = this.x;
-        const y = this.y;
-        this.anchor = a;
-        this.moveTo(x, y);
+    swapAnchor(a: Anchor, bar = false) {
+		let x: number, y: number;
+        if (!bar) {
+			x = this.x;
+			y = this.y;
+			this.anchor = a;
+		} else {
+			x = this.xBar;
+			y = this.yBar;
+			this.barAnchor = a;
+		}
+		this.moveTo(x, y, bar);
     }
     /** Util to set traslation coords to 0 */
     resetTranslate() {
         this.xTranslate = 0;
         this.yTranslate = 0;
+        this.xTranslateBar = 0;
+        this.yTranslateBar = 0;
     }
 	
     // For maintaining width, ruleWidth and labelWidth:
@@ -243,6 +281,11 @@ export function defaultAnchor(rd: DerivRenderData): [number, number] {
             rd.deriv.derivParent.render.x + rd.xOffset,
             rd.deriv.derivParent.render.y - DT.derivRowOffsetN,
         ] : [0, 0];
+};
+
+export function defaultBarAnchor(rd: DerivRenderData): [number, number] {
+    const [x, y] = rd.xy;
+	return [x - rd.barWidth / 2, y - DT.derivBarYN];
 };
 
 export function mouseAnchor(rd: DerivRenderData): [number, number] {
