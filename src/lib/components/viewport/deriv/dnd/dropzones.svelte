@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Deriv from '$lib/state/deriv.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { zoneTypes, type ZoneData, type ZoneType } from './zoneData';
+	import { getRenderedZoneOptions, renderableZoneOptions, type RenderableZoneOption, type ZoneData, type ZoneType } from './options';
 
     /** Takes in world coords, not screen! */
     export function zoneDataFromPoint(x: number, y: number): ZoneData | null {
@@ -16,7 +16,7 @@
         const deriv = Deriv.lookup(uid);
         if (!deriv) return null;
 
-        return new zoneTypes[type](deriv, x);
+        return new renderableZoneOptions[type](deriv, x);
     }
 </script>
 
@@ -28,6 +28,12 @@
     let { data }: Props = $props();
 </script>
 
+{#each getRenderedZoneOptions() as opt}
+	{#if opt.condition(data)}
+		{@render dropzone(opt)}
+	{/if}
+{/each}
+
 <!-- {#if data.root === data}
     <!-- Root ->
     {@render dropzone('root')}
@@ -35,24 +41,24 @@
     {@render dropzone('bottom')}
 {/if} -->
 
-{#if data.children.length === 0}
-    <!-- Top -->
+<!-- {#if data.children.length === 0}
+    <!-- Top ->
     {@render dropzone('top')}
 {:else}
-    <!-- Leaf -->
+    <!-- Leaf ->
     {@render dropzone('child')}
-{/if}
+{/if} -->
 
 <!-- SNIPPETS -->
-{#snippet dropzone(type: ZoneType)}
-    {@const op = zoneTypes[type].getElementRect(data)}
+{#snippet dropzone(opt: RenderableZoneOption)}
+    {@const rect = opt.getElementRect(data)}
     <div
         class="dropzone dnd h-(--DERIV-ROW-OFFSET) outline-8"
-        style:left="{op.left}px"
-        style:width="{-2 * op.left}px"
-        style:top="{op.top}px"
+        style:left="{rect.left}px"
+        style:width="{-2 * rect.left}px"
+        style:top="{rect.top}px"
         data-uid={data.uid}
-        data-type={type}
+        data-type={opt.type}
     ></div>
 {/snippet}
 
