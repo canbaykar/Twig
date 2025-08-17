@@ -278,8 +278,8 @@ type Anchor = (rd: DerivRenderData) => [number, number];
 
 export function defaultAnchor(rd: DerivRenderData): [number, number] {
     return rd.deriv.derivParent instanceof Deriv ? [
-            rd.deriv.derivParent.render.x + rd.xOffset,
-            rd.deriv.derivParent.render.y - DT.derivRowOffsetN,
+            rd.deriv.derivParent.render.xBar + rd.xOffset,
+            rd.deriv.derivParent.render.yBar - DT.derivBgPaddingN,
         ] : [0, 0];
 };
 
