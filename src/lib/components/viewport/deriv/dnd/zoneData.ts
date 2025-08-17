@@ -24,7 +24,7 @@ abstract class ZoneDataBase {
     
     /** In relative world coordinates */
     static getElementRect(deriv: Deriv): { left: number, top: number, width: number, height: number } {
-        throw new Error('Static method not implemented.');
+        throw new Error("Attempting to getElementRect for zone without element");
     }
 }
 
