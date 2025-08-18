@@ -214,8 +214,11 @@ const renderableZoneOptionsByDragType: Record<DraggableType, RenderableZoneOptio
 	[DraggableType.Panzoom]: [],
 };
 /** Returns zone options classes (as array) for zones that should be currently rendered. */
-export function getRenderedZoneOptions() {
+function getRenderedZoneOptions() {
 	return renderableZoneOptionsByDragType[viewport.render.dragType];
+}
+export function getZonesOf(d: Deriv) {
+	return getRenderedZoneOptions().filter(opt => opt.condition(d));
 }
 
 // Utility type

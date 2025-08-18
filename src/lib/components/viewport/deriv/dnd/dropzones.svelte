@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Deriv from '$lib/state/deriv.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { getRenderedZoneOptions, renderableZoneOptions, type RenderableZoneOption, type ZoneData, type ZoneType } from './options';
+	import { getZonesOf, renderableZoneOptions, type RenderableZoneOption, type ZoneData, type ZoneType } from './options';
 
     /** Takes in world coords, not screen! */
     export function zoneDataFromPoint(x: number, y: number): ZoneData | null {
@@ -28,10 +28,8 @@
     let { data }: Props = $props();
 </script>
 
-{#each getRenderedZoneOptions() as opt}
-	{#if opt.condition(data)}
-		{@render dropzone(opt)}
-	{/if}
+{#each getZonesOf(data) as opt}
+	{@render dropzone(opt)}
 {/each}
 
 <!-- {#if data.root === data}
