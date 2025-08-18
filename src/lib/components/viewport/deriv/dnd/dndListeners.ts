@@ -9,7 +9,7 @@ import { zoneDataFromPoint } from './dropzones.svelte';
 import { defaultAnchor, mouseAnchor } from '../renderData.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderData.svelte";
-import { initialZoneOptions, renderableZoneOptions, type ZoneData } from "./options";
+import { initialZoneData, renderableZoneOptions, type ZoneData } from "./options";
 
 // null: free, else: bound (assumes parent can't be null while dragging!)
 const free = (data: Deriv) => data.parent === viewport;
@@ -20,7 +20,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 		data.render.dragged = true;
 		viewport.render.dragType = DraggableType.Deriv;
 
-		let zd: ZoneData | null = free(data) ? null : new initialZoneOptions[DraggableType.Deriv](data);
+		let zd: ZoneData | null = initialZoneData(data, DraggableType.Deriv);
 
 		// Rectangle popup that indicates current binding zone rect
 		const indicator = new IndicatorPopup();

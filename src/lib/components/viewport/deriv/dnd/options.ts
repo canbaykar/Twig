@@ -1,4 +1,4 @@
-import type Deriv from "$lib/state/deriv.svelte";
+import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
 import { DraggableType } from "../../renderData.svelte";
@@ -98,26 +98,12 @@ abstract class RenderableZoneData extends ZoneData {
 // Used below in getElementRect methods
 const row2height = (row: number) => row * DT.derivRowOffsetN - DT.derivBarBottomN;
 
-/** Defines behaviour of initial zones. See ZoneData for more info. */
-export const initialZoneOptions = {
-	[DraggableType.Deriv]: class initial extends ZoneData {
-		exit(dragged: Deriv): void {
-			dragged.attach(viewport);
-		}
-	},
-	// WIP
-	[DraggableType.Bar]: class initial extends ZoneData {
-		exit(dragged: Deriv): void {
-			dragged.attach(viewport);
-		}
-	},
-};
-
 /** 
  * Defines behaviour of renderable zones accepting deriv. See ZoneData for more info.
  * Contains classes extending RenderableZoneOptions. 
  */
 const renderableDerivZoneOptions = {
+	// This is separate from child_deriv below because it will behave different later
     top_deriv: class extends RenderableZoneData {
 		static readonly type = 'top_deriv';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
@@ -142,7 +128,7 @@ const renderableDerivZoneOptions = {
 
 		readonly prevSib: Deriv | undefined;
 
-		constructor(deriv: Deriv, x = deriv.render.x) {
+		constructor(deriv: Deriv, x: number) {
 			super(deriv);
 			for (let i = deriv.children.length - 1; i >= 0; i--)
 				if (x > deriv.children[i].render.x) {
@@ -192,6 +178,14 @@ const renderableDerivZoneOptions = {
  * Contains classes extending RenderableZoneData. 
  */
 const renderableBarZoneOptions = {};
+
+/** Determines initial zone data when starting DND. This can't be generated automatically... */
+export function initialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
+	if (!(d.parent instanceof Deriv)) return null;
+	if (type === DraggableType.Deriv)
+		return new renderableZoneOptions["child_deriv"](d.parent, d.render.x)
+	else throw new Error('Bar drag-and-drop not implemented yet.');
+}
 
 // --- Final Exports ---
 // See zoneDataFromPoint from dropzones.svelte for use of this
