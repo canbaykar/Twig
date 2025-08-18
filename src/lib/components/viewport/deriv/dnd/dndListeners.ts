@@ -9,10 +9,7 @@ import { zoneDataFromPoint } from './dropzones.svelte';
 import { defaultAnchor, mouseAnchor } from '../renderData.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderData.svelte";
-import { initialZoneData, zoneOptions, type ZoneData } from "./options";
-
-// null: free, else: bound (assumes parent can't be null while dragging!)
-const free = (data: Deriv) => data.parent === viewport;
+import { initialZoneData, zoneOptions, type Rect, type ZoneData } from "./options";
 
 const opt = (data: Deriv): DraggableOptions => ({
 	cursor: 'all-scroll',
@@ -49,7 +46,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 				const dx = mouse.dx;
 				const dy = mouse.dy;
 				const v = Math.sqrt(dx * dx + dy * dy);
-				if (v < 10) clip(data, sideZoneData); // 10 is arbitrary
+				if (v < 10) clip(data, zd, sideZoneData); // 10 is arbitrary
 			}
 
 			// if (free()) shrinkTree();
@@ -62,7 +59,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 			let newZ = zd;
 
 			// Did we exit a zone?
-			if (newZ && !inBoundingRect(data, x, y)) newZ = null;
+			if (zd && !inRect(zd.boundingRect, x, y)) newZ = null;
 			// Did we enter a zone?
 			if (!newZ) newZ = zoneDataFromPoint(x, y);
 
@@ -98,42 +95,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 	}
 });
 
-function getBoundingRect(d: Deriv) {
-	const padding = DT.derivDropZonePaddingN;
-	// Half width
-	const w2 = d.render.width / 2 + padding;
-	// TODO: Change DerivRenderData so as to remove these two
-	const xy = defaultAnchor(d.render);
-	let left = xy[0] - w2;
-	let right = xy[0] + w2;
-
-	// Stretch rect to neighbouring siblings' centers or to ends
-	// of the parent's child zone
-	if (d.parent instanceof Deriv) {
-		const zoneRect = zoneOptions['child_deriv'].getElementRect(d.parent);
-		zoneRect.left += d.parent.render.x;
-
-		const prevSib = d.parent.children[d.childIndex - 1];
-		left = Math.min(left, prevSib ? prevSib.render.x : zoneRect.left - padding);
-
-		const nextSib = d.parent.children[d.childIndex + 1];
-		right = Math.max(
-			right,
-			nextSib ? nextSib.render.x : zoneRect.left + zoneRect.width + padding
-		);
-	}
-
-	// There's extra 1 UNIT top padding to make height cover both a bottom bar and top bar
-	// (rowOffset is distance between bars + 1 UNIT bar width, add another UNIT for 2nd bar)
-	return {
-		left,
-		top: xy[1] - DT.derivBarBottomN - padding - DT.UNIT,
-		width: right - left,
-		height: DT.derivRowOffsetN + padding * 2 + DT.UNIT,
-	};
-}
-
-function inBoundingRect(data: Deriv, x: number, y: number, r = getBoundingRect(data)) {
+function inRect(r: Rect, x: number, y: number) {
 	return y >= r.top && y - r.top <= r.height && x >= r.left && x - r.left <= r.width;
 }
 
@@ -173,13 +135,13 @@ function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null])
 }
 
 // Only in x direction
-function clip(data: Deriv, sideZoneData: [() => number, () => number]) {
-	if (free(data)) {
+function clip(data: Deriv, zd: ZoneData | null, sideZoneData: [() => number, () => number]) {
+	if (data.parent === viewport) { // i.e. if data is free
 		// Clip into between side zones
 		clipToInterval(data, [sideZoneData[0](), sideZoneData[1]()]);
 	} else {
 		// Clip into bounding rect
-		const r = getBoundingRect(data);
+		const r = zd!.boundingRect;
 		clipToInterval(data, [r.left, r.left + r.width]);
 	}
 }
@@ -207,7 +169,7 @@ function clipToInterval(data: Deriv, int: [number, number]) {
 
 function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
 	if (zd) {
-		const r = getBoundingRect(dragged);
+		const r = zd.boundingRect;
 		ind.left = r.left;
 		ind.top = r.top;
 		ind.width = r.width;

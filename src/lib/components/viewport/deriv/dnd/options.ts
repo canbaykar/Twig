@@ -4,7 +4,7 @@ import { DT } from "../../../../../DT";
 import { DraggableType } from "../../renderData.svelte";
 import { defaultAnchor } from "../renderData.svelte";
 
-interface Rect { left: number, top: number, width: number, height: number }
+export interface Rect { left: number, top: number, width: number, height: number }
 
 // Extention dimentions for zone rects (not related to padding in CSS):
 // There's extra 1 UNIT top padding to make height cover both a bottom bar and top bar
