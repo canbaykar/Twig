@@ -35,11 +35,17 @@ export type { ZoneData };
  * called a "zone" here, we have elements each representing (possibly multiple) zones.
  * For two pixel, if both of them are associated with ZoneData with matching contents 
  * (see zoneDataFromPoint) they "belong to the same zone". (Can't use === with ZoneData 
- * since its mutable.)
- * Renderable zones are rendered in dropzones.svelte. Initial zone data are only made at the start of
- * DND, it doesn't make sense for them to have elements bc elements are used to make zone data with hover.
+ * since its mutable.) Zone elements are rendered in dropzones.svelte.
+ * Notes: Dropzone components/elements don't carry instances of this! One element described 
+ * with getElementRect may represent multiple "zones" next to each other. Classes extending 
+ * this MUST have readonly static "type" prop that is the same as their key in zoneOptions 
+ * (for matching HTML and state). This has to be unique per type.
  */
 abstract class ZoneData {
+	static readonly type: string;
+	/** Condition for when the zone is enabled, see examples */
+	static condition(deriv: Deriv) { return true; }
+
 	readonly deriv: Deriv;
 
 	enter(dragged: Deriv) {}
@@ -50,35 +56,6 @@ abstract class ZoneData {
 		this.deriv = deriv;
 	}
 
-	// Default implementation
-	// The top and height props here are made to be consistent with element
-	// rects of the class below (except padding). That's why padding is 
-	// asymmetrical when it doesn't have to be.
-	/** In ABSOLUTE world coordinates */
-	get boundingRect(): Rect {
-		const rd = this.deriv.render;
-		return addPadding({
-			left: rd.x - rd.width / 2,
-			top: rd.y - DT.derivBarBottomN,
-			width: rd.width,
-			height: DT.derivRowOffsetN,
-		});
-	}
-}
-
-export type { RenderableZoneData };
-/** 
- * (abstract) See ZoneData which this extends. Notes: Dropzone components/elements don't carry 
- * instances of this! One element described with getElementRect may represent multiple "zones" 
- * next to each other. Classes extending this MUST have readonly static "type" prop that is 
- * the same as their key in renderedZoneOptions (for matching HTML and state). This has to be 
- * unique per renderable type.
- */
-abstract class RenderableZoneData extends ZoneData {
-	static readonly type: string;
-	/** Condition for when the zone is enabled, see examples */
-	static condition(deriv: Deriv) { return true; }
-
 	// Abstract static method
 	/** In RELATIVE world coordinates (relative to deriv origin point) */
 	static getElementRect(deriv: Deriv): Rect {
@@ -87,7 +64,7 @@ abstract class RenderableZoneData extends ZoneData {
 
 	// Default implementation
 	get boundingRect(): Rect {
-		const elRect = (this.constructor as typeof RenderableZoneData).getElementRect(this.deriv);
+		const elRect = (this.constructor as typeof ZoneData).getElementRect(this.deriv);
 		// Relative to absolute coords
 		elRect.left += this.deriv.render.x;
 		elRect.top += this.deriv.render.y;
@@ -98,13 +75,10 @@ abstract class RenderableZoneData extends ZoneData {
 // Used below in getElementRect methods
 const row2height = (row: number) => row * DT.derivRowOffsetN - DT.derivBarBottomN;
 
-/** 
- * Defines behaviour of renderable zones accepting deriv. See ZoneData for more info.
- * Contains classes extending RenderableZoneOptions. 
- */
-const renderableDerivZoneOptions = {
+/** Defines behaviour of zones accepting deriv. Contains classes extending ZoneData. */
+const derivZoneOptions = {
 	// This is separate from child_deriv below because it will behave different later
-    top_deriv: class extends RenderableZoneData {
+    top_deriv: class extends ZoneData {
 		static readonly type = 'top_deriv';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
@@ -122,7 +96,7 @@ const renderableDerivZoneOptions = {
         }
     },
 
-	child_deriv: class extends RenderableZoneData {
+	child_deriv: class extends ZoneData {
 		static readonly type = 'child_deriv';
 		static condition(deriv: Deriv) { return deriv.children.length !== 0; }
 
@@ -173,46 +147,44 @@ const renderableDerivZoneOptions = {
 	},
 };
 
-/** 
- * Defines behaviour of renderable zones accepting bar. See ZoneData for more info.
- * Contains classes extending RenderableZoneData. 
- */
-const renderableBarZoneOptions = {};
+/** Defines behaviour of zones accepting bar. Contains classes extending ZoneData. */
+const barZoneOptions = {};
 
 /** Determines initial zone data when starting DND. This can't be generated automatically... */
 export function initialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
 	if (!(d.parent instanceof Deriv)) return null;
 	if (type === DraggableType.Deriv)
-		return new renderableZoneOptions["child_deriv"](d.parent, d.render.x)
+		return new zoneOptions["child_deriv"](d.parent, d.render.x)
 	else throw new Error('Bar drag-and-drop not implemented yet.');
 }
 
 // --- Final Exports ---
 // See zoneDataFromPoint from dropzones.svelte for use of this
-/** Do renderableZoneTypes[t] to get the ZoneData class for ZoneType t */
-export const renderableZoneOptions = {
-	...renderableDerivZoneOptions,
-	...renderableBarZoneOptions,
+/** Do zoneOptions[t] to get the ZoneData class for ZoneType t */
+export const zoneOptions = {
+	...derivZoneOptions,
+	...barZoneOptions,
 };
-export type RenderableZoneOption = ValueOf<typeof renderableZoneOptions>;
-export type ZoneType = keyof typeof renderableZoneOptions;
+export type ZoneOption = ValueOf<typeof zoneOptions>;
+export type ZoneType = keyof typeof zoneOptions;
 
-/** Do renderableZoneOptionsByDragType[viewport.render.dragType] to get currently rendered zone options as array */
-const renderableZoneOptionsByDragType: Record<DraggableType, RenderableZoneOption[]> = {
-	[DraggableType.Deriv]: Object.values(renderableDerivZoneOptions),
-	[DraggableType.Bar]: Object.values(renderableBarZoneOptions),
+/** Do zoneOptionsByDragType[viewport.render.dragType] to get currently rendered zone 
+ *  options as array */
+const zoneOptionsByDragType: Record<DraggableType, ZoneOption[]> = {
+	[DraggableType.Deriv]: Object.values(derivZoneOptions),
+	[DraggableType.Bar]: Object.values(barZoneOptions),
 
-	// Types not related to this file are also here as renderedZoneData
-	// should return empty array in those cases
+	// Types not related to this file are also here as ZoneData should return empty 
+	// array in those cases
 	[DraggableType.None]:    [],
 	[DraggableType.Panzoom]: [],
 };
-/** Returns zone options classes (as array) for zones that should be currently rendered. */
-function getRenderedZoneOptions() {
-	return renderableZoneOptionsByDragType[viewport.render.dragType];
+/** Returns zone options classes (as array) for all zones that should be currently rendered. */
+function getZoneOptions() {
+	return zoneOptionsByDragType[viewport.render.dragType];
 }
 export function getZonesOf(d: Deriv) {
-	return getRenderedZoneOptions().filter(opt => opt.condition(d));
+	return getZoneOptions().filter(opt => opt.condition(d));
 }
 
 // Utility type

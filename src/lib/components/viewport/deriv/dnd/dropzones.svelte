@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Deriv from '$lib/state/deriv.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { getZonesOf, renderableZoneOptions, type RenderableZoneOption, type ZoneData, type ZoneType } from './options';
+	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneData, type ZoneType } from './options';
 
     /** Takes in world coords, not screen! */
     export function zoneDataFromPoint(x: number, y: number): ZoneData | null {
@@ -16,7 +16,7 @@
         const deriv = Deriv.lookup(uid);
         if (!deriv) return null;
 
-        return new renderableZoneOptions[type](deriv, x);
+        return new zoneOptions[type](deriv, x);
     }
 </script>
 
@@ -48,7 +48,7 @@
 {/if} -->
 
 <!-- SNIPPETS -->
-{#snippet dropzone(opt: RenderableZoneOption)}
+{#snippet dropzone(opt: ZoneOption)}
     {@const rect = opt.getElementRect(data)}
     <div
         class="dropzone dnd h-(--DERIV-ROW-OFFSET) outline-8"

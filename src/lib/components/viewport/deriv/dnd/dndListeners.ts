@@ -9,7 +9,7 @@ import { zoneDataFromPoint } from './dropzones.svelte';
 import { defaultAnchor, mouseAnchor } from '../renderData.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderData.svelte";
-import { initialZoneData, renderableZoneOptions, type ZoneData } from "./options";
+import { initialZoneData, zoneOptions, type ZoneData } from "./options";
 
 // null: free, else: bound (assumes parent can't be null while dragging!)
 const free = (data: Deriv) => data.parent === viewport;
@@ -110,7 +110,7 @@ function getBoundingRect(d: Deriv) {
 	// Stretch rect to neighbouring siblings' centers or to ends
 	// of the parent's child zone
 	if (d.parent instanceof Deriv) {
-		const zoneRect = renderableZoneOptions['child_deriv'].getElementRect(d.parent);
+		const zoneRect = zoneOptions['child_deriv'].getElementRect(d.parent);
 		zoneRect.left += d.parent.render.x;
 
 		const prevSib = d.parent.children[d.childIndex - 1];
@@ -150,7 +150,7 @@ function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null])
 
 	// Helper functions
 	const getRect = (d: Deriv) => {
-		const rect = renderableZoneOptions[d.children.length ? 'child_deriv' : 'top_deriv'].getElementRect(d);
+		const rect = zoneOptions[d.children.length ? 'child_deriv' : 'top_deriv'].getElementRect(d);
 		rect.left += d.render.x; // Relative to absolute coord. y is not used
 		return rect;
 	}
