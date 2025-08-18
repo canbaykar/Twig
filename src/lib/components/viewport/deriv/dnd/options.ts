@@ -131,7 +131,7 @@ const renderableDerivZoneOptions = {
         }
 
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
-            const left = -deriv.render.barWidth / 2;
+            const left = -deriv.render.barWidth / 2 - DT.derivDropZonePaddingN;
             return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
         }
     },
