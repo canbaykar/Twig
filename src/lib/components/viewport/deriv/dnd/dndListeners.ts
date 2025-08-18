@@ -5,11 +5,11 @@ import draggable from '$lib/utils/interact/draggable.svelte';
 import viewport from '$lib/state/viewport.svelte';
 import { DT } from '../../../../../DT';
 import { IndicatorPopup } from './indicatorPopup.svelte';
-import { zoneTypes, type ZoneData } from './zoneData';
 import { zoneDataFromPoint } from './dropzones.svelte';
 import { defaultAnchor, mouseAnchor } from '../renderData.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderData.svelte";
+import { initialZoneOptions, renderableZoneOptions, type ZoneData } from "./options";
 
 // null: free, else: bound (assumes parent can't be null while dragging!)
 const free = (data: Deriv) => data.parent === viewport;
@@ -20,7 +20,7 @@ const opt = (data: Deriv): DraggableOptions => ({
 		data.render.dragged = true;
 		viewport.render.dragType = DraggableType.Deriv;
 
-		let zd: ZoneData | null = free(data) ? null : new zoneTypes.initial(data);
+		let zd: ZoneData | null = free(data) ? null : new initialZoneOptions[DraggableType.Deriv](data);
 
 		// Rectangle popup that indicates current binding zone rect
 		const indicator = new IndicatorPopup();
@@ -110,7 +110,7 @@ function getBoundingRect(d: Deriv) {
 	// Stretch rect to neighbouring siblings' centers or to ends
 	// of the parent's child zone
 	if (d.parent instanceof Deriv) {
-		const zoneRect = zoneTypes['child'].getElementRect(d.parent);
+		const zoneRect = renderableZoneOptions['child_deriv'].getElementRect(d.parent);
 		zoneRect.left += d.parent.render.x;
 
 		const prevSib = d.parent.children[d.childIndex - 1];
@@ -150,7 +150,7 @@ function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null])
 
 	// Helper functions
 	const getRect = (d: Deriv) => {
-		const rect = zoneTypes[d.children.length ? 'child' : 'top'].getElementRect(d);
+		const rect = renderableZoneOptions[d.children.length ? 'child_deriv' : 'top_deriv'].getElementRect(d);
 		rect.left += d.render.x; // Relative to absolute coord. y is not used
 		return rect;
 	}
