@@ -142,7 +142,7 @@ const renderableDerivZoneOptions = {
 
 		readonly prevSib: Deriv | undefined;
 
-		constructor(deriv: Deriv, x: number) {
+		constructor(deriv: Deriv, x = deriv.render.x) {
 			super(deriv);
 			for (let i = deriv.children.length - 1; i >= 0; i--)
 				if (x > deriv.children[i].render.x) {
