@@ -194,6 +194,7 @@ const renderableDerivZoneOptions = {
 const renderableBarZoneOptions = {};
 
 // --- Final Exports ---
+// See zoneDataFromPoint from dropzones.svelte for use of this
 /** Do renderableZoneTypes[t] to get the ZoneData class for ZoneType t */
 export const renderableZoneOptions = {
 	...renderableDerivZoneOptions,
