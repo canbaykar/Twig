@@ -2,7 +2,7 @@ import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
 import { DraggableType } from "../../renderData.svelte";
-import { defaultAnchor } from "../renderData.svelte";
+import { defaultAnchor, followBarAnchor } from "../renderData.svelte";
 
 export interface Rect { left: number, top: number, width: number, height: number }
 
@@ -148,7 +148,41 @@ const derivZoneOptions = {
 };
 
 /** Defines behaviour of zones accepting bar. Contains classes extending ZoneData. */
-const barZoneOptions = {};
+// Note: When dragging bar, the checked point for drop target is the middle point of bar.
+const barZoneOptions = {
+	bar: class extends ZoneData {
+		static readonly type = 'bar';
+		static condition(deriv: Deriv) { return deriv.children.length === 0; }
+
+        enter(dragged: Deriv): void {
+			const parent = this.deriv.parent;
+			const index = this.deriv.childIndex;
+			this.deriv.detach();
+			dragged.render.anchor = defaultAnchor;
+			if (parent) {
+				parent.attachChild(dragged, index);
+				dragged.render.resetTranslate(true, false);
+			}
+			// This moves formula, not bar!
+			else dragged.render.moveTo(...this.deriv.render.xy);
+			dragged.render.goToTop();
+        }
+        exit(dragged: Deriv): void {
+			const parent = dragged.parent;
+			const index = dragged.childIndex;
+            dragged.attach(viewport);
+			dragged.render.anchor = followBarAnchor;
+			dragged.render.resetTranslate(true, false);
+			if (parent) parent.attachChild(this.deriv, index);
+			else viewport.attachChild(this.deriv);
+        }
+
+        static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
+            const left = -deriv.render.barWidth / 2 - DT.derivDropZonePaddingN;
+            return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
+        }
+    },
+};
 
 /** Determines initial zone data when starting DND. This can't be generated automatically... */
 export function initialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
