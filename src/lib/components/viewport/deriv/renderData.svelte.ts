@@ -76,12 +76,12 @@ export default class DerivRenderData {
 
 	// - Final Coords -
     /** ($derived) */
-    readonly xy = $derived.by(() => [
+    readonly xy: [number, number] = $derived.by(() => [
         this.xyBase[0] + this.xTranslate, 
         this.xyBase[1] + this.yTranslate
     ]);
     /** ($derived) */
-    readonly xyBar = $derived.by(() => [
+    readonly xyBar: [number, number] = $derived.by(() => [
         this.xyBaseBar[0] + this.xTranslateBar, 
         this.xyBaseBar[1] + this.yTranslateBar
     ]);
