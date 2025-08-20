@@ -153,7 +153,7 @@
 
 <!-- For bar -->
 {#if type.showBarBg(data)}
-	<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar-bg">
+	<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar">
 		<rect
 			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={data.render.y + barOffY}
