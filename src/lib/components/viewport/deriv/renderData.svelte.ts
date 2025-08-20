@@ -120,11 +120,15 @@ export default class DerivRenderData {
 		this.moveTo(x, y, bar);
     }
     /** Util to set traslation coords to 0 */
-    resetTranslate() {
-        this.xTranslate = 0;
-        this.yTranslate = 0;
-        this.xTranslateBar = 0;
-        this.yTranslateBar = 0;
+    resetTranslate(formula = true, bar = true) {
+        if (formula) {
+            this.xTranslate = 0;
+            this.yTranslate = 0;
+        }
+        if (bar) {
+            this.xTranslateBar = 0;
+            this.yTranslateBar = 0;
+        }
     }
 	
     // For maintaining width, ruleWidth and labelWidth:
@@ -290,6 +294,12 @@ export function defaultBarAnchor(rd: DerivRenderData): [number, number] {
 
 export function mouseAnchor(rd: DerivRenderData): [number, number] {
     return [viewport.render.mouse.x, viewport.render.mouse.y];
+};
+
+/** When bar is being moved (e.g. with mouseAnchor), set this to anchor to make formula follow bar. */
+export function followBarAnchor(rd: DerivRenderData): [number, number] {
+    const [x, y] = rd.xyBar;
+	return [x, y + DT.derivBarYN];
 };
 
 
