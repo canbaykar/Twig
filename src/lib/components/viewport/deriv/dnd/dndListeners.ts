@@ -112,7 +112,7 @@ function determineSideZones(data: Deriv, tr: [ZoneData | null, ZoneData | null])
 
 	// Helper functions
 	const getRect = (d: Deriv) => {
-		const rect = zoneOptions[d.children.length ? 'child_deriv' : 'top_deriv'].getElementRect(d);
+		const rect = zoneOptions[d.children.length ? 'child' : 'top'].getElementRect(d);
 		rect.left += d.render.x; // Relative to absolute coord. y is not used
 		return rect;
 	}

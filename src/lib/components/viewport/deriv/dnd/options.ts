@@ -77,9 +77,9 @@ const row2height = (row: number) => row * DT.derivRowOffsetN - DT.derivBarBottom
 
 /** Defines behaviour of zones accepting deriv. Contains classes extending ZoneData. */
 const derivZoneOptions = {
-	// This is separate from child_deriv below because it will behave different later
-    top_deriv: class extends ZoneData {
-		static readonly type = 'top_deriv';
+	// This is separate from child below because it will behave different later
+    top: class extends ZoneData {
+		static readonly type = 'top';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
         enter(dragged: Deriv): void {
@@ -96,8 +96,8 @@ const derivZoneOptions = {
         }
     },
 
-	child_deriv: class extends ZoneData {
-		static readonly type = 'child_deriv';
+	child: class extends ZoneData {
+		static readonly type = 'child';
 		static condition(deriv: Deriv) { return deriv.children.length !== 0; }
 
 		readonly prevSib: Deriv | undefined;
@@ -154,7 +154,7 @@ const barZoneOptions = {};
 export function initialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
 	if (!(d.parent instanceof Deriv)) return null;
 	if (type === DraggableType.Deriv)
-		return new zoneOptions["child_deriv"](d.parent, d.render.x)
+		return new zoneOptions["child"](d.parent, d.render.x)
 	else throw new Error('Bar drag-and-drop not implemented yet.');
 }
 
