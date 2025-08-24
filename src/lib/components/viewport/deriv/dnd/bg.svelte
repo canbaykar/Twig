@@ -124,7 +124,7 @@
 
 {#snippet bgRoot(data: Deriv)}
 	<svg
-		class="h-[1px] w-[1px] overflow-visible opacity-80 select-none"
+		class="h-[1px] w-[1px] overflow-visible opacity-80 select-none cursor-all-scroll"
 		viewBox="0 0 1 1"
 		class:z-1={data.render.dragged}
 	>
@@ -143,7 +143,6 @@
 <!-- For formula (for the second part, see comment above Props) -->
 {#if type.showFormulaBg(data) && (!data.render.barDragged || data.root === data || _showOnlyFormula)}	
 	<rect
-		class="cursor-all-scroll"
 		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN - (+type.extended(data)) * handlePadding}
 		y={data.render.y + formulaOffY}
 		width={data.render.width + pad2 + (+type.extended(data)) * handlePadding2}
