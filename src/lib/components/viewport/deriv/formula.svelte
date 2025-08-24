@@ -31,7 +31,10 @@
 	tabindex="-1"
 >
 	<!-- For some reason this element's slightly taller than expected so we need pointer-events-none to avoid covering bars -->
-	<span class="contents whitespace-pre pointer-events-none">{data.conc}</span>
+	<span 
+		class="relative! whitespace-pre pointer-events-none"
+		class:opacity-25={data.render.bodyMuted}
+	>{data.conc}</span>
 
 	<!-- EDITOR -->
 	{#if data.render.bodyAwake}

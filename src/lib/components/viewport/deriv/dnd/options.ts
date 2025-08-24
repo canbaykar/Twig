@@ -166,6 +166,7 @@ const barZoneOptions = {
 			// Hacky fix: baseWidth doesn't update right away which creates an issue
 			// with the clipping feature of DND
 			this.dragged.render.baseWidth = this.deriv.render.baseWidth;
+			this.dragged.render.bodyMuted = false;
 
 			// this.deriv.attachChildren(dragged.children);
 			// dragged.detach();
@@ -190,6 +191,7 @@ const barZoneOptions = {
 			this.dragged.conc = this.conc;
 			this.dragged.render.anchor = followBarAnchor;
 			this.dragged.render.resetTranslate();
+			this.dragged.render.bodyMuted = true;
 
 			// dragged.attachChildren(this.deriv.children);
 			// dragged.attach(viewport);
@@ -243,7 +245,7 @@ export function prepareInitialZoneData(d: Deriv, type: DraggableType.Deriv | Dra
 		else return null;
 	} else {
 		d.render.swapAnchor(mouseAnchor, true);
-		if (d.parent === viewport && d.conc.match(/^[ \xC2\xA0\t\n\r]*$/)) {
+		if (d.parent === viewport && (d.render.bodyMuted || d.conc.match(/^[ \xC2\xA0\t\n\r]*$/))) {
 			d.render.swapAnchor(followBarAnchor);
 			return null;
 		}

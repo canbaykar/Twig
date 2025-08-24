@@ -156,6 +156,12 @@ export default class DerivRenderData {
         return this.dragged || !!this.deriv.parent?.render?.inDragged;
     });
 
+	/** ($state) Currently only used for DND. When this is true, deriv acts like bar 
+	 *  is its main part: When you drag a bar, the duplicated formula is muted. 
+	 *  Think like formula is an auto-inferred part that isn't yet user confirmed.
+	 *  When user interacts with body, it's counted as confirmed so it's unmuted. */
+	bodyMuted = $state(false);
+
     // --- Background colors ---
     /** ($derived) Background color for the formula element */
     readonly formulaBg: string | null = $derived.by(() => 

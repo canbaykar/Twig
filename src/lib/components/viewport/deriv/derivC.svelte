@@ -19,6 +19,11 @@
 				l(e);
 			},
 		},
+		formula: {
+			mousedown(e) {
+				e.deriv.render.bodyMuted = false;
+			},
+		},
 		
 		...dndListeners,
 	};

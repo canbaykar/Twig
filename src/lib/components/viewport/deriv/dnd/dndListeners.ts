@@ -16,6 +16,7 @@ import { getZonesOf, prepareInitialZoneData, zoneOptions, type Rect, type ZoneDa
 export const dndListeners: Listeners = {
 	bg: {
 		mousedown(e) {
+			e.deriv.render.bodyMuted = false;
 			draggable.once(opt(e.deriv, false));
 		},
 	},
