@@ -51,7 +51,7 @@
 {#snippet dropzone(opt: ZoneOption)}
     {@const rect = opt.getElementRect(data)}
     <div
-        class="dropzone dnd h-(--DERIV-ROW-OFFSET) outline-8"
+        class="dropzone dnd h-(--DERIV-ROW-OFFSET)"
         style:left="{rect.left}px"
         style:width="{-2 * rect.left}px"
         style:top="{rect.top}px"
