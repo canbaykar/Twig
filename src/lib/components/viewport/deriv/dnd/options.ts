@@ -2,7 +2,7 @@ import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
 import { DraggableType } from "../../renderData.svelte";
-import { defaultAnchor, followBarAnchor } from "../renderData.svelte";
+import { defaultAnchor, followBarAnchor, mouseAnchor } from "../renderData.svelte";
 
 export interface Rect { left: number, top: number, width: number, height: number }
 
@@ -47,13 +47,15 @@ abstract class ZoneData {
 	static condition(deriv: Deriv) { return true; }
 
 	readonly deriv: Deriv;
+	readonly dragged: Deriv;
 
-	enter(dragged: Deriv) {}
-	exit(dragged: Deriv) {}
-	drop(dragged: Deriv) {}
+	enter() {}
+	exit() {}
+	drop() {}
 
-	constructor(deriv: Deriv) {
+	constructor(deriv: Deriv, dragged: Deriv) {
 		this.deriv = deriv;
+		this.dragged = dragged;
 	}
 
 	// Abstract static method
@@ -82,12 +84,12 @@ const derivZoneOptions = {
 		static readonly type = 'top';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
-        enter(dragged: Deriv): void {
-            dragged.attach(this.deriv);
+        enter(): void {
+            this.dragged.attach(this.deriv);
 			this.deriv.render.goToTop();
         }
-        exit(dragged: Deriv): void {
-            dragged.attach(viewport);
+        exit(): void {
+            this.dragged.attach(viewport);
         }
 
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
@@ -102,8 +104,9 @@ const derivZoneOptions = {
 
 		readonly prevSib: Deriv | undefined;
 
-		constructor(deriv: Deriv, x: number) {
-			super(deriv);
+		constructor(deriv: Deriv, dragged: Deriv) {
+			super(deriv, dragged);
+			const x = dragged.render.x;
 			for (let i = deriv.children.length - 1; i >= 0; i--)
 				if (x > deriv.children[i].render.x) {
 					this.prevSib = deriv.children[i];
@@ -113,20 +116,19 @@ const derivZoneOptions = {
 				}
 		}
 
-		enter(dragged: Deriv): void {
+		enter(): void {
 			const i = this.prevSib ? this.deriv.children.indexOf(this.prevSib) + 1 : 0;
-			dragged.attach(this.deriv, i);
+			this.dragged.attach(this.deriv, i);
 			this.deriv.render.goToTop();
 		}
-		exit(dragged: Deriv): void {
-			dragged.attach(viewport);
+		exit(): void {
+			this.dragged.attach(viewport);
 		}
 
 		// One elementRect (and thus one dropzone component is shared among siblings)
 		// But the instance is per child. So boundingRect is reimplemented.
 		static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
-			const c0r = deriv.children[0].render;
-			const left = Math.min(-deriv.render.barWidth / 2, defaultAnchor(c0r)[0] - deriv.render.x - c0r.width / 2 - DT.derivDropZonePaddingN);
+			const left = -deriv.render.barWidth / 2 - DT.derivDropZonePaddingN;
 			return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
 		}
 
@@ -150,51 +152,110 @@ const derivZoneOptions = {
 /** Defines behaviour of zones accepting bar. Contains classes extending ZoneData. */
 // Note: When dragging bar, the checked point for drop target is the middle point of bar.
 const barZoneOptions = {
-	bar: class extends ZoneData {
+	bar: class BarZoneData extends ZoneData {
 		static readonly type = 'bar';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
-        enter(dragged: Deriv): void {
-			const parent = this.deriv.parent;
-			const index = this.deriv.childIndex;
-			this.deriv.detach();
-			dragged.render.anchor = defaultAnchor;
-			if (parent) {
-				parent.attachChild(dragged, index);
-				dragged.render.resetTranslate(true, false);
-			}
-			// This moves formula, not bar!
-			else dragged.render.moveTo(...this.deriv.render.xy);
-			dragged.render.goToTop();
+		// Stores initial conc.dragged 
+		private conc = '';
+
+        enter(): void {
+			this.conc = this.dragged.conc;
+			swapDeriv(this.deriv, this.dragged);
+			this.dragged.conc = this.deriv.conc;
+
+			// this.deriv.attachChildren(dragged.children);
+			// dragged.detach();
+			// this.deriv.render.barAnchor = mouseAnchor;
+			// this.deriv.render.moveTo(...dragged.render.xyBar, true);
+
+			// const parent = this.deriv.parent;
+			// const index = this.deriv.childIndex;
+			// this.deriv.detach();
+			// dragged.render.anchor = defaultAnchor;
+			// if (parent) {
+			// 	parent.attachChild(dragged, index);
+			// 	dragged.render.resetTranslate(true, false);
+			// }
+			// // This moves formula, not bar!
+			// else dragged.render.moveTo(...this.deriv.render.xy);
+			this.dragged.render.goToTop();
         }
-        exit(dragged: Deriv): void {
-			const parent = dragged.parent;
-			const index = dragged.childIndex;
-            dragged.attach(viewport);
-			dragged.render.anchor = followBarAnchor;
-			dragged.render.resetTranslate(true, false);
-			if (parent) parent.attachChild(this.deriv, index);
-			else viewport.attachChild(this.deriv);
+        exit(): void {
+			swapDeriv(this.dragged, this.deriv);
+			this.dragged.attach(viewport);
+			this.dragged.conc = this.conc;
+			this.dragged.render.anchor = followBarAnchor;
+			this.dragged.render.resetTranslate();
+
+			// dragged.attachChildren(this.deriv.children);
+			// dragged.attach(viewport);
+			// this.deriv.render.barAnchor = defaultBarAnchor;
+			// this.deriv.render.resetTranslate();
+
+			// const parent = dragged.parent;
+			// const index = dragged.childIndex;
+            // dragged.attach(viewport);
+			// dragged.render.anchor = followBarAnchor;
+			// dragged.render.resetTranslate(true, false);
+			// if (parent) parent.attachChild(this.deriv, index);
+			// else viewport.attachChild(this.deriv);
         }
 
         static getElementRect(deriv: Deriv): { left: number; top: number; width: number; height: number; } {
             const left = -deriv.render.barWidth / 2 - DT.derivDropZonePaddingN;
             return { left, top: row2height(-1), width: -2 * left, height: DT.derivRowOffsetN };
         }
+
+		// Reimplemented because this.deriv is detached on enter()
+		get boundingRect(): Rect {
+			const elRect = BarZoneData.getElementRect(this.dragged);
+			// Relative to absolute coords
+			elRect.left += this.dragged.render.x;
+			elRect.top += this.dragged.render.y;
+			return addPadding(elRect);
+		}
     },
 };
 
+// Puts d1 in d0's place for bar zone option's enter
+// Assumes d0's parent != null
+// Assumes d0's anchor's default, sets anchor & position of d1 to match...
+function swapDeriv(d0: Deriv, d1: Deriv) {
+	const parent = d0.parent as Deriv | typeof viewport;
+	const index = d0.childIndex;
+	d0.detach();
+	d1.render.anchor = defaultAnchor;
+	if (parent instanceof Deriv) parent.attachChild(d1, index);
+	else d1.render.moveTo(d0.render.xTranslate, d0.render.yTranslate);
+	if (!d1.parent) d1.attach(viewport);
+}
+
 /** Determines initial zone data when starting DND. This can't be generated automatically... */
-export function initialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
-	if (!(d.parent instanceof Deriv)) return null;
-	if (type === DraggableType.Deriv)
-		return new zoneOptions["child"](d.parent, d.render.x)
-	else throw new Error('Bar drag-and-drop not implemented yet.');
+export function prepareInitialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
+	if (type === DraggableType.Deriv) {
+		d.render.swapAnchor(mouseAnchor);
+		if (d.parent instanceof Deriv) 
+			return new zoneOptions.child(d.parent, d);
+		else return null;
+	} else {
+		d.render.swapAnchor(mouseAnchor, true);
+		if (d.parent === viewport && d.conc.match(/^[ \xC2\xA0\t\n\r]*$/)) {
+			d.render.swapAnchor(followBarAnchor);
+			return null;
+		}
+		const clone = new Deriv({ conc: d.conc, render: d.render });
+		clone.attach(viewport);
+		swapDeriv(d, clone);
+		const zd = new zoneOptions.bar(clone, d);
+		zd.enter();
+		return zd;
+	}
 }
 
 // --- Final Exports ---
 // See zoneDataFromPoint from dropzones.svelte for use of this
-/** Do zoneOptions[t] to get the ZoneData class for ZoneType t */
+/** Do zoneOptions.t to get the ZoneData class for ZoneType t */
 export const zoneOptions = {
 	...derivZoneOptions,
 	...barZoneOptions,

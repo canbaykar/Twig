@@ -4,7 +4,7 @@
 	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneData, type ZoneType } from './options';
 
     /** Takes in world coords, not screen! */
-    export function zoneDataFromPoint(x: number, y: number): ZoneData | null {
+    export function zoneDataFromPoint(x: number, y: number, dragged: Deriv): ZoneData | null {
         const wrld2cl = viewport.render.wrld2cl;
         const el = document.elementFromPoint(wrld2cl.x(x), wrld2cl.y(y));
         if (!(el instanceof HTMLElement) || !el.classList.contains('dropzone')) return null;
@@ -16,7 +16,7 @@
         const deriv = Deriv.lookup(uid);
         if (!deriv) return null;
 
-        return new zoneOptions[type](deriv, x);
+        return new zoneOptions[type](deriv, dragged);
     }
 </script>
 
