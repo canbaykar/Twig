@@ -86,12 +86,22 @@
 	import { DT } from '../../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
 
+	// Note: Each Bg renders their (deriv's) children('s Bg).
+	// Except when a deriv's being dragged; dragged deriv renders a separate bgRoot
+	// snippet. But in the case of a bar being dragged, The deriv has two Bgs:
+	// - One rendered by parent (only shows formula)
+	// - One rendered by itself with bgRoot (doesn't show formula)
+	// This is because the formula part isn't dragged.
+	// Also note the exception when the deriv is root: It renders it own formula 
+	// like it would normally.
 	interface Props {
 		data: Deriv;
 		type: BgType;
+		/** Private! */
+		_showOnlyFormula?: boolean;
 	}
 
-	let { data, type }: Props = $props();
+	let { data, type, _showOnlyFormula = false }: Props = $props();
 </script>
 
 <!-- Not used right now bc outlines are disabled. Called in viewport comp. -->
@@ -128,8 +138,8 @@
 	</svg>
 {/snippet}
 
-<!-- For formula -->
-{#if type.showFormulaBg(data)}	
+<!-- For formula (for the second part, see comment above Props) -->
+{#if type.showFormulaBg(data) && (!data.render.barDragged || data.root === data || _showOnlyFormula)}	
 	<rect
 		class="cursor-all-scroll"
 		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN - (+type.extended(data)) * handlePadding}
@@ -143,54 +153,57 @@
 	/>
 {/if}
 
-<!-- Recursion for children -->
-{#each data.children as child (child)}
-	{#if !child.render.dragged}
-		<Bg data={child} type={type} />
-	{/if}
-{/each}
-
-<!-- For bar -->
-{#if type.showBarBg(data)}
-	<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar">
-		<rect
-			x={data.render.xBar - data.render.barWidth / 2 - DT.derivBgPaddingN}
-			y={data.render.yBar - DT.derivBgPaddingN}
-			width={data.render.barWidth + pad2}
-			height={barBgHeight}
-			rx={barRx}
-		/>
-	
-		<!-- For label -->
-		{#if data.render.hasLabel}
-			<rect
-				x={data.render.xBar - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
-				y={data.render.yBar + labelOffY}
-				width={data.render.labelWidth + pad2}
-				height={labelBgHeight}
-				rx={labelRx}
-			/>
+<!-- See comment above Props -->
+{#if !_showOnlyFormula}
+	<!-- Recursion for children -->
+	{#each data.children as child (child)}
+		{#if !child.render.formulaDragged}
+			<Bg data={child} type={type} _showOnlyFormula={child.render.barDragged}/>
 		{/if}
-	
-		<!-- For Rule -->
-		{#if data.render.hasRule}
-			{#if data.render.discharged}
+	{/each}
+
+	<!-- For bar -->
+	{#if type.showBarBg(data)}
+		<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar">
+			<rect
+				x={data.render.xBar - data.render.barWidth / 2 - DT.derivBgPaddingN}
+				y={data.render.yBar - DT.derivBgPaddingN}
+				width={data.render.barWidth + pad2}
+				height={barBgHeight}
+				rx={barRx}
+			/>
+		
+			<!-- For label -->
+			{#if data.render.hasLabel}
 				<rect
-					x={data.render.xBar + data.render.barWidth / 2 + ruleLabelOffX}
+					x={data.render.xBar - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
 					y={data.render.yBar + labelOffY}
-					width={data.render.ruleWidth + pad2}
-					height={labelBgHeight}
-					rx={labelRx}
-				/>
-			{:else}
-				<rect
-					x={data.render.xBar + data.render.barWidth / 2 + ruleOffX}
-					y={data.render.yBar + ruleOffY}
-					width={data.render.ruleWidth + rulePad}
+					width={data.render.labelWidth + pad2}
 					height={labelBgHeight}
 					rx={labelRx}
 				/>
 			{/if}
-		{/if}
-	</g>
+		
+			<!-- For Rule -->
+			{#if data.render.hasRule}
+				{#if data.render.discharged}
+					<rect
+						x={data.render.xBar + data.render.barWidth / 2 + ruleLabelOffX}
+						y={data.render.yBar + labelOffY}
+						width={data.render.ruleWidth + pad2}
+						height={labelBgHeight}
+						rx={labelRx}
+					/>
+				{:else}
+					<rect
+						x={data.render.xBar + data.render.barWidth / 2 + ruleOffX}
+						y={data.render.yBar + ruleOffY}
+						width={data.render.ruleWidth + rulePad}
+						height={labelBgHeight}
+						rx={labelRx}
+					/>
+				{/if}
+			{/if}
+		</g>
+	{/if}
 {/if}
