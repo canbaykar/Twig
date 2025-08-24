@@ -31,7 +31,7 @@
 </script>
 
 <div
-    class="bg-fg h-1 origin-left translate-x-[-50%] rounded-full select-none cursor-all-scroll"
+    class="{render.inferred ? "bg-fg" : "bg-fg/25"} h-1 origin-left translate-x-[-50%] rounded-full select-none cursor-all-scroll"
 	style:translate="{data.render.xBar - data.render.barWidth / 2}px {data.render.yBar}px"
     style:width="{render.barWidth}px"
     class:bg-transparent={data.render.barHidden}
