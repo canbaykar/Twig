@@ -43,7 +43,6 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="deriv"
-	class:dragged={data.render.dragged}
 	class:pointer-events-none={data.render.inDragged}
 	style:translate="{data.render.x}px {data.render.y}px"
 	class:z-1={data.render.inDragged}
