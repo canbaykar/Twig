@@ -250,6 +250,8 @@ export function prepareInitialZoneData(d: Deriv, type: DraggableType.Deriv | Dra
 		const clone = new Deriv({ conc: d.conc, render: d.render });
 		clone.attach(viewport);
 		swapDeriv(d, clone);
+		// enter() below requires baseWidth to be up-to-date
+		clone.render.baseWidth = d.render.baseWidth;
 		const zd = new zoneOptions.bar(clone, d);
 		zd.enter();
 		return zd;
