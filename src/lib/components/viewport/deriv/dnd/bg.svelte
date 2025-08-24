@@ -94,6 +94,8 @@
 	// This is because the formula part isn't dragged.
 	// Also note the exception when the deriv is root: It renders it own formula 
 	// like it would normally.
+	// TODO: This doesn't function completely consistent: When deriv is root, bar and
+	// formula are in the same Bg. Change that.
 	interface Props {
 		data: Deriv;
 		type: BgType;
