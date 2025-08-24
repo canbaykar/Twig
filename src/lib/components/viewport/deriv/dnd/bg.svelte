@@ -27,19 +27,18 @@
 		Math.min((DT.derivBgPaddingN + 5 * DT.UNIT) / viewport.render.scale, formulaBgHeight / 2)
 	);
 
-    const barOffY = -DT.derivBarBottomN - DT.derivBgPaddingN - DT.UNIT;
     const barBgHeight = DT.UNIT + pad2;
     const barRx = barBgHeight / 2;
 
     const labelOffX = -DT.derivBarGapN - DT.derivBgPaddingN;
-    const labelOffY = -DT.derivBarBottomN + DT.derivLabelBottomN - DT.UNIT - DT.derivBgPaddingN;
+    const labelOffY = DT.derivLabelBottomN - DT.derivBgPaddingN;
     const labelBgHeight = DT.derivLabelHeightN + pad2;
     const labelRx = DT.derivLabelHeightN / 2 + DT.derivBgPaddingN;
 
 	const ruleLabelOffX = DT.derivBarGapN - DT.derivBgPaddingN;
 
     const ruleOffX = DT.derivRuleLeftN + DT.derivRuleParanthesisGapN - DT.derivBgPaddingN;
-    const ruleOffY = -DT.derivBarBottomN + DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.UNIT - DT.derivBgPaddingN;
+    const ruleOffY = DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.derivBgPaddingN;
 	const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN);
 
 	// For handles
@@ -155,8 +154,8 @@
 {#if type.showBarBg(data)}
 	<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar">
 		<rect
-			x={data.render.x - data.render.barWidth / 2 - DT.derivBgPaddingN}
-			y={data.render.y + barOffY}
+			x={data.render.xBar - data.render.barWidth / 2 - DT.derivBgPaddingN}
+			y={data.render.yBar - DT.derivBgPaddingN}
 			width={data.render.barWidth + pad2}
 			height={barBgHeight}
 			rx={barRx}
@@ -165,8 +164,8 @@
 		<!-- For label -->
 		{#if data.render.hasLabel}
 			<rect
-				x={data.render.x - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
-				y={data.render.y + labelOffY}
+				x={data.render.xBar - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
+				y={data.render.yBar + labelOffY}
 				width={data.render.labelWidth + pad2}
 				height={labelBgHeight}
 				rx={labelRx}
@@ -177,16 +176,16 @@
 		{#if data.render.hasRule}
 			{#if data.render.discharged}
 				<rect
-					x={data.render.x + data.render.barWidth / 2 + ruleLabelOffX}
-					y={data.render.y + labelOffY}
+					x={data.render.xBar + data.render.barWidth / 2 + ruleLabelOffX}
+					y={data.render.yBar + labelOffY}
 					width={data.render.ruleWidth + pad2}
 					height={labelBgHeight}
 					rx={labelRx}
 				/>
 			{:else}
 				<rect
-					x={data.render.x + data.render.barWidth / 2 + ruleOffX}
-					y={data.render.y + ruleOffY}
+					x={data.render.xBar + data.render.barWidth / 2 + ruleOffX}
+					y={data.render.yBar + ruleOffY}
 					width={data.render.ruleWidth + rulePad}
 					height={labelBgHeight}
 					rx={labelRx}
