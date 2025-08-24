@@ -81,10 +81,6 @@ const opt = (data: Deriv, bar: boolean): DraggableOptions => ({
 
 		return {
 			move(e) {
-				const cl2wrld = viewport.render.cl2wrld;
-				// data.render.xTransform += cl2wrld.scale(e.dx);
-				// data.render.yTransform += cl2wrld.scale(e.dy);
-
 				updateZD();
 			},
 
