@@ -29,7 +29,7 @@ export const dndListeners: Listeners = {
 const opt = (data: Deriv, bar: boolean): DraggableOptions => ({
 	cursor: 'all-scroll',
 	start() {
-		data.render.dragged = true;
+		bar ? data.render.barDragged = true : data.render.formulaDragged = true;
 		const dragType = bar ? DraggableType.Bar : DraggableType.Deriv;
 		viewport.render.dragType = dragType;
 
@@ -85,7 +85,7 @@ const opt = (data: Deriv, bar: boolean): DraggableOptions => ({
 			},
 
 			end(e) {
-				data.render.dragged = false;
+				bar ? data.render.barDragged = false : data.render.formulaDragged = false;
 				viewport.render.dragType = DraggableType.None
 
 				updateZD();
