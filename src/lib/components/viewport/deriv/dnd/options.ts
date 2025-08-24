@@ -163,6 +163,9 @@ const barZoneOptions = {
 			this.conc = this.dragged.conc;
 			swapDeriv(this.deriv, this.dragged);
 			this.dragged.conc = this.deriv.conc;
+			// Hacky fix: baseWidth doesn't update right away which creates an issue
+			// with the clipping feature of DND
+			this.dragged.render.baseWidth = this.deriv.render.baseWidth;
 
 			// this.deriv.attachChildren(dragged.children);
 			// dragged.detach();
