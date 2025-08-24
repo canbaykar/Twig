@@ -59,7 +59,7 @@
 	// Non-outlined
 	const nonOutlinedBgType: BgType = {
 		showFormulaBg: (data) => !data.render.formulaBg,
-		showBarBg: (data) => !data.render.barBg && data.render.hasBar,
+		showBarBg: (data) => !data.render.barBg && data.render.inferred,
 		formulaFill: () => `var(--color-bg)`,
 		barFill: () => `var(--color-bg)`,
 		extended: () => false,
@@ -67,7 +67,7 @@
 	// Outlined
 	const outlinedBgType: BgType = {
 		showFormulaBg: (data) => !!data.render.formulaBg,
-		showBarBg: (data) => !!data.render.barBg && data.render.hasBar,
+		showBarBg: (data) => !!data.render.barBg && data.render.inferred,
 		formulaFill: (data) => `${data.render.formulaBg}`,
 		barFill: (data) => `${data.render.barBg}`,
 		extended: (data) => data.render.bodyAwake,
@@ -75,7 +75,7 @@
 	// Hitbox
 	const hitboxBgType: BgType = {
 		showFormulaBg: () => true,
-		showBarBg: (data) => !!data.render.barBg && data.render.hasBar,
+		showBarBg: (data) => !!data.render.barBg && data.render.inferred,
 		formulaFill: () => ``,
 		barFill: () => ``,
 		extended: () => true,

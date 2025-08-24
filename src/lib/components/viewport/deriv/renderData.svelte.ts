@@ -245,7 +245,7 @@ export default class DerivRenderData {
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
     readonly hasRule = $derived.by(() => !!this.deriv.logic.ruleText);
     readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
-    readonly hasBar = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
+    readonly inferred = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
     readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
 
 	/** Util that brings the root of this deriv to the front */
