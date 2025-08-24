@@ -49,9 +49,10 @@
 	// --- Implementations of hovered & Selected ---
     // Update hovered for both viewport and derivs if its changed. These are also used for
 	// some drag events below to cover the case of formula text selection being dragged.
-	function onmouseover(e: MouseEvent) { 
+	// This is called in onmouseup, that uses the dragend argument to overwite the conditional...
+	function onmouseover(e: MouseEvent, dragend = false) { 
         const { deriv, bar } = DerivRenderData.lookup(e.target);
-        if (viewport.render.dragging) return;
+        if (viewport.render.dragging && !dragend) return;
 		viewport.render.hover(deriv, bar);
 	}
     function onmouseleave(e: MouseEvent) {
@@ -77,7 +78,8 @@
 			// Although this doesn't solve the problem of cursor changing.
 			lastTarget.deriv !== deriv || 
 			lastTarget.part !== part
-		) return;
+			// omouseover doesnt update hover while dragging so we have to do it on dragend here
+		) return viewport.render.hover(deriv, bar);
 		viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mouseup", part, deriv, e);
 	}
