@@ -73,7 +73,7 @@
 		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
 		if (
 			viewport.render.dragging ||
-			// When you start a text selection and move cursor to viewport, it should deselect.
+			// When you start a text selection and move cursor to viewport, it shouldn't deselect.
 			// Although this doesn't solve the problem of cursor changing.
 			lastTarget.deriv !== deriv || 
 			lastTarget.part !== part
