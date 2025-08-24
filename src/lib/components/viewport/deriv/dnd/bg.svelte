@@ -59,7 +59,7 @@
 	// Non-outlined
 	const nonOutlinedBgType: BgType = {
 		showFormulaBg: (data) => !data.render.formulaBg,
-		showBarBg: (data) => !data.render.barBg && data.render.inferred,
+		showBarBg: (data) => !data.render.barBg && !data.render.barHidden,
 		formulaFill: () => `var(--color-bg)`,
 		barFill: () => `var(--color-bg)`,
 		extended: () => false,
@@ -67,7 +67,7 @@
 	// Outlined
 	const outlinedBgType: BgType = {
 		showFormulaBg: (data) => !!data.render.formulaBg,
-		showBarBg: (data) => !!data.render.barBg && data.render.inferred,
+		showBarBg: (data) => !!data.render.barBg && !data.render.barHidden,
 		formulaFill: (data) => `${data.render.formulaBg}`,
 		barFill: (data) => `${data.render.barBg}`,
 		extended: (data) => data.render.bodyAwake,
@@ -75,7 +75,7 @@
 	// Hitbox
 	const hitboxBgType: BgType = {
 		showFormulaBg: () => true,
-		showBarBg: (data) => !!data.render.barBg && data.render.inferred,
+		showBarBg: (data) => !!data.render.barBg && !data.render.barHidden,
 		formulaFill: () => ``,
 		barFill: () => ``,
 		extended: () => true,
@@ -95,7 +95,7 @@
 	// Also note the exception when the deriv is root: It renders it own formula 
 	// like it would normally.
 	// TODO: This doesn't function completely consistent: When deriv is root, bar and
-	// formula are in the same Bg. Change that.
+	// formula are in the same Bg. Change that
 	interface Props {
 		data: Deriv;
 		type: BgType;

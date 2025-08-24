@@ -240,12 +240,12 @@ export default class DerivRenderData {
 	/** ($derived) Is bar selected or hovered? */
     readonly barAwake = $derived.by(() => this.barSelected || this.barHovered);
 	
-
     // --- Other utils ---
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
     readonly hasRule = $derived.by(() => !!this.deriv.logic.ruleText);
     readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
     readonly inferred = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
+	readonly barHidden = $derived.by(() => !(this.inferred || this.barAwake || this.bodyAwake));
     readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
 
 	/** Util that brings the root of this deriv to the front */
