@@ -156,7 +156,7 @@ const barZoneOptions = {
 		static readonly type = 'bar';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
-		// Stores initial conc.dragged 
+		// Stores initial dragged.conc
 		private conc = '';
 
         enter(): void {
