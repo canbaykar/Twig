@@ -245,7 +245,7 @@ export function prepareInitialZoneData(d: Deriv, type: DraggableType.Deriv | Dra
 		else return null;
 	} else {
 		d.render.swapAnchor(mouseAnchor, true);
-		if (d.parent === viewport && (d.render.bodyMuted || d.conc.match(/^[ \xC2\xA0\t\n\r]*$/))) {
+		if (d.parent === viewport && d.render.bodyMuted) {
 			d.render.swapAnchor(followBarAnchor);
 			return null;
 		}
