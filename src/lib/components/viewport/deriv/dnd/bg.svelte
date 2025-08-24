@@ -158,7 +158,7 @@
 {#if !_showOnlyFormula}
 	<!-- Recursion for children -->
 	{#each data.children as child (child)}
-		{#if !child.render.formulaDragged}
+		{#if !child.render.bodyDragged}
 			<Bg data={child} type={type} _showOnlyFormula={child.render.barDragged}/>
 		{/if}
 	{/each}

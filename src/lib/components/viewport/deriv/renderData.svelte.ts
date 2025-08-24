@@ -144,12 +144,13 @@ export default class DerivRenderData {
         onFontLoad(widthUpdater);
     }
     
+	// --- DND System ---
     /** ($state) Am I being dragged (formula or bar)? */
-    formulaDragged = $state(false);
+    bodyDragged = $state(false);
     /** ($state) Am I being dragged (formula or bar)? */
     barDragged = $state(false);
     /** ($state) Am I being dragged (formula or bar)? */
-    dragged = $derived(this.formulaDragged || this.barDragged);
+    dragged = $derived(this.bodyDragged || this.barDragged);
     /** ($derived) Am I OR any of my ascenstors being dragged? */
     readonly inDragged = $derived.by((): boolean => { // @ts-expect-error
         return this.dragged || !!this.deriv.parent?.render?.inDragged;
