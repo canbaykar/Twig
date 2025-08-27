@@ -9,6 +9,31 @@ export enum DraggableType {
 	None, Panzoom, Deriv, Bar
 }
 
+// Utility class for hover
+export class Hover {
+	readonly deriv: Deriv | null;
+	readonly part: string | null;
+	readonly section: string | null;
+
+	constructor(deriv: Deriv | null = null, part: string | null = null) {
+		this.deriv = deriv;
+		this.part = part;
+		this.section = part ? part.match(/^(.*):/)?.[1] ?? 'body' : null;
+	}
+	
+	matches(deriv: Deriv | null = null, part: string | null = null) {
+		return this.deriv === deriv && this.part === part;
+	}
+
+	get isEmpty() {
+		return this.matches();
+	}
+
+	get bar() {
+		return !!this.part && !!this.part.match(/^bar/);
+	}
+}
+
 export default class ViewportRenderData {
     x = $state(0);
     y = $state(0);
@@ -44,40 +69,35 @@ export default class ViewportRenderData {
 	/** ($derived) Is the viewport or a deriv or bar being dragged right now? */
 	get dragging() { return this.dragType !== DraggableType.None }
 
-    /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
-    readonly hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
-	hover(deriv: Deriv | null, bar = false) {
+    /** ($derived) Partially implemented in viewportC and deriv.render */
+    hovered: Hover = $state(new Hover());
+	hover(deriv: Deriv | null = null, part: string | null = null) {
 		// If hover state's already what we want, return
-		if (this.isHovered(deriv, bar)) return;
+		if (this.hovered.matches(deriv, part)) return;
 		// Clear the previous hover on deriv.render side
-		if (this.hovered) {                               // @ts-expect-error
-			this.hovered.deriv.render.barHovered = false; // @ts-expect-error
-			this.hovered.deriv.render.bodyHovered = false;
+		if (!this.hovered.isEmpty) {                         
+			this.hovered.deriv!.render.hoveredPart    = null;
+			this.hovered.deriv!.render.hoveredSection = null;
 		}
 		// Set hovered and update deriv.render side if needed
-		if (deriv) {                               // @ts-expect-error
-			this.hovered = { deriv, bar };         // @ts-expect-error
-			bar ? deriv.render.barHovered =  true  // @ts-expect-error
-				: deriv.render.bodyHovered = true; // @ts-expect-error
-		} else this.hovered = null;
-	}
-	/** Util for if a value mathces hovered (since === can't be used for this) */
-	isHovered(deriv: Deriv | null, bar = false) {
-		return deriv === null ? this.hovered === null
-			: deriv === this.hovered?.deriv && bar === this.hovered.bar;
+		if (deriv) {                                           
+			this.hovered = new Hover(deriv, part);             
+			deriv.render.hoveredPart = part;                   
+			deriv.render.hoveredSection = this.hovered.section;
+		} else this.hovered = new Hover();
 	}
 
 	/** ($raw) DO NOT modify directly! Use related methods instead.
 	 *  Partially implemented in viewportC and deriv.render */
-	readonly selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
+	selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
 	selectOnly(deriv?: Deriv | null, bar = false) {
-		for (const { deriv } of viewport.render.selection) { // @ts-expect-error
-			deriv.render.bodySelected = false;               // @ts-expect-error
+		for (const { deriv } of viewport.render.selection) {
+			deriv.render.bodySelected = false;              
 			deriv.render.barSelected  = false;
-		}                                          // @ts-expect-error
+		}                                         
 		this.selection = deriv ? [{ deriv, bar }] : [];
-		if (deriv)                                 // @ts-expect-error
-			bar ? deriv.render.barSelected  = true // @ts-expect-error
+		if (deriv)                                
+			bar ? deriv.render.barSelected  = true
 				: deriv.render.bodySelected = true;
 	}
 }

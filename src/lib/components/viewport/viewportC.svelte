@@ -7,7 +7,7 @@
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/dnd/bg.svelte";
-	import { DraggableType } from "./renderData.svelte";
+	import { DraggableType, Hover } from "./renderData.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
@@ -25,10 +25,10 @@
 		};
 	};
 
-	function callListener<K extends keyof HTMLElementEventMap>(type: K, part: string, deriv: Deriv, evt: HTMLElementEventMap[K]) {
+	function callListener<K extends keyof HTMLElementEventMap>(type: K, part: string | null, deriv: Deriv, evt: HTMLElementEventMap[K]) {
 		const e = Object.assign(evt, { deriv });
 		const layoutListener = listeners["layout"]?.[type] ?? ((e, l) => l(e));
-		layoutListener(e, listeners[part]?.[type] ?? (() => {}) as any);
+		layoutListener(e, listeners[part ?? 'layout']?.[type] ?? (() => {}) as any);
 	}
 </script>
 
@@ -51,19 +51,18 @@
 	// some drag events below to cover the case of formula text selection being dragged.
 	// This is called in onmouseup, that uses the dragend argument to overwite the conditional...
 	function onmouseover(e: MouseEvent, dragend = false) { 
-        const { deriv, bar } = DerivRenderData.lookup(e.target);
+        const { deriv, part } = DerivRenderData.lookup(e.target);
         if (viewport.render.dragging && !dragend) return;
-		viewport.render.hover(deriv, bar);
+		viewport.render.hover(deriv, part);
 	}
     function onmouseleave(e: MouseEvent) {
 		// When this is called in ondragleave, it fires in child elements too even tho
 		// this function is for leaving viewport only, hence the 2nd check
 		if (!viewport.render.hovered || e.relatedTarget) return;
-        viewport.render.hover(null);
+        viewport.render.hover();
     }
 
-	let lastTarget: ReturnType<typeof DerivRenderData.lookup> 
-		= { deriv: null, part: null, bar: false };
+	let lastTarget = new Hover();
 	function onmousedown(e: MouseEvent) {
 		const { deriv, part, bar } = lastTarget = DerivRenderData.lookup(e.target);
 		if (deriv && !deriv.render.isSelected(bar)) 
@@ -79,7 +78,7 @@
 			lastTarget.deriv !== deriv || 
 			lastTarget.part !== part
 			// omouseover doesnt update hover while dragging so we have to do it on dragend here
-		) return viewport.render.hover(deriv, bar);
+		) return viewport.render.hover(deriv, part);
 		viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mouseup", part, deriv, e);
 	}

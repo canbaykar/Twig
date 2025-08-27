@@ -4,6 +4,7 @@ import { treeData, type TreeData } from "./treeData";
 import { DT } from "../../../../DT";
 import { browser } from "$app/environment";
 import { onDestroy } from "svelte";
+import { Hover } from "../renderData.svelte";
 
 // Exported below as DerivRenderData.displayed
 const displayed = $derived(flatten(viewport.children));
@@ -194,58 +195,56 @@ export default class DerivRenderData {
 	// - UID is defined in Deriv for this system. This is used in viewport to define interactions
 	//   using its hover & selected system to avoid defining listeners in too many places.
 	//   (Because they interfere with each other and complicate things)
+	// - Parts are further divided into sections -> bar:bg -> section is bg. 
+	//   (default section is body.)
     /** Looks up associated deriv of closest ancestor from e.target
      *  DerivRenderData version of Deriv.lookup */
-    static lookup(target: EventTarget | null) {
+    static lookup(target: EventTarget | null): Hover {
         if (!(target instanceof Element)) 
-			return { part: null, deriv: null, bar: false };
+			return new Hover();
 
 		// Find part
         const partTarget = target.closest('[data-part]') as HTMLElement | null;
         if (!partTarget) 
-			return { part: null, deriv: null, bar: false };
+			return new Hover();
         const part = partTarget.dataset.part as string;
 		if (part === 'viewport') 
-			return { part, deriv: null, bar: false };
+			return new Hover(null, part);
 		
 		// Find uid
 		let uid = partTarget.dataset.uid;
 		if (!uid) {
 			const uidTarget = partTarget.closest('[data-uid]') as HTMLElement | null;
 			if (!uidTarget) 
-				return { part, deriv: null, bar: false };
+				return new Hover(null, part);
 			uid = uidTarget.dataset.uid as string;
 		}
 
 		// Find deriv
         const deriv = Deriv.lookup(uid);
-		return { part, deriv, bar: !!part.match(/^bar/) };
+		return new Hover(deriv, part);
 	}
     
 	// --- Hovered ---
-    /** ($state) (Hovered is divided into body & bar)
-     *  Partially implemented in viewportC and viewport.render */
-    readonly bodyHovered: boolean = $state(false);
-    /** ($state) (Hovered is divided into body & bar)
-     *  Partially implemented in viewportC and viewport.render */
-    readonly barHovered: boolean = $state(false);
-	/** Util for checking bodyHovered & barHovered */
-	isHovered(bar = false) { return bar ? this.barHovered : this.bodyHovered; }
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+    hoveredPart: string | null = $state(null);
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+    hoveredSection: string | null = $state(null);
 
 	// --- Selected ---
-    /** ($state) Partially implemented in viewportC and viewport.render */
-	readonly bodySelected = $state(false);
-    /** ($state) Partially implemented in viewportC and viewport.render */
-	readonly barSelected = $state(false);
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+	bodySelected = $state(false);
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+	barSelected = $state(false);
 	/** Util for checking bodySelected & barSelected */
 	isSelected(bar = false) { return bar ? this.barSelected : this.bodySelected; }
 
 	// --- Awake ---
 	// Would be called active but that's already used for focus in HTML
 	/** ($derived) Is body selected or hovered? */
-    readonly bodyAwake = $derived.by(() => this.bodySelected || this.bodyHovered);
+    readonly bodyAwake = $derived.by(() => this.bodySelected || this.hoveredSection === 'body');
 	/** ($derived) Is bar selected or hovered? */
-    readonly barAwake = $derived.by(() => this.barSelected || this.barHovered);
+    readonly barAwake = $derived.by(() => this.barSelected || this.hoveredSection === 'bar');
 	
     // --- Other utils ---
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
