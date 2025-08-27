@@ -75,7 +75,7 @@
 	// Hitbox
 	const hitboxBgType: BgType = {
 		showFormulaBg: () => true,
-		showBarBg: (data) => !!data.render.barBg && !data.render.barHidden,
+		showBarBg: () => true,
 		formulaFill: () => ``,
 		barFill: () => ``,
 		extended: () => true,
