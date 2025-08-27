@@ -43,7 +43,7 @@
 			bind:value={data.conc}
 			class="
 				caret-fg absolute top-0 left-0 origin-top-left resize-none overflow-hidden text-center text-transparent
-				outline-0 outline-fg/25 outline-dashed focus:outline-2 -outline-offset-2 rounded-[calc(var(--DERIV-BG-PADDING)/16)]
+				outline-0 outline-fg outline-dashed focus:outline-1 -outline-offset-1 rounded-[calc(var(--DERIV-BG-PADDING)/16)]
 			"
 			style="
             line-height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
