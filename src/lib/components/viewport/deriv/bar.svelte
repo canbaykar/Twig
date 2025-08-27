@@ -37,7 +37,7 @@
     class:bg-transparent={data.render.barHidden}
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
-	data-part="bar:"
+	data-part="bar"
 >
 	<!-- Hitbox -->
 	<div class="hitbox"></div>

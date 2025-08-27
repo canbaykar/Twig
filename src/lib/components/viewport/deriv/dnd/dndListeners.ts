@@ -20,7 +20,7 @@ export const dndListeners: Listeners = {
 			draggable.once(opt(e.deriv, false));
 		},
 	},
-	'bar:': {
+	bar: {
 		mousedown(e) {
 			draggable.once(opt(e.deriv, true))
 		}
