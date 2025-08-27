@@ -70,7 +70,7 @@
 		showBarBg: (data) => !!data.render.barBg && !data.render.barHidden,
 		formulaFill: (data) => `${data.render.formulaBg}`,
 		barFill: (data) => `${data.render.barBg}`,
-		extended: (data) => data.render.bodyHovered,
+		extended: (data) => data.render.hoveredSection === 'body',
 	};
 	// Hitbox
 	const hitboxBgType: BgType = {

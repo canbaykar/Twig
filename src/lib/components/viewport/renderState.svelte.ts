@@ -9,6 +9,26 @@ export enum DraggableType {
 	None, Panzoom, Deriv, Bar
 }
 
+// Utility class for hover
+export class Hover {
+	readonly deriv: Deriv | null;
+	readonly part: string | null;
+	readonly section: string | null;
+
+	constructor(deriv: Deriv | null = null, part: string | null = null) {
+		this.deriv = deriv;
+		this.part = part;
+		this.section = part ? part.match(/^(.*)_/)?.[1] ?? 'body' : null;
+	}
+	
+	matches(deriv: Deriv | null = null, part: string | null = null) {
+		return this.deriv === deriv && this.part === part;
+	}
+
+	get isEmpty() { return this.matches(); }
+	get bar() { return this.section === 'bar'; }
+}
+
 export default class ViewportRenderState {
     x = $state(0);
     y = $state(0);
@@ -45,42 +65,23 @@ export default class ViewportRenderState {
 	get dragging() { return this.dragType !== DraggableType.None }
 
 	// This is hover logic additional to native hover logic because Bg component's elements
-	// placement make it impractical to style its hover with CSS.
+	// placement make it impractical to style its hover with CSS and .
     /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
-    hovered: { deriv: Deriv, body: boolean, bar: boolean } | null = $state(null);
-	hover(deriv: Deriv | null = null, section: null | 'body' | 'bar' = null) {
+    hovered: Hover = $state(new Hover());
+	hover(deriv: Deriv | null = null, part: string | null = null) {
 		// If hover state's already what we want, return
-		if (this.matchHover(deriv, section)) return;
+		if (this.hovered.matches(deriv, part)) return;
 		// Clear the previous hover on deriv.render side
-		if (this.hovered) {
-			this.hovered.deriv.render.barHovered = false;
-			this.hovered.deriv.render.bodyHovered = false;
-			this.hovered.deriv.render.hovered = false;
+		if (!this.hovered.isEmpty) {                         
+			this.hovered.deriv!.render.hoveredPart    = null;
+			this.hovered.deriv!.render.hoveredSection = null;
 		}
 		// Set hovered and update deriv.render side if needed
-		if (deriv) {
-			this.hovered = { deriv, body: false, bar: false };
-			if (section) {
-				this.hovered[section] = true;
-				section === 'body'
-					? deriv.render.bodyHovered = true
-					: deriv.render.barHovered  = true;
-			}
-			deriv.render.hovered = true;
-		} else this.hovered = null;
-	}
-	/** Util for if a value mathces hovered (since === can't be used for this) */
-	matchHover(deriv: Deriv | null, section: null | 'body' | 'bar') {
-		if (!this.hovered) return deriv === null;
-		else if (this.hovered.deriv !== deriv) return false;
-		switch (section) {
-			case 'body':
-				return this.hovered.body && !this.hovered.bar;
-			case 'bar':
-				return !this.hovered.body && this.hovered.bar;
-			default:
-				return !this.hovered.body && !this.hovered.bar;
-		}
+		if (deriv) {                                           
+			this.hovered = new Hover(deriv, part);             
+			deriv.render.hoveredPart = part;                   
+			deriv.render.hoveredSection = this.hovered.section;
+		} else this.hovered = new Hover();
 	}
 
 	/** ($raw) DO NOT modify directly! Use related methods instead.

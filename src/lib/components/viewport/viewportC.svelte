@@ -7,7 +7,7 @@
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/dnd/bg.svelte";
-	import { DraggableType } from "./renderState.svelte";
+	import { DraggableType, Hover } from "./renderState.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
@@ -51,9 +51,9 @@
 	// some drag events below to cover the case of formula text selection being dragged.
 	// This is called in onmouseup, that uses the dragend argument to overwite the conditional...
 	function onmouseover(e: MouseEvent, dragend = false) { 
-        const { deriv, section } = DerivRenderState.lookup(e.target);
+        const { deriv, part } = DerivRenderState.lookup(e.target);
         if (viewport.render.dragging && !dragend) return;
-		viewport.render.hover(deriv, section);
+		viewport.render.hover(deriv, part);
 	}
     function onmouseleave(e: MouseEvent) {
 		// When this is called in ondragleave, it fires in child elements too even tho
@@ -62,13 +62,12 @@
         viewport.render.hover();
     }
 
-	let lastTarget: ReturnType<typeof DerivRenderState.lookup> 
-		= { deriv: null, part: null, section: null };
+	let lastTarget = new Hover();
 	function onmousedown(e: MouseEvent) {
 		const { deriv, part, section } = lastTarget = DerivRenderState.lookup(e.target);
 		const bar = section === 'bar';
 		if (deriv && !deriv.render.isSelected(bar)) viewport.render.selectOnly(deriv, bar);
-		if (deriv) callListener("mousedown", part, deriv, e);
+		if (deriv && part) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part, section } = DerivRenderState.lookup(e.target);
@@ -79,9 +78,9 @@
 			lastTarget.deriv !== deriv || 
 			lastTarget.part !== part
 			// omouseover doesnt update hover while dragging so we have to do it on dragend here
-		) return viewport.render.hover(deriv, section);
+		) return viewport.render.hover(deriv, part);
 		viewport.render.selectOnly(deriv, section === 'bar');
-		if (deriv) callListener("mouseup", part, deriv, e);
+		if (deriv && part) callListener("mouseup", part, deriv, e);
 	}
 </script>
 

@@ -66,7 +66,7 @@
 >
 	<Formula {deriv} />
 
-	{#if deriv.render.bodyHovered}
+	{#if deriv.render.hoveredSection === 'body'}
 		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 	{/if}
