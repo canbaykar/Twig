@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Deriv from '$lib/state/deriv.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneData, type ZoneType } from './options';
+	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneData, type ZoneType } from './zoneOptions';
 
     /** Takes in world coords, not screen! */
     export function zoneDataFromPoint(x: number, y: number, dragged: Deriv): ZoneData | null {
