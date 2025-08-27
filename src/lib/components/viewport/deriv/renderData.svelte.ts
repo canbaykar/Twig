@@ -224,20 +224,20 @@ export default class DerivRenderData {
     
 	// --- Hovered ---
 	// This hover system is for syncing with background elements (Bg). Otherwise use native hover.
-    /** ($state) (Hovered is divided into body & bar)
+    /** ($derived) (Hovered is divided into body & bar)
      *  Partially implemented in viewportC and viewport.render */
-    readonly bodyHovered: boolean = $state(false);
-    /** ($state) (Hovered is divided into body & bar)
+    bodyHovered: boolean = $state(false);
+    /** ($derived) (Hovered is divided into body & bar)
      *  Partially implemented in viewportC and viewport.render */
-    readonly barHovered: boolean = $state(false);
+    barHovered: boolean = $state(false);
 	/** Util for checking bodyHovered & barHovered */
 	isHovered(bar = false) { return bar ? this.barHovered : this.bodyHovered; }
 
 	// --- Selected ---
-    /** ($state) Partially implemented in viewportC and viewport.render */
-	readonly bodySelected = $state(false);
-    /** ($state) Partially implemented in viewportC and viewport.render */
-	readonly barSelected = $state(false);
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+	bodySelected = $state(false);
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+	barSelected = $state(false);
 	/** Util for checking bodySelected & barSelected */
 	isSelected(bar = false) { return bar ? this.barSelected : this.bodySelected; }
 

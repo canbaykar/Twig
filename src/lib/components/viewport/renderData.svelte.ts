@@ -45,20 +45,20 @@ export default class ViewportRenderData {
 	get dragging() { return this.dragType !== DraggableType.None }
 
     /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
-    readonly hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
+    hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
 	hover(deriv: Deriv | null, bar = false) {
 		// If hover state's already what we want, return
 		if (this.isHovered(deriv, bar)) return;
 		// Clear the previous hover on deriv.render side
-		if (this.hovered) {                               // @ts-expect-error
-			this.hovered.deriv.render.barHovered = false; // @ts-expect-error
+		if (this.hovered) {
+			this.hovered.deriv.render.barHovered = false;
 			this.hovered.deriv.render.bodyHovered = false;
 		}
 		// Set hovered and update deriv.render side if needed
-		if (deriv) {                               // @ts-expect-error
-			this.hovered = { deriv, bar };         // @ts-expect-error
-			bar ? deriv.render.barHovered =  true  // @ts-expect-error
-				: deriv.render.bodyHovered = true; // @ts-expect-error
+		if (deriv) {
+			this.hovered = { deriv, bar };        
+			bar ? deriv.render.barHovered =  true 
+				: deriv.render.bodyHovered = true;
 		} else this.hovered = null;
 	}
 	/** Util for if a value mathces hovered (since === can't be used for this) */
@@ -69,15 +69,15 @@ export default class ViewportRenderData {
 
 	/** ($raw) DO NOT modify directly! Use related methods instead.
 	 *  Partially implemented in viewportC and deriv.render */
-	readonly selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
+	selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
 	selectOnly(deriv?: Deriv | null, bar = false) {
-		for (const { deriv } of viewport.render.selection) { // @ts-expect-error
-			deriv.render.bodySelected = false;               // @ts-expect-error
+		for (const { deriv } of viewport.render.selection) {
+			deriv.render.bodySelected = false;              
 			deriv.render.barSelected  = false;
-		}                                          // @ts-expect-error
+		}                                         
 		this.selection = deriv ? [{ deriv, bar }] : [];
-		if (deriv)                                 // @ts-expect-error
-			bar ? deriv.render.barSelected  = true // @ts-expect-error
+		if (deriv)                                
+			bar ? deriv.render.barSelected  = true
 				: deriv.render.bodySelected = true;
 	}
 }
