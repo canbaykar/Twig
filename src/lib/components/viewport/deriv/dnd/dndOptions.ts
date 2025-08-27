@@ -1,7 +1,5 @@
-import type { Listeners } from "../../viewportC.svelte";
 import Deriv from '$lib/state/deriv.svelte';
 import type { DraggableOptions } from '$lib/utils/interact/draggable.svelte';
-import draggable from '$lib/utils/interact/draggable.svelte';
 import viewport from '$lib/state/viewport.svelte';
 import { DT } from '../../../../../DT';
 import { IndicatorPopup } from './indicatorPopup.svelte';
@@ -9,25 +7,10 @@ import { zoneDataFromPoint } from './dropzones.svelte';
 import { defaultAnchor, defaultBarAnchor } from '../renderData.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderData.svelte";
-import { getZonesOf, prepareInitialZoneData, zoneOptions, type Rect, type ZoneData, type ZoneOption, type ZoneType } from "./options";
+import { prepareInitialZoneData, zoneOptions, type Rect, type ZoneData } from "./zoneOptions";
 
-// Part listeners to be managed by viewport
-// (see part + uid system in deriv render data)
-export const dndListeners: Listeners = {
-	body_: {
-		mousedown(e) {
-			e.deriv.render.bodyMuted = false;
-			draggable.once(opt(e.deriv, false));
-		},
-	},
-	bar_: {
-		mousedown(e) {
-			draggable.once(opt(e.deriv, true))
-		}
-	},
-};
-
-const opt = (data: Deriv, bar: boolean): DraggableOptions => ({
+// See draggable util
+export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 	cursor: 'all-scroll',
 	start() {
 		bar ? data.render.barDragged = true : data.render.bodyDragged = true;

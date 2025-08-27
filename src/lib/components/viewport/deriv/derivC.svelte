@@ -5,12 +5,13 @@
 	import Dropzones from './dnd/dropzones.svelte';
 	import viewport from '$lib/state/viewport.svelte';
 	import { bgRoot } from './dnd/bg.svelte';
-	import { dndListeners } from './dnd/dndListeners';
+	import { dndOptions } from './dnd/dndOptions';
 	import type { Listeners } from '../viewportC.svelte';
 	import Grip from './dnd/grip.svelte';
 	import { DT } from '../../../../DT';
+	import draggable from '$lib/utils/interact/draggable.svelte';
 
-	// When there are more listeners to be sent to viewport, 
+	// When there are more listeners to be sent to viewport,
 	// they are going to be merged here.
 	export const listeners: Listeners = {
 		layout: {
@@ -19,13 +20,22 @@
 				l(e);
 			},
 		},
+		body_: {
+			mousedown(e) {
+				e.deriv.render.bodyMuted = false;
+				draggable.once(dndOptions(e.deriv, false));
+			},
+		},
+		bar_: {
+			mousedown(e) {
+				draggable.once(dndOptions(e.deriv, true));
+			},
+		},
 		body_formula: {
 			mousedown(e) {
 				e.deriv.render.bodyMuted = false;
 			},
 		},
-		
-		...dndListeners,
 	};
 </script>
 
