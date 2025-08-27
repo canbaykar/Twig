@@ -19,7 +19,7 @@
 				l(e);
 			},
 		},
-		formula: {
+		body_formula: {
 			mousedown(e) {
 				e.deriv.render.bodyMuted = false;
 			},
@@ -52,13 +52,13 @@
 	style:translate="{data.render.x}px {data.render.y}px"
 	class:z-1={data.render.inDragged}
 	data-uid={data.uid}
-	data-part="body"
+	data-part="body_"
 >
 	<Formula {data} />
 
 	{#if data.render.bodyAwake}
-		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px" data-part="bg"/>
-		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px" data-part="bg"/>
+		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
+		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 	{/if}
 
 	<!-- TODO: Place dropzones in front of Bar -->

@@ -150,7 +150,7 @@
 		rx={formulaRx}
 		fill={type.formulaFill(data)}
 		data-uid={data.uid}
-		data-part="bg"
+		data-part="body_"
 	/>
 {/if}
 
@@ -165,7 +165,7 @@
 
 	<!-- For bar -->
 	{#if type.showBarBg(data)}
-		<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar">
+		<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar_">
 			<rect
 				x={data.render.xBar - data.render.barWidth / 2 - DT.derivBgPaddingN}
 				y={data.render.yBar - DT.derivBgPaddingN}

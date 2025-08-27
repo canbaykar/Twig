@@ -44,11 +44,13 @@ export default class ViewportRenderData {
 	/** ($derived) Is the viewport or a deriv or bar being dragged right now? */
 	get dragging() { return this.dragType !== DraggableType.None }
 
+	// This is hover logic additional to native hover logic because Bg component's elements
+	// placement make it impractical to style its hover with CSS.
     /** ($derived) Hovered deriv. Partially implemented in viewportC and deriv.render */
-    hovered: { deriv: Deriv, bar: boolean } | null = $state(null);
-	hover(deriv: Deriv | null, bar = false) {
+    hovered: { deriv: Deriv, body: boolean, bar: boolean } | null = $state(null);
+	hover(deriv: Deriv | null = null, section: null | 'body' | 'bar' = null) {
 		// If hover state's already what we want, return
-		if (this.isHovered(deriv, bar)) return;
+		if (this.matchHover(deriv, section)) return;
 		// Clear the previous hover on deriv.render side
 		if (this.hovered) {
 			this.hovered.deriv.render.barHovered = false;
@@ -56,15 +58,28 @@ export default class ViewportRenderData {
 		}
 		// Set hovered and update deriv.render side if needed
 		if (deriv) {
-			this.hovered = { deriv, bar };        
-			bar ? deriv.render.barHovered =  true 
-				: deriv.render.bodyHovered = true;
+			this.hovered = { deriv, body: false, bar: false };
+			if (section) {
+				this.hovered[section] = true;
+				section === 'body'
+					? deriv.render.bodyHovered = true
+					: deriv.render.barHovered  = true;
+			}
+			deriv.render.hovered = true;
 		} else this.hovered = null;
 	}
 	/** Util for if a value mathces hovered (since === can't be used for this) */
-	isHovered(deriv: Deriv | null, bar = false) {
-		return deriv === null ? this.hovered === null
-			: deriv === this.hovered?.deriv && bar === this.hovered.bar;
+	matchHover(deriv: Deriv | null, section: null | 'body' | 'bar') {
+		if (!this.hovered) return deriv === null;
+		else if (this.hovered.deriv !== deriv) return false;
+		switch (section) {
+			case 'body':
+				return this.hovered.body && !this.hovered.bar;
+			case 'bar':
+				return !this.hovered.body && this.hovered.bar;
+			default:
+				return !this.hovered.body && !this.hovered.bar;
+		}
 	}
 
 	/** ($raw) DO NOT modify directly! Use related methods instead.

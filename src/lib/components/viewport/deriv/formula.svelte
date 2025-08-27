@@ -52,7 +52,7 @@
             scale: {DT.UNIT / viewport.render.scale};
         "
 			rows="1"
-			data-part="formula"
+			data-part="body_formula"
 		></textarea>
 	{/if}
 </button>

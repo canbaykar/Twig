@@ -194,44 +194,48 @@ export default class DerivRenderData {
 	// - UID is defined in Deriv for this system. This is used in viewport to define interactions
 	//   using its hover & selected system to avoid defining listeners in too many places.
 	//   (Because they interfere with each other and complicate things)
+	// - Part names start with a section ('body', 'bar' or '') as in body_formula. For hovering logic.
+	//   See viewport's render data.
     /** Looks up associated deriv of closest ancestor from e.target
      *  DerivRenderData version of Deriv.lookup */
     static lookup(target: EventTarget | null) {
         if (!(target instanceof Element)) 
-			return { part: null, deriv: null, bar: false };
+			return { part: null, deriv: null, section: null };
 
 		// Find part
         const partTarget = target.closest('[data-part]') as HTMLElement | null;
         if (!partTarget) 
-			return { part: null, deriv: null, bar: false };
+			return { part: null, deriv: null, section: null };
         const part = partTarget.dataset.part as string;
 		if (part === 'viewport') 
-			return { part, deriv: null, bar: false };
+			return { part, deriv: null, section: null };
 		
 		// Find uid
 		let uid = partTarget.dataset.uid;
 		if (!uid) {
 			const uidTarget = partTarget.closest('[data-uid]') as HTMLElement | null;
 			if (!uidTarget) 
-				return { part, deriv: null, bar: false };
+				return { part, deriv: null, section: null };
 			uid = uidTarget.dataset.uid as string;
 		}
 
 		// Find deriv
         const deriv = Deriv.lookup(uid);
-		return { part, deriv, bar: !!part.match(/^bar/) };
+		return { 
+			part, 
+			deriv, 
+			section: (part.match(/^(body|bar)_/)?.[1] ?? null) as 'body' | 'bar' | null,
+		};
 	}
     
 	// --- Hovered ---
 	// This hover system is for syncing with background elements (Bg). Otherwise use native hover.
-    /** ($derived) (Hovered is divided into body & bar)
-     *  Partially implemented in viewportC and viewport.render */
+    /** ($derived) Partially implemented in viewportC and viewport.render */
+    hovered: boolean = $state(false);
+    /** ($derived) Partially implemented in viewportC and viewport.render */
     bodyHovered: boolean = $state(false);
-    /** ($derived) (Hovered is divided into body & bar)
-     *  Partially implemented in viewportC and viewport.render */
+    /** ($derived) Partially implemented in viewportC and viewport.render */
     barHovered: boolean = $state(false);
-	/** Util for checking bodyHovered & barHovered */
-	isHovered(bar = false) { return bar ? this.barHovered : this.bodyHovered; }
 
 	// --- Selected ---
     /** ($derived) Partially implemented in viewportC and viewport.render */

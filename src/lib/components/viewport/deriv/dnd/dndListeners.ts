@@ -14,13 +14,13 @@ import { getZonesOf, prepareInitialZoneData, zoneOptions, type Rect, type ZoneDa
 // Part listeners to be managed by viewport
 // (see part + uid system in deriv render data)
 export const dndListeners: Listeners = {
-	bg: {
+	body_: {
 		mousedown(e) {
 			e.deriv.render.bodyMuted = false;
 			draggable.once(opt(e.deriv, false));
 		},
 	},
-	bar: {
+	bar_: {
 		mousedown(e) {
 			draggable.once(opt(e.deriv, true))
 		}

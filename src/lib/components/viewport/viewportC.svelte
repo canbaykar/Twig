@@ -51,27 +51,27 @@
 	// some drag events below to cover the case of formula text selection being dragged.
 	// This is called in onmouseup, that uses the dragend argument to overwite the conditional...
 	function onmouseover(e: MouseEvent, dragend = false) { 
-        const { deriv, bar } = DerivRenderData.lookup(e.target);
+        const { deriv, section } = DerivRenderData.lookup(e.target);
         if (viewport.render.dragging && !dragend) return;
-		viewport.render.hover(deriv, bar);
+		viewport.render.hover(deriv, section);
 	}
     function onmouseleave(e: MouseEvent) {
 		// When this is called in ondragleave, it fires in child elements too even tho
 		// this function is for leaving viewport only, hence the 2nd check
 		if (!viewport.render.hovered || e.relatedTarget) return;
-        viewport.render.hover(null);
+        viewport.render.hover();
     }
 
 	let lastTarget: ReturnType<typeof DerivRenderData.lookup> 
-		= { deriv: null, part: null, bar: false };
+		= { deriv: null, part: null, section: null };
 	function onmousedown(e: MouseEvent) {
-		const { deriv, part, bar } = lastTarget = DerivRenderData.lookup(e.target);
-		if (deriv && !deriv.render.isSelected(bar)) 
-			viewport.render.selectOnly(deriv, bar);
+		const { deriv, part, section } = lastTarget = DerivRenderData.lookup(e.target);
+		const bar = section === 'bar';
+		if (deriv && !deriv.render.isSelected(bar)) viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
-		const { deriv, part, bar } = DerivRenderData.lookup(e.target);
+		const { deriv, part, section } = DerivRenderData.lookup(e.target);
 		if (
 			viewport.render.dragging ||
 			// When you start a text selection and move cursor to viewport, it shouldn't deselect.
@@ -79,8 +79,8 @@
 			lastTarget.deriv !== deriv || 
 			lastTarget.part !== part
 			// omouseover doesnt update hover while dragging so we have to do it on dragend here
-		) return viewport.render.hover(deriv, bar);
-		viewport.render.selectOnly(deriv, bar);
+		) return viewport.render.hover(deriv, section);
+		viewport.render.selectOnly(deriv, section === 'bar');
 		if (deriv) callListener("mouseup", part, deriv, e);
 	}
 </script>
