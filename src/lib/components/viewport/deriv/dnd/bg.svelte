@@ -97,13 +97,13 @@
 	// TODO: This doesn't function completely consistent: When deriv is root, bar and
 	// formula are in the same Bg. Change that
 	interface Props {
-		data: Deriv;
+		deriv: Deriv;
 		type: BgType;
 		/** Private! */
 		_showOnlyFormula?: boolean;
 	}
 
-	let { data, type, _showOnlyFormula = false }: Props = $props();
+	let { deriv, type, _showOnlyFormula = false }: Props = $props();
 </script>
 
 <!-- Not used right now bc outlines are disabled. Called in viewport comp. -->
@@ -122,34 +122,34 @@
 	</svg> -->
 {/snippet}
 
-{#snippet bgRoot(data: Deriv)}
+{#snippet bgRoot(deriv: Deriv)}
 	<svg
 		class="h-[1px] w-[1px] overflow-visible opacity-80 select-none cursor-all-scroll"
 		viewBox="0 0 1 1"
-		class:z-1={data.render.dragged}
+		class:z-1={deriv.render.dragged}
 	>
 		<g class="pointer-events-none">
-			<Bg {data} type={nonOutlinedBgType}/>
+			<Bg {deriv} type={nonOutlinedBgType}/>
 			<!-- <g filter="url(#outlineFilter)"> -->
-				<Bg {data} type={outlinedBgType} />
+				<Bg {deriv} type={outlinedBgType} />
 			<!-- </g> -->
 		</g>
 		<g class="opacity-0">
-			<Bg {data} type={hitboxBgType}/>
+			<Bg {deriv} type={hitboxBgType}/>
 		</g>
 	</svg>
 {/snippet}
 
 <!-- For formula (for the second part, see comment above Props) -->
-{#if type.showFormulaBg(data) && (!data.render.barDragged || data.root === data || _showOnlyFormula)}	
+{#if type.showFormulaBg(deriv) && (!deriv.render.barDragged || deriv.root === deriv || _showOnlyFormula)}	
 	<rect
-		x={data.render.x - data.render.width / 2 - DT.derivBgPaddingN - (+type.extended(data)) * handlePadding}
-		y={data.render.y + formulaOffY}
-		width={data.render.width + pad2 + (+type.extended(data)) * handlePadding2}
+		x={deriv.render.x - deriv.render.width / 2 - DT.derivBgPaddingN - (+type.extended(deriv)) * handlePadding}
+		y={deriv.render.y + formulaOffY}
+		width={deriv.render.width + pad2 + (+type.extended(deriv)) * handlePadding2}
 		height={formulaBgHeight}
 		rx={formulaRx}
-		fill={type.formulaFill(data)}
-		data-uid={data.uid}
+		fill={type.formulaFill(deriv)}
+		data-uid={deriv.uid}
 		data-part="body_"
 	/>
 {/if}
@@ -157,49 +157,49 @@
 <!-- See comment above Props -->
 {#if !_showOnlyFormula}
 	<!-- Recursion for children -->
-	{#each data.children as child (child)}
+	{#each deriv.children as child (child)}
 		{#if !child.render.bodyDragged}
-			<Bg data={child} type={type} _showOnlyFormula={child.render.barDragged}/>
+			<Bg deriv={child} type={type} _showOnlyFormula={child.render.barDragged}/>
 		{/if}
 	{/each}
 
 	<!-- For bar -->
-	{#if type.showBarBg(data)}
-		<g fill={type.barFill(data)} data-uid={data.uid} data-part="bar_">
+	{#if type.showBarBg(deriv)}
+		<g fill={type.barFill(deriv)} data-uid={deriv.uid} data-part="bar_">
 			<rect
-				x={data.render.xBar - data.render.barWidth / 2 - DT.derivBgPaddingN}
-				y={data.render.yBar - DT.derivBgPaddingN}
-				width={data.render.barWidth + pad2}
+				x={deriv.render.xBar - deriv.render.barWidth / 2 - DT.derivBgPaddingN}
+				y={deriv.render.yBar - DT.derivBgPaddingN}
+				width={deriv.render.barWidth + pad2}
 				height={barBgHeight}
 				rx={barRx}
 			/>
 		
 			<!-- For label -->
-			{#if data.render.hasLabel}
+			{#if deriv.render.hasLabel}
 				<rect
-					x={data.render.xBar - data.render.barWidth / 2 - data.render.labelWidth + labelOffX}
-					y={data.render.yBar + labelOffY}
-					width={data.render.labelWidth + pad2}
+					x={deriv.render.xBar - deriv.render.barWidth / 2 - deriv.render.labelWidth + labelOffX}
+					y={deriv.render.yBar + labelOffY}
+					width={deriv.render.labelWidth + pad2}
 					height={labelBgHeight}
 					rx={labelRx}
 				/>
 			{/if}
 		
 			<!-- For Rule -->
-			{#if data.render.hasRule}
-				{#if data.render.discharged}
+			{#if deriv.render.hasRule}
+				{#if deriv.render.discharged}
 					<rect
-						x={data.render.xBar + data.render.barWidth / 2 + ruleLabelOffX}
-						y={data.render.yBar + labelOffY}
-						width={data.render.ruleWidth + pad2}
+						x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleLabelOffX}
+						y={deriv.render.yBar + labelOffY}
+						width={deriv.render.ruleWidth + pad2}
 						height={labelBgHeight}
 						rx={labelRx}
 					/>
 				{:else}
 					<rect
-						x={data.render.xBar + data.render.barWidth / 2 + ruleOffX}
-						y={data.render.yBar + ruleOffY}
-						width={data.render.ruleWidth + rulePad}
+						x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleOffX}
+						y={deriv.render.yBar + ruleOffY}
+						width={deriv.render.ruleWidth + rulePad}
 						height={labelBgHeight}
 						rx={labelRx}
 					/>

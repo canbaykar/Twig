@@ -35,7 +35,7 @@
     const MAX_SCALE = 10;
 
     /** All properties has to be reactive! */
-    interface Data {
+    interface State {
         x: number;
         y: number;
         scale: number;
@@ -50,7 +50,7 @@
     }
 
     interface Props {
-        data: Data,
+        state: State,
         children?: Snippet;
         /** Place elements here to still have the wheel event listeners
          *  for panzoom act on them */
@@ -62,7 +62,7 @@
     }
 
 	let { 
-        data, children, noPanzoom, 
+        state: stt, children, noPanzoom, 
 		onStart = () => {}, onEnd = () => {},
         ...restProps 
     }: Props = $props();
@@ -76,8 +76,8 @@
     const draggableOptions: DraggableOptions = {
 		start: onStart,
         move(e) {
-            data.x += e.dx;
-            data.y += e.dy;
+            stt.x += e.dx;
+            stt.y += e.dy;
         },
 		end: onEnd,
         checker(target) {
@@ -85,45 +85,45 @@
         },
     };
 
-    data.cl2pz = makeConverter(
-        x => (x - data.x - rect.left - rect.width / 2) / data.scale,
-        y => (y - data.y - rect.top - rect.height / 2) / data.scale,
-        scale => scale / data.scale,
+    stt.cl2pz = makeConverter(
+        x => (x - stt.x - rect.left - rect.width / 2) / stt.scale,
+        y => (y - stt.y - rect.top - rect.height / 2) / stt.scale,
+        scale => scale / stt.scale,
     );
-    data.pz2cl = makeConverter(
-        x => (x * data.scale) + data.x + rect.left + rect.width / 2,
-        y => (y * data.scale) + data.y + rect.top + rect.height / 2,
-        scale => scale * data.scale,
+    stt.pz2cl = makeConverter(
+        x => (x * stt.scale) + stt.x + rect.left + rect.width / 2,
+        y => (y * stt.scale) + stt.y + rect.top + rect.height / 2,
+        scale => scale * stt.scale,
     );
-    data.cl2wrld = makeConverter(
-        x => data.cl2pz.x(x) * DT.UNIT,
-        y => data.cl2pz.y(y) * DT.UNIT,
-        scale => data.cl2pz.scale(scale) * DT.UNIT,
+    stt.cl2wrld = makeConverter(
+        x => stt.cl2pz.x(x) * DT.UNIT,
+        y => stt.cl2pz.y(y) * DT.UNIT,
+        scale => stt.cl2pz.scale(scale) * DT.UNIT,
     );
-    data.wrld2cl = makeConverter(
-        x => data.pz2cl.x(x / DT.UNIT),
-        y => data.pz2cl.y(y / DT.UNIT),
-        scale => data.pz2cl.scale(scale / DT.UNIT),
+    stt.wrld2cl = makeConverter(
+        x => stt.pz2cl.x(x / DT.UNIT),
+        y => stt.pz2cl.y(y / DT.UNIT),
+        scale => stt.pz2cl.scale(scale / DT.UNIT),
     );
-    onDestroy(() => data.cl2pz = data.pz2cl = data.cl2wrld = data.wrld2cl = fallbackConverter);
+    onDestroy(() => stt.cl2pz = stt.pz2cl = stt.cl2wrld = stt.wrld2cl = fallbackConverter);
 
     // Helper functions for zoom(...) below
 	const clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
     // Weird step function to determine how the grid acts
     // Plot on desmos. The -1 is an arbitrary constant.
     const modulo = (x: number) => x - Math.min(0, Math.floor(x - 1));
-    const updateGridScale = () => grid_scale = Math.pow(2, modulo(Math.log2(data.scale)));
+    const updateGridScale = () => grid_scale = Math.pow(2, modulo(Math.log2(stt.scale)));
     
     let grid_scale: number;
     updateGridScale();
 	function zoom(factor: number, anchor: { x: number; y: number }) {
-		const world_anchor = data.cl2pz(anchor);
-		const old_scale = data.scale;
-		data.scale = clamp(data.scale * factor, MIN_SCALE, MAX_SCALE);
+		const world_anchor = stt.cl2pz(anchor);
+		const old_scale = stt.scale;
+		stt.scale = clamp(stt.scale * factor, MIN_SCALE, MAX_SCALE);
         updateGridScale();
-		const diff = old_scale - data.scale;
-		data.x += world_anchor.x * diff;
-		data.y += world_anchor.y * diff;
+		const diff = old_scale - stt.scale;
+		stt.x += world_anchor.x * diff;
+		stt.y += world_anchor.y * diff;
 	}
 
     function onwheel(e: WheelEvent) {
@@ -132,16 +132,16 @@
 	}
 
     function updateCSS() {
-        element.style.setProperty('--panzoom-x', data.x + 'px');
-        element.style.setProperty('--panzoom-y', data.y + 'px');
-        element.style.setProperty('--panzoom-scale', data.scale / DT.UNIT + '');
+        element.style.setProperty('--panzoom-x', stt.x + 'px');
+        element.style.setProperty('--panzoom-y', stt.y + 'px');
+        element.style.setProperty('--panzoom-scale', stt.scale / DT.UNIT + '');
         element.style.setProperty('--panzoom-gs', grid_scale / DT.UNIT + '');
     }
     onMount(updateCSS);
     $effect(() => {
-        data.x;
-        data.y;
-        data.scale;
+        stt.x;
+        stt.y;
+        stt.scale;
         updateCSS();
     });
 </script>

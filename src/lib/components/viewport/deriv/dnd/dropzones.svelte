@@ -22,13 +22,13 @@
 
 <script lang="ts">    
 	interface Props {
-        data: Deriv;
+        deriv: Deriv;
     }
 
-    let { data }: Props = $props();
+    let { deriv }: Props = $props();
 </script>
 
-{#each getZonesOf(data) as opt}
+{#each getZonesOf(deriv) as opt}
 	{@render dropzone(opt)}
 {/each}
 
@@ -49,13 +49,13 @@
 
 <!-- SNIPPETS -->
 {#snippet dropzone(opt: ZoneOption)}
-    {@const rect = opt.getElementRect(data)}
+    {@const rect = opt.getElementRect(deriv)}
     <div
         class="dropzone dnd h-(--DERIV-ROW-OFFSET)"
         style:left="{rect.left}px"
         style:width="{-2 * rect.left}px"
         style:top="{rect.top}px"
-        data-uid={data.uid}
+        data-uid={deriv.uid}
         data-type={opt.type}
     ></div>
 {/snippet}

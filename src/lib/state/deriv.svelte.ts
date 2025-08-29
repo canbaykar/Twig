@@ -15,7 +15,7 @@ export default class Deriv extends Parent {
 	/** ($derived) 0 if root, 1 + parent's depth otherwise */
 	readonly depth: number = $derived.by(() => (this.derivParent?.depth ?? -1) + 1);
 
-	/** Unique id of deriv for a system to match DOM elements with data (with data-uid attribute)
+	/** Unique id of deriv for a system to match DOM elements with deriv object (with data-uid attribute)
 	 * 
 	 *  **WARNING:** Reactivity works differently with elements, so whether a deriv with a certain uid
 	 * 	is displayed may differ between DOM and viewport trees due to delay. */

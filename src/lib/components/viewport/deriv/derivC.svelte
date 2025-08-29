@@ -41,40 +41,40 @@
 
 <script lang="ts">
 	interface Props {
-		data: Deriv;
+		deriv: Deriv;
 	}
 
-	let { data }: Props = $props();
+	let { deriv }: Props = $props();
 
-	const gripX = $derived((data.render.width + DT.UNIT) / 2 + DT.derivBgPaddingN);
+	const gripX = $derived((deriv.render.width + DT.UNIT) / 2 + DT.derivBgPaddingN);
 </script>
 
 <!-- Background -->
-{#if data.root === data || data.render.dragged}
-    {@render bgRoot(data)}
+{#if deriv.root === deriv || deriv.render.dragged}
+    {@render bgRoot(deriv)}
 {/if}
 
 <!-- See deriv.renderData.lookup for data-part -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="deriv"
-	class:pointer-events-none={data.render.inDragged}
-	style:translate="{data.render.x}px {data.render.y}px"
-	class:z-1={data.render.inDragged}
-	data-uid={data.uid}
+	class:pointer-events-none={deriv.render.inDragged}
+	style:translate="{deriv.render.x}px {deriv.render.y}px"
+	class:z-1={deriv.render.inDragged}
+	data-uid={deriv.uid}
 	data-part="body_"
 >
-	<Formula {data} />
+	<Formula {deriv} />
 
-	{#if data.render.bodyAwake}
+	{#if deriv.render.bodyAwake}
 		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 	{/if}
 
 	<!-- TODO: Place dropzones in front of Bar -->
-	{#if viewport.render.dragging && !data.render.inDragged}
-		<Dropzones {data} />
+	{#if viewport.render.dragging && !deriv.render.inDragged}
+		<Dropzones {deriv} />
 	{/if}
 </div>
 
-<Bar {data} rule={data.logic.ruleText} label={data.logic.labelText} />
+<Bar {deriv} rule={deriv.logic.ruleText} label={deriv.logic.labelText} />

@@ -5,15 +5,15 @@
 	import DerivRenderData from './renderData.svelte';
 
 	interface Props {
-		data: Deriv;
+		deriv: Deriv;
 	}
 
-	let { data }: Props = $props();
+	let { deriv: deriv }: Props = $props();
 
 	let element: HTMLElement;
 	DerivRenderData.maintainWidth(
-		() => data.conc,
-		() => data.render.baseWidth = element.offsetWidth
+		() => deriv.conc,
+		() => deriv.render.baseWidth = element.offsetWidth
 	);
 
 	// The "element" can't be used as an input field bc the caret may be too thin on
@@ -33,21 +33,21 @@
 	<!-- For some reason this element's slightly taller than expected so we need pointer-events-none to avoid covering bars -->
 	<span 
 		class="relative! whitespace-pre pointer-events-none"
-		class:opacity-25={data.render.bodyMuted}
-	>{data.conc}</span>
+		class:opacity-25={deriv.render.bodyMuted}
+	>{deriv.conc}</span>
 
 	<!-- EDITOR -->
 	<!-- TODO: Outline & border radius styling code too unorganised -->
-	{#if data.render.bodyAwake}
+	{#if deriv.render.bodyAwake}
 		<textarea
-			bind:value={data.conc}
+			bind:value={deriv.conc}
 			class="
 				caret-fg absolute top-0 left-0 origin-top-left resize-none overflow-hidden text-center text-transparent
 				outline-0 outline-fg outline-dashed focus:outline-1 -outline-offset-1 rounded-[calc(var(--DERIV-BG-PADDING)/16)]
 			"
 			style="
             line-height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
-            width: {data.render.baseWidth / DT.UNIT * viewport.render.scale}px;
+            width: {deriv.render.baseWidth / DT.UNIT * viewport.render.scale}px;
             font-size: {DT.derivSizeN / DT.UNIT * viewport.render.scale}px;
             scale: {DT.UNIT / viewport.render.scale};
         "

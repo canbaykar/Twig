@@ -14,14 +14,14 @@ export class LogicError extends Error {
 // See dischargers
 const emptySet: Set<LogicData> = new Set();
 
-/** Has inference related computed data of Deriv */
+/** Has inference related computed state of Deriv */
 export class LogicData {
     readonly deriv: Deriv;
     readonly conc = $derived.by(() => grammar.safeParse(this.deriv.conc));
 
     readonly matches = $derived.by(() => Rule.find(this));
 
-    /** ($derived) Data belonging to this derivation, excluding context of its parent nodes.
+    /** ($derived) State belonging to this derivation, excluding context of its parent nodes.
      *  Here, attr is downAttribute! upAttributes aren't local. */
     private readonly local: { rule: Rule | LogicError, attr: AttributeRecord } = $derived.by(() => {
         const match = this.matches instanceof Error ? this.matches : choose(this.matches);

@@ -105,12 +105,12 @@
 	data-part="viewport"
 >
     <Panzoom
-        data={viewport.render}
+        state={viewport.render}
 		onStart={() => viewport.render.dragType = DraggableType.Panzoom}
 		onEnd={() => viewport.render.dragType = DraggableType.None}
     >
-        {#each DerivRenderData.displayed as data (data)}
-            <DerivC {data}></DerivC>
+        {#each DerivRenderData.displayed as deriv (deriv)}
+            <DerivC {deriv}></DerivC>
         {/each}
         
         {#each viewport.render.panzoomPopups.children as popup (popup)}

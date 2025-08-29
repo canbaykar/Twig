@@ -4,19 +4,19 @@
 	import DerivRenderData from "./renderData.svelte";
 
     interface Props {
-        data: Deriv;
+        deriv: Deriv;
         // Temporary
         label: string,
         rule: string,
     }
     
     let {
-        data,
+        deriv,
         label,
         rule,
     }: Props = $props();
     
-    const render = data.render;
+    const render = deriv.render;
     
     let labelElement: HTMLElement | null = $state(null);
     let ruleElement:  HTMLElement | null = $state(null);
@@ -32,17 +32,17 @@
 
 <div
     class="{render.inferred ? "bg-fg" : "bg-fg/25"} h-1 origin-left translate-x-[-50%] rounded-full select-none cursor-all-scroll"
-	style:translate="{data.render.xBar - data.render.barWidth / 2}px {data.render.yBar}px"
+	style:translate="{deriv.render.xBar - deriv.render.barWidth / 2}px {deriv.render.yBar}px"
     style:width="{render.barWidth}px"
-    class:bg-transparent={data.render.barHidden}
-	class:z-1={data.render.inDragged}
-	data-uid={data.uid}
+    class:bg-transparent={deriv.render.barHidden}
+	class:z-1={deriv.render.inDragged}
+	data-uid={deriv.uid}
 	data-part="bar_"
 >
 	<!-- Hitbox -->
 	<div class="hitbox"></div>
     <!-- Label -->
-    {#if data.render.hasLabel}
+    {#if deriv.render.hasLabel}
         <div
             class="right-(--DERIV-LABEL-RIGHT) labelBase"
             bind:this={labelElement}
@@ -51,12 +51,12 @@
         </div>
     {/if}
     <!-- Rule -->
-    {#if data.render.hasRule}
+    {#if deriv.render.hasRule}
         <div
-            class="left-(--DERIV-LABEL-RIGHT) {data.render.discharged ? 'labelBase' : 'ruleBase'}"
+            class="left-(--DERIV-LABEL-RIGHT) {deriv.render.discharged ? 'labelBase' : 'ruleBase'}"
             bind:this={ruleElement}
         >
-            {data.render.discharged ? rule : '(' + rule + ')'}
+            {deriv.render.discharged ? rule : '(' + rule + ')'}
         </div>
     {/if}
 </div>
