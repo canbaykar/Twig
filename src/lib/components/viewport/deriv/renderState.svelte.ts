@@ -294,27 +294,27 @@ if (browser) {
 
 // --- ANCHOR API ---
 /** Function that determines the final coords of a deriv */
-type Anchor = (rd: DerivRenderState) => [number, number];
+type Anchor = (rs: DerivRenderState) => [number, number];
 
-export function defaultAnchor(rd: DerivRenderState): [number, number] {
-    return rd.deriv.derivParent instanceof Deriv ? [
-            rd.deriv.derivParent.render.xBar + rd.xOffset,
-            rd.deriv.derivParent.render.yBar - DT.derivBgPaddingN,
+export function defaultAnchor(rs: DerivRenderState): [number, number] {
+    return rs.deriv.derivParent instanceof Deriv ? [
+            rs.deriv.derivParent.render.xBar + rs.xOffset,
+            rs.deriv.derivParent.render.yBar - DT.derivBgPaddingN,
         ] : [0, 0];
 };
 
-export function defaultBarAnchor(rd: DerivRenderState): [number, number] {
-    const [x, y] = rd.xy;
+export function defaultBarAnchor(rs: DerivRenderState): [number, number] {
+    const [x, y] = rs.xy;
 	return [x, y - DT.derivBarYN];
 };
 
-export function mouseAnchor(rd: DerivRenderState): [number, number] {
+export function mouseAnchor(rs: DerivRenderState): [number, number] {
     return [viewport.render.mouse.x, viewport.render.mouse.y];
 };
 
 /** When bar is being moved (e.g. with mouseAnchor), set this to anchor to make formula follow bar. */
-export function followBarAnchor(rd: DerivRenderState): [number, number] {
-    const [x, y] = rd.xyBar;
+export function followBarAnchor(rs: DerivRenderState): [number, number] {
+    const [x, y] = rs.xyBar;
 	return [x, y + DT.derivBarYN];
 };
 
