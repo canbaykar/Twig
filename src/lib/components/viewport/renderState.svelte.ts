@@ -55,6 +55,7 @@ export default class ViewportRenderState {
 		if (this.hovered) {
 			this.hovered.deriv.render.barHovered = false;
 			this.hovered.deriv.render.bodyHovered = false;
+			this.hovered.deriv.render.hovered = false;
 		}
 		// Set hovered and update deriv.render side if needed
 		if (deriv) {
