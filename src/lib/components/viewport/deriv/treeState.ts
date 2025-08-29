@@ -1,7 +1,7 @@
 import { DT } from "../../../../DT";
 
-export interface TreeData {
-    /** The width given to tree in treeData(). This is here to make formula width overwritable. */
+export interface TreeState {
+    /** The width given to tree in treeState(). This is here to make formula width overwritable. */
     width: number;
     /** Rel. offsets of left and rigth sides of hitboxes by row
      *  not accounting for child transforms */
@@ -21,12 +21,12 @@ interface Collider {
     r: number[]; // right
 }
 
-export function treeData(
+export function treeState(
     width: number, 
-    children: TreeData[],
+    children: TreeState[],
     labelWidth: number,
     ruleWidth: number,
-): TreeData {
+): TreeState {
     const w = width / 2;
     const len = children.length;
 

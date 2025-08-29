@@ -1,6 +1,6 @@
 import Deriv from "$lib/state/deriv.svelte";
 import viewport, { type Serial } from "$lib/state/viewport.svelte";
-import { treeData, type TreeData } from "./treeData";
+import { treeState, type TreeState } from "./treeState";
 import { DT } from "../../../../DT";
 import { browser } from "$app/environment";
 import { onDestroy } from "svelte";
@@ -30,8 +30,8 @@ export default class DerivRenderState {
     labelWidth = $state(0);
 
     // Tree rendering logic
-    readonly tree: TreeData = $derived.by(() => 
-        this.treeOverwrite ?? treeData(
+    readonly tree: TreeState = $derived.by(() => 
+        this.treeOverwrite ?? treeState(
             this.baseWidth, 
             this.deriv.children.map(c => c.render.tree),
             this.labelWidth,
@@ -39,7 +39,7 @@ export default class DerivRenderState {
         )
     )
     /** ($state) Used for DND */
-    treeOverwrite: TreeData | null = $state(null);
+    treeOverwrite: TreeState | null = $state(null);
 
     // Stuff derived from tree:
     /** ($derived) Width of formula element but can be overwritten with treeOverwrite */
