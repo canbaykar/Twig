@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Deriv from '$lib/state/deriv.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneState, type ZoneType } from './zoneOptions';
+	import { getZonesOf, zoneDataObject, type ZoneData, type ZoneState, type ZoneType } from './zoneData';
 
     /** Takes in world coords, not screen! */
     export function zoneStateFromPoint(x: number, y: number, dragged: Deriv): ZoneState | null {
@@ -16,7 +16,7 @@
         const deriv = Deriv.lookup(uid);
         if (!deriv) return null;
 
-        return new zoneOptions[type](deriv, dragged);
+        return new zoneDataObject[type](deriv, dragged);
     }
 </script>
 
@@ -28,8 +28,8 @@
     let { deriv }: Props = $props();
 </script>
 
-{#each getZonesOf(deriv) as opt}
-	{@render dropzone(opt)}
+{#each getZonesOf(deriv) as data}
+	{@render dropzone(data)}
 {/each}
 
 <!-- {#if data.root === data}
@@ -48,15 +48,15 @@
 {/if} -->
 
 <!-- SNIPPETS -->
-{#snippet dropzone(opt: ZoneOption)}
-    {@const rect = opt.getElementRect(deriv)}
+{#snippet dropzone(data: ZoneData)}
+    {@const rect = data.getElementRect(deriv)}
     <div
         class="dropzone dnd h-(--DERIV-ROW-OFFSET)"
         style:left="{rect.left}px"
         style:width="{-2 * rect.left}px"
         style:top="{rect.top}px"
         data-uid={deriv.uid}
-        data-type={opt.type}
+        data-type={data.type}
     ></div>
 {/snippet}
 

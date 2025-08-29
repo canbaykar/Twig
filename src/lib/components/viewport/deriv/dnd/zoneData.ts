@@ -9,7 +9,7 @@ export interface Rect { left: number, top: number, width: number, height: number
 // Extention dimentions for zone rects (not related to padding in CSS):
 // There's extra 1 UNIT top padding to make height cover both a bottom bar and top bar
 // (rowOffset is distance between bars + 1 UNIT bar width, add another UNIT for 2nd bar)
-// Also see the default implementation of boundingRect in ZoneOptions below.
+// Also see the default implementation of boundingRect in ZoneState below.
 const paddings: Rect = {
 	left: -DT.derivDropZonePaddingN,
 	top: -DT.derivDropZonePaddingN - DT.UNIT,
@@ -38,7 +38,7 @@ export type { ZoneState };
  * since its mutable.) Zone elements are rendered in dropzones.svelte.
  * Notes: Dropzone components/elements don't carry instances of this! One element described 
  * with getElementRect may represent multiple "zones" next to each other. Classes extending 
- * this MUST have readonly static "type" prop that is the same as their key in zoneOptions 
+ * this MUST have readonly static "type" prop that is the same as their key in ZoneState 
  * (for matching HTML and state). This has to be unique per type.
  */
 abstract class ZoneState {
@@ -78,7 +78,7 @@ abstract class ZoneState {
 const row2height = (row: number) => row * DT.derivRowOffsetN - DT.derivBarBottomN;
 
 /** Defines behaviour of zones accepting deriv. Contains classes extending ZoneState. */
-const derivZoneOptions = {
+const derivZoneData = {
 	// This is separate from child below because it will behave different later
     top: class extends ZoneState {
 		static readonly type = 'top';
@@ -151,7 +151,7 @@ const derivZoneOptions = {
 
 /** Defines behaviour of zones accepting bar. Contains classes extending ZoneState. */
 // Note: When dragging bar, the checked point for drop target is the middle point of bar.
-const barZoneOptions = {
+const barZoneData = {
 	bar: class BarZoneState extends ZoneState {
 		static readonly type = 'bar';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
@@ -223,7 +223,7 @@ const barZoneOptions = {
     },
 };
 
-// Puts d1 in d0's place for bar zone option's enter
+// Puts d1 in d0's place for bar zone state's enter
 // Assumes d0's parent != null
 // Assumes d0's anchor's default, sets anchor & position of d1 to match...
 function swapDeriv(d0: Deriv, d1: Deriv) {
@@ -241,7 +241,7 @@ export function prepareInitialZoneState(d: Deriv, type: DraggableType.Deriv | Dr
 	if (type === DraggableType.Deriv) {
 		d.render.swapAnchor(mouseAnchor);
 		if (d.parent instanceof Deriv) 
-			return new zoneOptions.child(d.parent, d);
+			return new zoneDataObject.child(d.parent, d);
 		else return null;
 	} else {
 		d.render.swapAnchor(mouseAnchor, true);
@@ -254,7 +254,7 @@ export function prepareInitialZoneState(d: Deriv, type: DraggableType.Deriv | Dr
 		swapDeriv(d, clone);
 		// enter() below requires baseWidth to be up-to-date
 		clone.render.baseWidth = d.render.baseWidth;
-		const zs = new zoneOptions.bar(clone, d);
+		const zs = new zoneDataObject.bar(clone, d);
 		zs.enter();
 		return zs;
 	}
@@ -262,31 +262,31 @@ export function prepareInitialZoneState(d: Deriv, type: DraggableType.Deriv | Dr
 
 // --- Final Exports ---
 // See zoneStateFromPoint from dropzones.svelte for use of this
-/** Do zoneOptions.t to get the ZoneState class for ZoneType t */
-export const zoneOptions = {
-	...derivZoneOptions,
-	...barZoneOptions,
+/** Do zoneDataObject.t to get the ZoneData (ZoneState class) for ZoneType t */
+export const zoneDataObject = {
+	...derivZoneData,
+	...barZoneData,
 };
-export type ZoneOption = ValueOf<typeof zoneOptions>;
-export type ZoneType = keyof typeof zoneOptions;
+export type ZoneData = ValueOf<typeof zoneDataObject>;
+export type ZoneType = keyof typeof zoneDataObject;
 
-/** Do zoneOptionsByDragType[viewport.render.dragType] to get currently rendered zone 
- *  options as array */
-const zoneOptionsByDragType: Record<DraggableType, ZoneOption[]> = {
-	[DraggableType.Deriv]: Object.values(derivZoneOptions),
-	[DraggableType.Bar]: Object.values(barZoneOptions),
+/** Do zoneStateByDragType[viewport.render.dragType] to get currently rendered zone 
+ *  state as array */
+const zoneStateByDragType: Record<DraggableType, ZoneData[]> = {
+	[DraggableType.Deriv]: Object.values(derivZoneData),
+	[DraggableType.Bar]: Object.values(barZoneData),
 
 	// Types not related to this file are also here as ZoneState should return empty 
 	// array in those cases
 	[DraggableType.None]:    [],
 	[DraggableType.Panzoom]: [],
 };
-/** Returns zone options classes (as array) for all zones that should be currently rendered. */
-function getZoneOptions() {
-	return zoneOptionsByDragType[viewport.render.dragType];
+/** Returns ZoneState classes (as array) for all zones that should be currently rendered. */
+function getZoneData() {
+	return zoneStateByDragType[viewport.render.dragType];
 }
 export function getZonesOf(d: Deriv) {
-	return getZoneOptions().filter(opt => opt.condition(d));
+	return getZoneData().filter(data => data.condition(d));
 }
 
 // Utility type

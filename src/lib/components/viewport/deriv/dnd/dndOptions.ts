@@ -7,7 +7,7 @@ import { zoneStateFromPoint } from './dropzones.svelte';
 import { defaultAnchor, defaultBarAnchor } from '../renderState.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderState.svelte";
-import { prepareInitialZoneState, zoneOptions, type Rect, type ZoneState } from "./zoneOptions";
+import { prepareInitialZoneState, zoneDataObject, type Rect, type ZoneState } from "./zoneData";
 
 // See draggable util
 export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
@@ -112,7 +112,7 @@ function determineSideZones(
 	function right(r: Rect) { return r.left + r.width }
 	// Only left and width of the rects are used, vertical stuff is with d.depth
 	function getAbsRect(d: Deriv) {
-		const r = zoneOptions[type].getElementRect(d);
+		const r = zoneDataObject[type].getElementRect(d);
 		r.left += d.render.x;
 		// r.top  += d.render.y; // Not needed
 		return r;
