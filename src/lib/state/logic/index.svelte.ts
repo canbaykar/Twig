@@ -12,10 +12,10 @@ export class LogicError extends Error {
 }
 
 // See dischargers
-const emptySet: Set<LogicData> = new Set();
+const emptySet: Set<LogicState> = new Set();
 
 /** Has inference related computed state of Deriv */
-export class LogicData {
+export class LogicState {
     readonly deriv: Deriv;
     readonly conc = $derived.by(() => grammar.safeParse(this.deriv.conc));
 
@@ -61,7 +61,7 @@ export class LogicData {
     });
 
     /** ($derived) */
-    readonly dischargedBy: LogicData | null = $derived.by(() => 
+    readonly dischargedBy: LogicState | null = $derived.by(() => 
         this.rule === Rule.axiomRule
             ? this.upAttributes.discharged.get(this.conc.toString()) ?? null
             : null
@@ -69,7 +69,7 @@ export class LogicData {
 
     /** ($derived) All derivs that discharge an EXISTING assumption in order.
      *  Sets have insertion order. */
-    private readonly dischargers: Set<LogicData> = $derived.by(() =>
+    private readonly dischargers: Set<LogicState> = $derived.by(() =>
         this.rule === Rule.axiomRule
             ? this.dischargedBy ? new Set([this.dischargedBy]) : emptySet
             : this.deriv.children
@@ -77,7 +77,7 @@ export class LogicData {
                 .reduce((set, next) => set.union(next), new Set())
     );
     /** ($derived) Usually only used in root **/
-    private readonly dischargersSorted: LogicData[] = $derived([...this.dischargers]);
+    private readonly dischargersSorted: LogicState[] = $derived([...this.dischargers]);
 
 
     /** ($derived) */

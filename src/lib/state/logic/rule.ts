@@ -1,7 +1,7 @@
 import type { Formula } from "./grammar";
 import { Match, tryMatchArray, type Mismatch } from "./grammar/match";
 import grammar from "./grammar";
-import { LogicError, type LogicData } from "./index.svelte";
+import { LogicError, type LogicState } from "./index.svelte";
 import { ruleOptions, type RuleOption } from "./options";
 import { defaultDownPropogateAttrs } from "./attributes";
 
@@ -51,7 +51,7 @@ export default class Rule {
     static readonly all = ruleOptions.map(opt => new Rule(opt));
     static readonly axiomRule = Rule.all[Rule.all.length - 1];
 
-    static find(p: LogicData): RuleMatch[] | LogicError | SyntaxError {
+    static find(p: LogicState): RuleMatch[] | LogicError | SyntaxError {
         // Retrieve and validate data
         const conclusion = p.conc;
         if (conclusion instanceof Error) return new SyntaxError('Invalid formula in conclusion');

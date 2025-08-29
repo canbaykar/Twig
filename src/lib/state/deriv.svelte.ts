@@ -1,7 +1,7 @@
 import DerivRenderState from "$lib/components/viewport/deriv/renderState.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 import { uid } from "$lib/utils/uid";
-import { LogicData } from "./logic/index.svelte";
+import { LogicState } from "./logic/index.svelte";
 import viewport, { type Serial, type Viewport } from "./viewport.svelte";
 
 export default class Deriv extends Parent {
@@ -32,7 +32,7 @@ export default class Deriv extends Parent {
 	conc = $state('');
 
 	readonly render: DerivRenderState;
-	readonly logic: LogicData;
+	readonly logic: LogicState;
 
 	/** @param s Serialized Deriv */
 	constructor(s: Serial<Deriv> = {}) {
@@ -40,7 +40,7 @@ export default class Deriv extends Parent {
 		if (s.conc) this.conc = s.conc;
 		if (s.children) this.attachChildren(s.children.map((ch) => new Deriv(ch)));
 
-		this.logic = new LogicData(this);
+		this.logic = new LogicState(this);
 		this.render = new DerivRenderState(this, s.render ?? {});
 	}
 

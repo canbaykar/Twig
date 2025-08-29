@@ -1,4 +1,4 @@
-import type { LogicData } from "./index.svelte";
+import type { LogicState } from "./index.svelte";
 import { UnaryFormula, type Formula } from "./grammar";
 import type { Match } from "./grammar/match";
 // ==== TYPES ====
@@ -27,7 +27,7 @@ export interface UpAttributeOption {
     default(
         parentAttrData: AttributeData,
         index: number,
-        parent: LogicData,
+        parent: LogicState,
     ): any;
 }
 
@@ -77,11 +77,11 @@ export const attributeOptions: AttributeOptions = {
     // --- Up ---
     discharged: {
         type: AttributeType.Up,
-        defaultRoot(): Map<string, LogicData> {
+        defaultRoot(): Map<string, LogicState> {
             return new Map();
         },
-        default(pAD: AttributeData, i: number, p: LogicData): Map<string, LogicData> {
-            const map = new Map(pAD.up.discharged as Map<string, LogicData>);
+        default(pAD: AttributeData, i: number, p: LogicState): Map<string, LogicState> {
+            const map = new Map(pAD.up.discharged as Map<string, LogicState>);
             for (const str of pAD.down.discharges[i] as Set<string>) {
                 map.set(str, p);
             }

@@ -1,4 +1,4 @@
-import type { LogicData } from "./index.svelte";
+import type { LogicState } from "./index.svelte";
 import { attributeOptions, type AttributeData, type AttributeRecord, type DownAttributeOption, type UpAttributeOption } from "./options";
 
 export interface DownAttribute extends DownAttributeOption {
@@ -38,7 +38,7 @@ export function defaultDownPropogateAttrs(childAttrs: AttributeRecord[]) {
 export function defaultUpPropogateAttrs(
     parentAttrData: AttributeData,
     index: number,
-    parent: LogicData
+    parent: LogicState
 ): AttributeRecord {
     const out: AttributeRecord = {};
     for (const attr of attributes.up.array) {
