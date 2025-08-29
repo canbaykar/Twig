@@ -9,7 +9,7 @@ export enum DraggableType {
 	None, Panzoom, Deriv, Bar
 }
 
-export default class ViewportRenderData {
+export default class ViewportRenderState {
     x = $state(0);
     y = $state(0);
     scale = $state(1);

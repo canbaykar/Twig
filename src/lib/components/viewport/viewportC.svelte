@@ -3,11 +3,11 @@
 	import type { Viewport } from "$lib/state/viewport.svelte";
 	import { onDestroy } from "svelte";
 	import DerivC, { listeners } from "./deriv/derivC.svelte";
-	import DerivRenderData from "./deriv/renderData.svelte";
+	import DerivRenderState from "./deriv/renderState.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/dnd/bg.svelte";
-	import { DraggableType } from "./renderData.svelte";
+	import { DraggableType } from "./renderState.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
@@ -16,7 +16,7 @@
 
 	/** 
 	 * Type for different parts' listeners to be managed by viewport. (See part + uid 
-	 * system in deriv render data.) Only listeners in part "layout" can take a 2nd 
+	 * system in deriv render state.) Only listeners in part "layout" can take a 2nd 
 	 * argument, I just couldn't enfore it with TS.
 	 */
 	export type Listeners = {
@@ -44,14 +44,14 @@
 
     // Lifecycle hooks
     mouse.init();
-    onDestroy(() => DerivRenderData.onDestroy());
+    onDestroy(() => DerivRenderState.onDestroy());
 
 	// --- Implementations of hovered & Selected ---
     // Update hovered for both viewport and derivs if its changed. These are also used for
 	// some drag events below to cover the case of formula text selection being dragged.
 	// This is called in onmouseup, that uses the dragend argument to overwite the conditional...
 	function onmouseover(e: MouseEvent, dragend = false) { 
-        const { deriv, section } = DerivRenderData.lookup(e.target);
+        const { deriv, section } = DerivRenderState.lookup(e.target);
         if (viewport.render.dragging && !dragend) return;
 		viewport.render.hover(deriv, section);
 	}
@@ -62,16 +62,16 @@
         viewport.render.hover();
     }
 
-	let lastTarget: ReturnType<typeof DerivRenderData.lookup> 
+	let lastTarget: ReturnType<typeof DerivRenderState.lookup> 
 		= { deriv: null, part: null, section: null };
 	function onmousedown(e: MouseEvent) {
-		const { deriv, part, section } = lastTarget = DerivRenderData.lookup(e.target);
+		const { deriv, part, section } = lastTarget = DerivRenderState.lookup(e.target);
 		const bar = section === 'bar';
 		if (deriv && !deriv.render.isSelected(bar)) viewport.render.selectOnly(deriv, bar);
 		if (deriv) callListener("mousedown", part, deriv, e);
 	}
 	function onmouseup(e: MouseEvent) {
-		const { deriv, part, section } = DerivRenderData.lookup(e.target);
+		const { deriv, part, section } = DerivRenderState.lookup(e.target);
 		if (
 			viewport.render.dragging ||
 			// When you start a text selection and move cursor to viewport, it shouldn't deselect.
@@ -109,7 +109,7 @@
 		onStart={() => viewport.render.dragType = DraggableType.Panzoom}
 		onEnd={() => viewport.render.dragType = DraggableType.None}
     >
-        {#each DerivRenderData.displayed as deriv (deriv)}
+        {#each DerivRenderState.displayed as deriv (deriv)}
             <DerivC {deriv}></DerivC>
         {/each}
         

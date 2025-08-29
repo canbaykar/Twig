@@ -11,7 +11,7 @@ function flatten(ds: Deriv[]): Deriv[] {
     return ds.map(d => [d, ...flatten(d.children)]).flat();
 }
 
-export default class DerivRenderData {
+export default class DerivRenderState {
     /** ($derived) Array of all displayed derivs */
     static get displayed() { return displayed }
 
@@ -182,7 +182,7 @@ export default class DerivRenderData {
                 : null;
     }
 
-    constructor(deriv: Deriv, s: Serial<DerivRenderData> = {}) {
+    constructor(deriv: Deriv, s: Serial<DerivRenderState> = {}) {
         this.deriv = deriv;
         if (s.xTranslate) this.xTranslate = s.xTranslate;
         if (s.yTranslate) this.yTranslate = s.yTranslate;
@@ -195,7 +195,7 @@ export default class DerivRenderData {
 	//   using its hover & selected system to avoid defining listeners in too many places.
 	//   (Because they interfere with each other and complicate things)
 	// - Part names start with a section ('body', 'bar' or '') as in body_formula. For hovering logic.
-	//   See viewport's render data.
+	//   See viewport's render state.
     /** Looks up associated deriv of closest ancestor from e.target
      *  DerivRenderData version of Deriv.lookup */
     static lookup(target: EventTarget | null) {
@@ -294,26 +294,26 @@ if (browser) {
 
 // --- ANCHOR API ---
 /** Function that determines the final coords of a deriv */
-type Anchor = (rd: DerivRenderData) => [number, number];
+type Anchor = (rd: DerivRenderState) => [number, number];
 
-export function defaultAnchor(rd: DerivRenderData): [number, number] {
+export function defaultAnchor(rd: DerivRenderState): [number, number] {
     return rd.deriv.derivParent instanceof Deriv ? [
             rd.deriv.derivParent.render.xBar + rd.xOffset,
             rd.deriv.derivParent.render.yBar - DT.derivBgPaddingN,
         ] : [0, 0];
 };
 
-export function defaultBarAnchor(rd: DerivRenderData): [number, number] {
+export function defaultBarAnchor(rd: DerivRenderState): [number, number] {
     const [x, y] = rd.xy;
 	return [x, y - DT.derivBarYN];
 };
 
-export function mouseAnchor(rd: DerivRenderData): [number, number] {
+export function mouseAnchor(rd: DerivRenderState): [number, number] {
     return [viewport.render.mouse.x, viewport.render.mouse.y];
 };
 
 /** When bar is being moved (e.g. with mouseAnchor), set this to anchor to make formula follow bar. */
-export function followBarAnchor(rd: DerivRenderData): [number, number] {
+export function followBarAnchor(rd: DerivRenderState): [number, number] {
     const [x, y] = rd.xyBar;
 	return [x, y + DT.derivBarYN];
 };

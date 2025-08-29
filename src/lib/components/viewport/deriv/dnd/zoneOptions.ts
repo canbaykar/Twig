@@ -1,8 +1,8 @@
 import Deriv from "$lib/state/deriv.svelte";
 import viewport from "$lib/state/viewport.svelte";
 import { DT } from "../../../../../DT";
-import { DraggableType } from "../../renderData.svelte";
-import { defaultAnchor, followBarAnchor, mouseAnchor } from "../renderData.svelte";
+import { DraggableType } from "../../renderState.svelte";
+import { defaultAnchor, followBarAnchor, mouseAnchor } from "../renderState.svelte";
 
 export interface Rect { left: number, top: number, width: number, height: number }
 

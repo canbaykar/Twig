@@ -4,9 +4,9 @@ import viewport from '$lib/state/viewport.svelte';
 import { DT } from '../../../../../DT';
 import { IndicatorPopup } from './indicatorPopup.svelte';
 import { zoneDataFromPoint } from './dropzones.svelte';
-import { defaultAnchor, defaultBarAnchor } from '../renderData.svelte';
+import { defaultAnchor, defaultBarAnchor } from '../renderState.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
-import { DraggableType } from "../../renderData.svelte";
+import { DraggableType } from "../../renderState.svelte";
 import { prepareInitialZoneData, zoneOptions, type Rect, type ZoneData } from "./zoneOptions";
 
 // See draggable util

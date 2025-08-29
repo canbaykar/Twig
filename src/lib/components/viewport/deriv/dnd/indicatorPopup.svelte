@@ -1,5 +1,5 @@
 <script module lang="ts">
-	import { Popup } from "../../renderData.svelte";
+	import { Popup } from "../../renderState.svelte";
     import Self from "./indicatorPopup.svelte";
 
     export class IndicatorPopup extends Popup<typeof Self> {

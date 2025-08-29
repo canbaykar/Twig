@@ -1,4 +1,4 @@
-import DerivRenderData from "$lib/components/viewport/deriv/renderData.svelte";
+import DerivRenderState from "$lib/components/viewport/deriv/renderState.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 import { uid } from "$lib/utils/uid";
 import { LogicData } from "./logic/index.svelte";
@@ -31,7 +31,7 @@ export default class Deriv extends Parent {
 	/** ($state) */
 	conc = $state('');
 
-	readonly render: DerivRenderData;
+	readonly render: DerivRenderState;
 	readonly logic: LogicData;
 
 	/** @param s Serialized Deriv */
@@ -41,7 +41,7 @@ export default class Deriv extends Parent {
 		if (s.children) this.attachChildren(s.children.map((ch) => new Deriv(ch)));
 
 		this.logic = new LogicData(this);
-		this.render = new DerivRenderData(this, s.render ?? {});
+		this.render = new DerivRenderState(this, s.render ?? {});
 	}
 
 	/** Util for crawling Derivs to find the first one that satisfies fn

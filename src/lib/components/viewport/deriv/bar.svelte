@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type Deriv from "$lib/state/deriv.svelte";
 	import { DT } from "../../../../DT";
-	import DerivRenderData from "./renderData.svelte";
+	import DerivRenderState from "./renderState.svelte";
 
     interface Props {
         deriv: Deriv;
@@ -20,11 +20,11 @@
     
     let labelElement: HTMLElement | null = $state(null);
     let ruleElement:  HTMLElement | null = $state(null);
-    DerivRenderData.maintainWidth(
+    DerivRenderState.maintainWidth(
         () => label,
         () => render.labelWidth = labelElement ? labelElement.offsetWidth : 0
     );
-    DerivRenderData.maintainWidth(
+    DerivRenderState.maintainWidth(
         () => rule,
         () => render.ruleWidth = ruleElement ? ruleElement.offsetWidth : 0
     );

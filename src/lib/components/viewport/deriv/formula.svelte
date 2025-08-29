@@ -2,7 +2,7 @@
 	import type Deriv from '$lib/state/deriv.svelte';
 	import { DT } from '../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
-	import DerivRenderData from './renderData.svelte';
+	import DerivRenderState from './renderState.svelte';
 
 	interface Props {
 		deriv: Deriv;
@@ -11,7 +11,7 @@
 	let { deriv: deriv }: Props = $props();
 
 	let element: HTMLElement;
-	DerivRenderData.maintainWidth(
+	DerivRenderState.maintainWidth(
 		() => deriv.conc,
 		() => deriv.render.baseWidth = element.offsetWidth
 	);

@@ -1,4 +1,4 @@
-import ViewportRenderData from "$lib/components/viewport/renderData.svelte";
+import ViewportRenderState from "$lib/components/viewport/renderState.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 import type Deriv from "./deriv.svelte";
 
@@ -7,8 +7,8 @@ export type { Viewport };
 class Viewport extends Parent {
     declare readonly children: Deriv[];
 
-    /** Render data */
-    render = new ViewportRenderData();
+    /** Render state */
+    render = new ViewportRenderState();
 }
 
 const viewport = new Viewport();
