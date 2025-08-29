@@ -6,34 +6,33 @@ import type { Match } from "./grammar/match";
 export enum AttributeType { Down, Up }
 export type AttributeRecord = Record<string, any>;
 /** How attributes will be stored in proofs */
-export interface AttributeData {
+export interface AttributeState {
     down: AttributeRecord,
     up:   AttributeRecord,
 }
-export type AttributeOption = DownAttributeOption | UpAttributeOption;
-export type AttributeOptions = Record<string, AttributeOption>;
+export type AttributeData = Record<string, DownAttributeData | UpAttributeData>;
 
-export interface DownAttributeOption {
+export interface DownAttributeData {
     type: AttributeType.Down;
     /** Specify default propogation behaviour */
     default(childDownAttrs: AttributeRecord[]): any;
 }
 
-export interface UpAttributeOption {
+export interface UpAttributeData {
     type: AttributeType.Up;
     /** Specify default value at root */
     defaultRoot(): any;
     /** Specify default propogation behaviour */
     default(
-        parentAttrData: AttributeData,
+        parentAttrData: AttributeState,
         index: number,
         parent: LogicState,
     ): any;
 }
 
 // -- Rules --
-export type RuleOptions = RuleOption[];
-export interface RuleOption {
+export type RuleData = RuleDatum[];
+export interface RuleDatum {
     /** Unique name of the rule */
     name: string;
     /** The rule name that's displayed beside the rule bar */
@@ -58,7 +57,7 @@ export interface RuleOption {
 };
 
 // ==== DATA ====
-export const attributeOptions: AttributeOptions = {
+export const attributeData: AttributeData = {
     // --- Down ---
     assumptions: {
         type: AttributeType.Down,
@@ -80,9 +79,9 @@ export const attributeOptions: AttributeOptions = {
         defaultRoot(): Map<string, LogicState> {
             return new Map();
         },
-        default(pAD: AttributeData, i: number, p: LogicState): Map<string, LogicState> {
-            const map = new Map(pAD.up.discharged as Map<string, LogicState>);
-            for (const str of pAD.down.discharges[i] as Set<string>) {
+        default(attr: AttributeState, i: number, p: LogicState): Map<string, LogicState> {
+            const map = new Map(attr.up.discharged as Map<string, LogicState>);
+            for (const str of attr.down.discharges[i] as Set<string>) {
                 map.set(str, p);
             }
             return map;
@@ -90,7 +89,7 @@ export const attributeOptions: AttributeOptions = {
     }
 };
 
-export const ruleOptions: RuleOptions = [
+export const ruleData: RuleData = [
     // --- Discharging rules ---
     // Order matters!
     {

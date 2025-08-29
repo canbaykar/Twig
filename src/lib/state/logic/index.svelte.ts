@@ -1,7 +1,7 @@
 import type Deriv from "../deriv.svelte";
 import { defaultDownPropogateAttrs, defaultRootUpPropogateAttrs, defaultUpPropogateAttrs } from "./attributes";
 import grammar, { Formula } from "./grammar";
-import type { AttributeRecord } from "./options";
+import type { AttributeRecord } from "./data";
 import Rule, { type RuleMatch } from "./rule";
 
 export class LogicError extends Error {

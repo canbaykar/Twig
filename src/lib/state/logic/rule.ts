@@ -2,7 +2,7 @@ import type { Formula } from "./grammar";
 import { Match, tryMatchArray, type Mismatch } from "./grammar/match";
 import grammar from "./grammar";
 import { LogicError, type LogicState } from "./index.svelte";
-import { ruleOptions, type RuleOption } from "./options";
+import { ruleData, type RuleDatum } from "./data";
 import { defaultDownPropogateAttrs } from "./attributes";
 
 export interface RuleMatch {
@@ -22,9 +22,9 @@ export default class Rule {
      */
     readonly matchers: Matcher[];
 
-    readonly downPropogateAttrs: NonNullable<RuleOption['downPropagateAttrs']>;
+    readonly downPropogateAttrs: NonNullable<RuleDatum['downPropagateAttrs']>;
 
-    private constructor(opt: RuleOption) {
+    private constructor(opt: RuleDatum) {
         this.name = opt.name;
         this.text = opt.text ?? this.name;
         this.discharging = !!opt.downPropagateAttrs;
@@ -48,7 +48,7 @@ export default class Rule {
         return tryMatchArray([formula, ...children], this.matchers);
     }
 
-    static readonly all = ruleOptions.map(opt => new Rule(opt));
+    static readonly all = ruleData.map(opt => new Rule(opt));
     static readonly axiomRule = Rule.all[Rule.all.length - 1];
 
     static find(p: LogicState): RuleMatch[] | LogicError | SyntaxError {
