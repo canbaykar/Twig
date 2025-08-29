@@ -1,10 +1,10 @@
 <script module lang="ts">
 	import Deriv from '$lib/state/deriv.svelte';
 	import viewport from '$lib/state/viewport.svelte';
-	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneData, type ZoneType } from './zoneOptions';
+	import { getZonesOf, zoneOptions, type ZoneOption, type ZoneState, type ZoneType } from './zoneOptions';
 
     /** Takes in world coords, not screen! */
-    export function zoneDataFromPoint(x: number, y: number, dragged: Deriv): ZoneData | null {
+    export function zoneStateFromPoint(x: number, y: number, dragged: Deriv): ZoneState | null {
         const wrld2cl = viewport.render.wrld2cl;
         const el = document.elementFromPoint(wrld2cl.x(x), wrld2cl.y(y));
         if (!(el instanceof HTMLElement) || !el.classList.contains('dropzone')) return null;

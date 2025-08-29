@@ -3,11 +3,11 @@ import type { DraggableOptions } from '$lib/utils/interact/draggable.svelte';
 import viewport from '$lib/state/viewport.svelte';
 import { DT } from '../../../../../DT';
 import { IndicatorPopup } from './indicatorPopup.svelte';
-import { zoneDataFromPoint } from './dropzones.svelte';
+import { zoneStateFromPoint } from './dropzones.svelte';
 import { defaultAnchor, defaultBarAnchor } from '../renderState.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderState.svelte";
-import { prepareInitialZoneData, zoneOptions, type Rect, type ZoneData } from "./zoneOptions";
+import { prepareInitialZoneState, zoneOptions, type Rect, type ZoneState } from "./zoneOptions";
 
 // See draggable util
 export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
@@ -17,24 +17,24 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 		const dragType = bar ? DraggableType.Bar : DraggableType.Deriv;
 		viewport.render.dragType = dragType;
 
-		let zd: ZoneData | null = prepareInitialZoneData(data, dragType);
+		let zs: ZoneState | null = prepareInitialZoneState(data, dragType);
 
 		// Rectangle popup that indicates current binding zone rect
 		const indicator = new IndicatorPopup();
 
 		// if (free()) shrinkTree();
 
-		function updateZD() {
+		function updateZS() {
 			const [x, y] = bar ? data.render.xyBar : data.render.xy;
 
 			const tr = getTransition(x, y, data);
 			if (tr) {
-				const sideZoneData = determineSideZones(data, tr, x, y, bar);
+				const sideZoneState = determineSideZones(data, tr, x, y, bar);
 
 				tr[0]?.exit();
 				tr[1]?.enter();
 
-				zd = tr[1];
+				zs = tr[1];
 
 				data.render.moveTo(x, y, bar);
 
@@ -43,37 +43,37 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 				const dx = mouse.dx;
 				const dy = mouse.dy;
 				const v = Math.sqrt(dx * dx + dy * dy);
-				if (v < 10) clip(data, zd, sideZoneData, bar); // 10 is arbitrary
+				if (v < 10) clip(data, zs, sideZoneState, bar); // 10 is arbitrary
 			}
 
 			// if (free()) shrinkTree();
 
-			indicateBoundingRect(data, zd, indicator);
+			indicateBoundingRect(data, zs, indicator);
 		}
 
-		function getTransition(x: number, y: number, dragged: Deriv): false | [ZoneData | null, ZoneData | null] {
-			const oldZ = zd;
-			let newZ = zd;
+		function getTransition(x: number, y: number, dragged: Deriv): false | [ZoneState | null, ZoneState | null] {
+			const oldZ = zs;
+			let newZ = zs;
 
 			// Did we exit a zone?
-			if (zd && !inRect(zd.boundingRect, x, y)) newZ = null;
+			if (zs && !inRect(zs.boundingRect, x, y)) newZ = null;
 			// Did we enter a zone?
-			if (!newZ) newZ = zoneDataFromPoint(x, y, dragged);
+			if (!newZ) newZ = zoneStateFromPoint(x, y, dragged);
 
 			return oldZ === newZ ? false : [oldZ, newZ];
 		}
 
 		return {
 			move(e) {
-				updateZD();
+				updateZS();
 			},
 
 			end(e) {
 				bar ? data.render.barDragged = false : data.render.bodyDragged = false;
 				viewport.render.dragType = DraggableType.None
 
-				updateZD();
-				if (zd) zd.drop();
+				updateZS();
+				if (zs) zs.drop();
 
 				// Reset stuff used for DND
 				if (data.parent !== viewport) data.render.xTranslate = data.render.yTranslate = 0;
@@ -97,7 +97,7 @@ function inRect(r: Rect, x: number, y: number) {
 
 /** Getters for right side of the zone at the left of data and left side of ... */
 function determineSideZones(
-	data: Deriv, tr: [ZoneData | null, ZoneData | null], x: number, y: number, bar: boolean
+	data: Deriv, tr: [ZoneState | null, ZoneState | null], x: number, y: number, bar: boolean
 ): [() => number, () => number] {
 	// Side zones are only applicable when !tr[1].
 	if (tr[1]) return [() => -Infinity, () => Infinity];
@@ -149,13 +149,13 @@ function determineSideZones(
 }
 
 // Only in x direction
-function clip(data: Deriv, zd: ZoneData | null, sideZoneData: [() => number, () => number], bar: boolean) {
-	if (!zd) { // i.e. if data is free
+function clip(data: Deriv, zs: ZoneState | null, sideZoneState: [() => number, () => number], bar: boolean) {
+	if (!zs) { // i.e. if data is free
 		// Clip into between side zones
-		clipToInterval(data, [sideZoneData[0](), sideZoneData[1]()], bar);
+		clipToInterval(data, [sideZoneState[0](), sideZoneState[1]()], bar);
 	} else {
 		// Clip into bounding rect
-		const r = zd!.boundingRect;
+		const r = zs!.boundingRect;
 		clipToInterval(data, [r.left, r.left + r.width], bar);
 	}
 }
@@ -181,16 +181,16 @@ function clipToInterval(data: Deriv, int: [number, number], bar: boolean) {
 	data.render.moveTo(x_, y, bar);
 }
 
-function indicateBoundingRect(dragged: Deriv, zd: ZoneData | null, ind: IndicatorPopup) {
-	if (zd) {
-		const r = zd.boundingRect;
+function indicateBoundingRect(dragged: Deriv, zs: ZoneState | null, ind: IndicatorPopup) {
+	if (zs) {
+		const r = zs.boundingRect;
 		ind.left = r.left;
 		ind.top = r.top;
 		ind.width = r.width;
 		ind.height = r.height;
 		ind.opacity = 1;
 	} else {
-		// If zd is null, make ind invisible but keep it on dragged deriv for animation
+		// If zs is null, make ind invisible but keep it on dragged deriv for animation
 		ind.opacity = 0;
 		ind.left = dragged.render.x - dragged.render.width / 2;
 		ind.top = dragged.render.y - DT.derivBarBottomN;

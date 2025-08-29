@@ -29,19 +29,19 @@ function addPadding(rect: Rect) {
 // deriv and bar. (panzoom and native text dragging for example doesn't use it, the 
 // latter may need extensive refactoring if we need to add them her)
 
-export type { ZoneData };
+export type { ZoneState };
 /** 
  * Instances of this are created by dragged item during DND. There's no such object/class 
  * called a "zone" here, we have elements each representing (possibly multiple) zones.
- * For two pixel, if both of them are associated with ZoneData with matching contents 
- * (see zoneDataFromPoint) they "belong to the same zone". (Can't use === with ZoneData 
+ * For two pixel, if both of them are associated with ZoneState with matching contents 
+ * (see zoneStateFromPoint) they "belong to the same zone". (Can't use === with ZoneState 
  * since its mutable.) Zone elements are rendered in dropzones.svelte.
  * Notes: Dropzone components/elements don't carry instances of this! One element described 
  * with getElementRect may represent multiple "zones" next to each other. Classes extending 
  * this MUST have readonly static "type" prop that is the same as their key in zoneOptions 
  * (for matching HTML and state). This has to be unique per type.
  */
-abstract class ZoneData {
+abstract class ZoneState {
 	static readonly type: string;
 	/** Condition for when the zone is enabled, see examples */
 	static condition(deriv: Deriv) { return true; }
@@ -66,7 +66,7 @@ abstract class ZoneData {
 
 	// Default implementation
 	get boundingRect(): Rect {
-		const elRect = (this.constructor as typeof ZoneData).getElementRect(this.deriv);
+		const elRect = (this.constructor as typeof ZoneState).getElementRect(this.deriv);
 		// Relative to absolute coords
 		elRect.left += this.deriv.render.x;
 		elRect.top += this.deriv.render.y;
@@ -77,10 +77,10 @@ abstract class ZoneData {
 // Used below in getElementRect methods
 const row2height = (row: number) => row * DT.derivRowOffsetN - DT.derivBarBottomN;
 
-/** Defines behaviour of zones accepting deriv. Contains classes extending ZoneData. */
+/** Defines behaviour of zones accepting deriv. Contains classes extending ZoneState. */
 const derivZoneOptions = {
 	// This is separate from child below because it will behave different later
-    top: class extends ZoneData {
+    top: class extends ZoneState {
 		static readonly type = 'top';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
@@ -98,7 +98,7 @@ const derivZoneOptions = {
         }
     },
 
-	child: class extends ZoneData {
+	child: class extends ZoneState {
 		static readonly type = 'child';
 		static condition(deriv: Deriv) { return deriv.children.length !== 0; }
 
@@ -149,10 +149,10 @@ const derivZoneOptions = {
 	},
 };
 
-/** Defines behaviour of zones accepting bar. Contains classes extending ZoneData. */
+/** Defines behaviour of zones accepting bar. Contains classes extending ZoneState. */
 // Note: When dragging bar, the checked point for drop target is the middle point of bar.
 const barZoneOptions = {
-	bar: class BarZoneData extends ZoneData {
+	bar: class BarZoneState extends ZoneState {
 		static readonly type = 'bar';
 		static condition(deriv: Deriv) { return deriv.children.length === 0; }
 
@@ -214,7 +214,7 @@ const barZoneOptions = {
 
 		// Reimplemented because this.deriv is detached on enter()
 		get boundingRect(): Rect {
-			const elRect = BarZoneData.getElementRect(this.dragged);
+			const elRect = BarZoneState.getElementRect(this.dragged);
 			// Relative to absolute coords
 			elRect.left += this.dragged.render.x;
 			elRect.top += this.dragged.render.y;
@@ -236,8 +236,8 @@ function swapDeriv(d0: Deriv, d1: Deriv) {
 	if (!d1.parent) d1.attach(viewport);
 }
 
-/** Determines initial zone data when starting DND. This can't be generated automatically... */
-export function prepareInitialZoneData(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
+/** Determines initial zone state when starting DND. This can't be generated automatically... */
+export function prepareInitialZoneState(d: Deriv, type: DraggableType.Deriv | DraggableType.Bar) {
 	if (type === DraggableType.Deriv) {
 		d.render.swapAnchor(mouseAnchor);
 		if (d.parent instanceof Deriv) 
@@ -254,15 +254,15 @@ export function prepareInitialZoneData(d: Deriv, type: DraggableType.Deriv | Dra
 		swapDeriv(d, clone);
 		// enter() below requires baseWidth to be up-to-date
 		clone.render.baseWidth = d.render.baseWidth;
-		const zd = new zoneOptions.bar(clone, d);
-		zd.enter();
-		return zd;
+		const zs = new zoneOptions.bar(clone, d);
+		zs.enter();
+		return zs;
 	}
 }
 
 // --- Final Exports ---
-// See zoneDataFromPoint from dropzones.svelte for use of this
-/** Do zoneOptions.t to get the ZoneData class for ZoneType t */
+// See zoneStateFromPoint from dropzones.svelte for use of this
+/** Do zoneOptions.t to get the ZoneState class for ZoneType t */
 export const zoneOptions = {
 	...derivZoneOptions,
 	...barZoneOptions,
@@ -276,7 +276,7 @@ const zoneOptionsByDragType: Record<DraggableType, ZoneOption[]> = {
 	[DraggableType.Deriv]: Object.values(derivZoneOptions),
 	[DraggableType.Bar]: Object.values(barZoneOptions),
 
-	// Types not related to this file are also here as ZoneData should return empty 
+	// Types not related to this file are also here as ZoneState should return empty 
 	// array in those cases
 	[DraggableType.None]:    [],
 	[DraggableType.Panzoom]: [],
