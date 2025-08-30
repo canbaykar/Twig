@@ -66,7 +66,7 @@
 >
 	<Formula {deriv} />
 
-	{#if deriv.render.bodyAwake}
+	{#if deriv.render.bodyHovered}
 		<Grip x="{ gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 		<Grip x="{-gripX}px" y="{-DT.derivLineHeightN / 2}px"/>
 	{/if}
