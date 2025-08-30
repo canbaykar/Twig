@@ -83,7 +83,7 @@
 </script>
 
 <script lang="ts">
-	import { DT } from '../../../../../DT';
+	import { DT } from '../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
 
 	// Note: Each Bg renders their (deriv's) children('s Bg).

@@ -6,7 +6,7 @@
 	import DerivRenderState from "./deriv/renderState.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
-	import { bgDependency } from "./deriv/dnd/bg.svelte";
+	import { bgDependency } from "./deriv/bg.svelte";
 	import { DraggableType, Hover } from "./renderState.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
