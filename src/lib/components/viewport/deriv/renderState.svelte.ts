@@ -165,11 +165,11 @@ export default class DerivRenderState {
     // --- Background colors ---
     /** ($derived) Background color for the formula element */
     readonly formulaBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.conc, this.barAwake || this.bodyAwake)
+		this.bgColor(this.deriv.logic.conc, this.awake)
 	);
     /** ($derived) Background color for the bar */
     readonly barBg: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.rule, this.barAwake || this.bodyAwake)
+		this.bgColor(this.deriv.logic.rule, this.awake)
 	);
     // The logic
     private bgColor(val: any, awake: boolean): string | null {
@@ -251,6 +251,8 @@ export default class DerivRenderState {
     readonly bodyAwake = $derived.by(() => this.bodySelected || this.bodyHovered);
 	/** ($derived) Is bar selected or hovered? */
     readonly barAwake = $derived.by(() => this.barSelected || this.barHovered);
+	/** ($derived) Deriv selected or hovered? */
+    readonly awake = $derived.by(() => this.bodySelected || this.barSelected || this.hovered);
 	
     // --- Other utils ---
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
