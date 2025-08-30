@@ -51,14 +51,13 @@
         </div>
     {/if}
     <!-- Rule -->
-    {#if deriv.render.hasRule}
-        <div
-            class="left-(--DERIV-LABEL-RIGHT) {deriv.render.discharged ? 'labelBase' : 'ruleBase'}"
-            bind:this={ruleElement}
-        >
-            {deriv.render.discharged ? rule : '(' + rule + ')'}
-        </div>
-    {/if}
+	<div
+		class="{render.ruleHidden ? "text-fg/25" : "text-fg"} left-(--DERIV-LABEL-RIGHT) {deriv.render.discharged ? 'labelBase' : 'ruleBase'}"
+    	class:text-transparent={deriv.render.barHidden}
+		bind:this={ruleElement}
+	>
+		{deriv.render.discharged ? rule : '(' + rule + ')'}
+	</div>
 </div>
 
 <style>

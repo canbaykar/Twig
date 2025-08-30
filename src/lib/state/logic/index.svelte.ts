@@ -95,7 +95,7 @@ export class LogicState {
         // Regular case
         if (this.rule !== Rule.axiomRule) return this.rule.text;
         // Axiom rule case (possibly discharged)
-        return this.dischargedBy?.labelText ?? '';
+        return this.dischargedBy?.labelText ?? this.rule.text;
     });
 
     constructor(deriv: Deriv) {

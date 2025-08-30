@@ -186,24 +186,22 @@
 			{/if}
 		
 			<!-- For Rule -->
-			{#if deriv.render.hasRule}
-				{#if deriv.render.discharged}
-					<rect
-						x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleLabelOffX}
-						y={deriv.render.yBar + labelOffY}
-						width={deriv.render.ruleWidth + pad2}
-						height={labelBgHeight}
-						rx={labelRx}
-					/>
-				{:else}
-					<rect
-						x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleOffX}
-						y={deriv.render.yBar + ruleOffY}
-						width={deriv.render.ruleWidth + rulePad}
-						height={labelBgHeight}
-						rx={labelRx}
-					/>
-				{/if}
+			{#if deriv.render.discharged}
+				<rect
+					x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleLabelOffX}
+					y={deriv.render.yBar + labelOffY}
+					width={deriv.render.ruleWidth + pad2}
+					height={labelBgHeight}
+					rx={labelRx}
+				/>
+			{:else}
+				<rect
+					x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleOffX}
+					y={deriv.render.yBar + ruleOffY}
+					width={deriv.render.ruleWidth + rulePad}
+					height={labelBgHeight}
+					rx={labelRx}
+				/>
 			{/if}
 		</g>
 	{/if}

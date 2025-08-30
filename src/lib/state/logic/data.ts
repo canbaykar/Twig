@@ -204,7 +204,7 @@ export const ruleData: RuleData = [
     // --- Axiom rule ---
     {
         name: 'axiom rule',
-        text: '',
+        text: 'Ax',
         children: [[]],
         conclusion: ['[1]'],
         downPropagateAttrs(_, __, conclusion) {

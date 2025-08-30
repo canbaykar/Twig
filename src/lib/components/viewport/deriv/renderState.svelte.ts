@@ -4,6 +4,7 @@ import { treeState, type TreeState } from "./treeState";
 import { DT } from "../../../../DT";
 import { browser } from "$app/environment";
 import { onDestroy } from "svelte";
+import Rule from "$lib/state/logic/rule";
 
 // Exported below as DerivRenderData.displayed
 const displayed = $derived(flatten(viewport.children));
@@ -256,11 +257,11 @@ export default class DerivRenderState {
 	
     // --- Other utils ---
     readonly hasLabel = $derived.by(() => !!this.deriv.logic.labelText);
-    readonly hasRule = $derived.by(() => !!this.deriv.logic.ruleText);
     readonly hasChild = $derived.by(() => this.deriv.children.length !== 0);
-    readonly inferred = $derived.by(() => this.hasRule || this.hasLabel || this.hasChild);
-	readonly barHidden = $derived.by(() => !(this.inferred || this.barAwake || this.bodyAwake));
     readonly discharged = $derived.by(() => !!this.deriv.logic.dischargedBy);
+    readonly ruleHidden = $derived.by(() => this.deriv.logic.rule === Rule.axiomRule && !this.discharged);
+    readonly inferred = $derived.by(() => !this.ruleHidden || this.hasLabel || this.hasChild);
+	readonly barHidden = $derived.by(() => !(this.inferred || this.barAwake || this.bodyAwake));
 
 	/** Util that brings the root of this deriv to the front */
 	goToTop() {

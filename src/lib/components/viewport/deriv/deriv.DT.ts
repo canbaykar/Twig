@@ -33,7 +33,7 @@ export const derivDT = {
         labelSize: 12 * UNIT + 'px',
 
         /** (length) Left-right padding of conc */
-        xPadding: 4 * UNIT + 'px',
+        xPadding: 3 * UNIT + 'px',
 		/** (length) Padding around background rectangles */
 		bgPadding: bgPadding + 'px',
         
