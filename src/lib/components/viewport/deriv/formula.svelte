@@ -1,3 +1,8 @@
+<script module lang="ts">
+	import { type BgType } from './bg.svelte';
+	export { formulaBg };
+</script>
+
 <script lang="ts">
 	import type Deriv from '$lib/state/deriv.svelte';
 	import { DT } from '../../../../DT';
@@ -56,3 +61,25 @@
 		></textarea>
 	{/if}
 </button>
+
+<!-- BG -->
+{#snippet formulaBg(deriv: Deriv, type: BgType)}
+	{@const pad2 = 2 * DT.derivBgPaddingN}
+	{@const offY = -DT.derivLineHeightN - DT.derivBgPaddingN}
+	{@const minRx = (DT.derivLineHeightN + pad2) / 2}
+	<!-- The whole handle section should be as thick as bar bg -->
+	<!-- This padding covers what need to be added on top of the regular padding (bgPadding) -->
+	{@const handlePad = DT.UNIT + DT.derivBgPaddingN}
+	{@const handlePad2 = handlePad * 2}
+
+	<rect
+		x={deriv.render.x - deriv.render.width / 2 - DT.derivBgPaddingN - (+type.extended(deriv)) * handlePad}
+		y={deriv.render.y + offY}
+		width={deriv.render.width + pad2 + (+type.extended(deriv)) * handlePad2}
+		height={DT.derivLineHeightN + pad2}
+		rx={Math.min((DT.derivBgPaddingN * 4) / viewport.render.scale, minRx)}
+		fill={type.formulaFill(deriv)}
+		data-uid={deriv.uid}
+		data-part="body_"
+	/>
+{/snippet}

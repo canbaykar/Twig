@@ -1,3 +1,8 @@
+<script module lang="ts">
+	import { type BgType } from "./bg.svelte";
+	export { barBg };
+</script>
+
 <script lang="ts">
 	import type Deriv from "$lib/state/deriv.svelte";
 	import { DT } from "../../../../DT";
@@ -87,3 +92,59 @@
         line-height: var(--DERIV-RULE-LH);
     }
 </style>
+
+<!-- Bg -->
+{#snippet barBg(deriv: Deriv, type: BgType)}
+	{@const pad2 = 2 * DT.derivBgPaddingN}
+
+	{@const labelOffX = -DT.derivBarGapN - DT.derivBgPaddingN}
+	{@const labelOffY = DT.derivLabelBottomN - DT.derivBgPaddingN}
+	{@const labelBgHeight = DT.derivLabelHeightN + pad2}
+	{@const labelRx = DT.derivLabelHeightN / 2 + DT.derivBgPaddingN}
+
+	{@const ruleLabelOffX = DT.derivBarGapN - DT.derivBgPaddingN}
+
+	{@const ruleOffX = DT.derivRuleLeftN + DT.derivRuleParanthesisGapN - DT.derivBgPaddingN}
+	{@const ruleOffY = DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.derivBgPaddingN}
+	{@const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN)}
+
+	<g fill={type.barFill(deriv)} data-uid={deriv.uid} data-part="bar_">
+		<rect
+			x={deriv.render.xBar - deriv.render.barWidth / 2 - DT.derivBgPaddingN}
+			y={deriv.render.yBar - DT.derivBgPaddingN}
+			width={deriv.render.barWidth + pad2}
+			height={DT.UNIT + pad2}
+			rx={(DT.UNIT + pad2) / 2}
+		/>
+	
+		<!-- For label -->
+		{#if deriv.render.hasLabel}
+			<rect
+				x={deriv.render.xBar - deriv.render.barWidth / 2 - deriv.render.labelWidth + labelOffX}
+				y={deriv.render.yBar + labelOffY}
+				width={deriv.render.labelWidth + pad2}
+				height={labelBgHeight}
+				rx={labelRx}
+			/>
+		{/if}
+	
+		<!-- For Rule -->
+		{#if deriv.render.discharged}
+			<rect
+				x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleLabelOffX}
+				y={deriv.render.yBar + labelOffY}
+				width={deriv.render.ruleWidth + pad2}
+				height={labelBgHeight}
+				rx={labelRx}
+			/>
+		{:else}
+			<rect
+				x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleOffX}
+				y={deriv.render.yBar + ruleOffY}
+				width={deriv.render.ruleWidth + rulePad}
+				height={labelBgHeight}
+				rx={labelRx}
+			/>
+		{/if}
+	</g>
+{/snippet}

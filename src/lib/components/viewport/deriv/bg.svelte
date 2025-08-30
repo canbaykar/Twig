@@ -1,10 +1,14 @@
 <script module lang="ts">
 	import Bg from './bg.svelte';
 	import Deriv from '$lib/state/deriv.svelte';
+	import { formulaBg } from './formula.svelte';
+	import { barBg } from './bar.svelte';
 
-	// Don't use the Bg component directly!
-	// Instead render bgDependency at lteast once on the page and
-	// Render bgRoot only on root nodes.
+	// Bg System:
+	// Implement bg snippets in respective components and place their render blocks
+	// in this file. See already implemented ones and BgType.
+	// Don't use the Bg component directly! Instead render bgDependency at least 
+	// once on the page and render bgRoot only on root nodes.
 	export { bgDependency, bgRoot };
 
 	// const saturate = 2;
@@ -16,39 +20,9 @@
     // ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 + 0.285 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
     // ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 + 0.928 * saturate) * lighten_} 0 ${lighten}
     // 0 0 0 1 0`;
-	
-	// Helper constants for bg dimensions are here to prevent being recalculated
-	// all the time
-	const pad2 = 2 * DT.derivBgPaddingN;
-	
-    const formulaOffY = -DT.derivLineHeightN - DT.derivBgPaddingN;
-	const formulaBgHeight = DT.derivLineHeightN + pad2;
-	const formulaRx = $derived(
-		Math.min((DT.derivBgPaddingN + 5 * DT.UNIT) / viewport.render.scale, formulaBgHeight / 2)
-	);
 
-    const barBgHeight = DT.UNIT + pad2;
-    const barRx = barBgHeight / 2;
-
-    const labelOffX = -DT.derivBarGapN - DT.derivBgPaddingN;
-    const labelOffY = DT.derivLabelBottomN - DT.derivBgPaddingN;
-    const labelBgHeight = DT.derivLabelHeightN + pad2;
-    const labelRx = DT.derivLabelHeightN / 2 + DT.derivBgPaddingN;
-
-	const ruleLabelOffX = DT.derivBarGapN - DT.derivBgPaddingN;
-
-    const ruleOffX = DT.derivRuleLeftN + DT.derivRuleParanthesisGapN - DT.derivBgPaddingN;
-    const ruleOffY = DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.derivBgPaddingN;
-	const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN);
-
-	// For handles
-	// The whole handle section should be as thick as bar bg
-	// This padding covers what need to be added on top of the regular padding (bgPadding)
-	const handlePadding = DT.UNIT + DT.derivBgPaddingN;
-	const handlePadding2 = handlePadding * 2;
-
-	// --- Props for the two types of bg ---
-	interface BgType {
+	// --- Props for the three types of bg ---
+	export interface BgType {
 		showFormulaBg: (data: Deriv) => boolean;
 		showBarBg: (data: Deriv) => boolean;
 		formulaFill: (data: Deriv) => string;
@@ -56,6 +30,7 @@
 		// Are the sides extended for the grip handles?
 		extended: (data: Deriv) => boolean;
 	};
+
 	// Non-outlined
 	const nonOutlinedBgType: BgType = {
 		showFormulaBg: (data) => !data.render.formulaBg,
@@ -83,9 +58,6 @@
 </script>
 
 <script lang="ts">
-	import { DT } from '../../../../DT';
-	import viewport from '$lib/state/viewport.svelte';
-
 	// Note: Each Bg renders their (deriv's) children('s Bg).
 	// Except when a deriv's being dragged; dragged deriv renders a separate bgRoot
 	// snippet. But in the case of a bar being dragged, The deriv has two Bgs:
@@ -141,17 +113,8 @@
 {/snippet}
 
 <!-- For formula (for the second part, see comment above Props) -->
-{#if type.showFormulaBg(deriv) && (!deriv.render.barDragged || deriv.root === deriv || _showOnlyFormula)}	
-	<rect
-		x={deriv.render.x - deriv.render.width / 2 - DT.derivBgPaddingN - (+type.extended(deriv)) * handlePadding}
-		y={deriv.render.y + formulaOffY}
-		width={deriv.render.width + pad2 + (+type.extended(deriv)) * handlePadding2}
-		height={formulaBgHeight}
-		rx={formulaRx}
-		fill={type.formulaFill(deriv)}
-		data-uid={deriv.uid}
-		data-part="body_"
-	/>
+{#if type.showFormulaBg(deriv) && (!deriv.render.barDragged || deriv.root === deriv || _showOnlyFormula)}
+	{@render formulaBg(deriv, type)}
 {/if}
 
 <!-- See comment above Props -->
@@ -165,44 +128,6 @@
 
 	<!-- For bar -->
 	{#if type.showBarBg(deriv)}
-		<g fill={type.barFill(deriv)} data-uid={deriv.uid} data-part="bar_">
-			<rect
-				x={deriv.render.xBar - deriv.render.barWidth / 2 - DT.derivBgPaddingN}
-				y={deriv.render.yBar - DT.derivBgPaddingN}
-				width={deriv.render.barWidth + pad2}
-				height={barBgHeight}
-				rx={barRx}
-			/>
-		
-			<!-- For label -->
-			{#if deriv.render.hasLabel}
-				<rect
-					x={deriv.render.xBar - deriv.render.barWidth / 2 - deriv.render.labelWidth + labelOffX}
-					y={deriv.render.yBar + labelOffY}
-					width={deriv.render.labelWidth + pad2}
-					height={labelBgHeight}
-					rx={labelRx}
-				/>
-			{/if}
-		
-			<!-- For Rule -->
-			{#if deriv.render.discharged}
-				<rect
-					x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleLabelOffX}
-					y={deriv.render.yBar + labelOffY}
-					width={deriv.render.ruleWidth + pad2}
-					height={labelBgHeight}
-					rx={labelRx}
-				/>
-			{:else}
-				<rect
-					x={deriv.render.xBar + deriv.render.barWidth / 2 + ruleOffX}
-					y={deriv.render.yBar + ruleOffY}
-					width={deriv.render.ruleWidth + rulePad}
-					height={labelBgHeight}
-					rx={labelRx}
-				/>
-			{/if}
-		</g>
+		{@render barBg(deriv, type)}
 	{/if}
 {/if}
