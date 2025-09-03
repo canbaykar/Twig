@@ -3,6 +3,7 @@
 	import Deriv from '$lib/state/deriv.svelte';
 	import { formulaBg } from './formula.svelte';
 	import { barBg } from './bar.svelte';
+	import { addersBg } from "./adders.svelte";
 
 	// Bg System:
 	// Implement bg snippets in respective components and place their render blocks
@@ -32,7 +33,7 @@
 	};
 
 	// Non-outlined
-	const nonOutlinedBgType: BgType = {
+	export const nonOutlinedBgType: BgType = {
 		showFormulaBg: (data) => !data.render.formulaBg,
 		showBarBg: (data) => !data.render.barBg && !data.render.barHidden,
 		formulaFill: () => `var(--color-bg)`,
@@ -40,7 +41,7 @@
 		extended: () => false,
 	};
 	// Outlined
-	const outlinedBgType: BgType = {
+	export const outlinedBgType: BgType = {
 		showFormulaBg: (data) => !!data.render.formulaBg,
 		showBarBg: (data) => !!data.render.barBg && !data.render.barHidden,
 		formulaFill: (data) => `${data.render.formulaBg}`,
@@ -48,7 +49,7 @@
 		extended: (data) => data.render.hoveredSection === 'body',
 	};
 	// Hitbox
-	const hitboxBgType: BgType = {
+	export const hitboxBgType: BgType = {
 		showFormulaBg: () => true,
 		showBarBg: () => true,
 		formulaFill: () => ``,
@@ -125,6 +126,9 @@
 			<Bg deriv={child} type={type} _showOnlyFormula={child.render.barDragged}/>
 		{/if}
 	{/each}
+
+	<!-- For adders -->
+	{@render addersBg(deriv, type)}
 
 	<!-- For bar -->
 	{#if type.showBarBg(deriv)}

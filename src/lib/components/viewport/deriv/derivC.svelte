@@ -10,6 +10,7 @@
 	import Grip from './dnd/grip.svelte';
 	import { DT } from '../../../../DT';
 	import draggable from '$lib/utils/interact/draggable.svelte';
+	import Adders from './adders.svelte';
 
 	// When there are more listeners to be sent to viewport,
 	// they are going to be merged here.
@@ -76,5 +77,7 @@
 		<Dropzones {deriv} />
 	{/if}
 </div>
+
+<Adders {deriv} />
 
 <Bar {deriv} rule={deriv.logic.ruleText} label={deriv.logic.labelText} />
