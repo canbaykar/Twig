@@ -10,9 +10,9 @@
 	import { DraggableType, Hover } from "./renderState.svelte";
 
 	type Listener<K extends keyof HTMLElementEventMap> 
-		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }) => void;
+		= (ev: HTMLElementEventMap[K] & { deriv: Deriv, part: string, section: string, updateSelecetion: boolean }) => void;
 	type LayoutListener <K extends keyof HTMLElementEventMap> 
-		= (ev: HTMLElementEventMap[K] & { deriv: Deriv }, listener: Listener<K>) => void;
+		= (ev: HTMLElementEventMap[K] & { deriv: Deriv, part: string, section: string, updateSelecetion: boolean }, listener: Listener<K>) => void;
 
 	/** 
 	 * Type for different parts' listeners to be managed by viewport. (See part + uid 
@@ -25,10 +25,15 @@
 		};
 	};
 
-	function callListener<K extends keyof HTMLElementEventMap>(type: K, part: string, deriv: Deriv, evt: HTMLElementEventMap[K]) {
-		const e = Object.assign(evt, { deriv });
+	/** Note: Modifies evt argument! (And returns it.) */
+	function callListener<K extends keyof HTMLElementEventMap>(
+		type: K, part: string | null, section: string | null, deriv: Deriv | null, evt: HTMLElementEventMap[K]
+	) {
+		const e = Object.assign(evt, { deriv, part, section, updateSelecetion: true });
+		if (!deriv || !part) return e;
 		const layoutListener = listeners["layout"]?.[type] ?? ((e, l) => l(e));
-		layoutListener(e, listeners[part]?.[type] ?? (() => {}) as any);
+		layoutListener(e as any, listeners[part]?.[type] ?? (() => {}) as any);
+		return e;
 	}
 </script>
 
@@ -66,8 +71,8 @@
 	function onmousedown(e: MouseEvent) {
 		const { deriv, part, section } = lastTarget = DerivRenderState.lookup(e.target);
 		const bar = section === 'bar';
-		if (deriv && !deriv.render.isSelected(bar)) viewport.render.selectOnly(deriv, bar);
-		if (deriv && part) callListener("mousedown", part, deriv, e);
+		const e_ = callListener("mousedown", part, section, deriv, e);
+		if (e_.updateSelecetion && deriv && !deriv.render.isSelected(bar)) viewport.render.selectOnly(deriv, bar);
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part, section } = DerivRenderState.lookup(e.target);
@@ -79,8 +84,8 @@
 			lastTarget.part !== part
 			// omouseover doesnt update hover while dragging so we have to do it on dragend here
 		) return viewport.render.hover(deriv, part);
-		viewport.render.selectOnly(deriv, section === 'bar');
-		if (deriv && part) callListener("mouseup", part, deriv, e);
+		const e_ = callListener("mouseup", part, section, deriv, e);
+		if (e_.updateSelecetion) viewport.render.selectOnly(deriv, section === 'bar');
 	}
 </script>
 
