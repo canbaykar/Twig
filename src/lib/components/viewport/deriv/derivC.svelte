@@ -18,6 +18,11 @@
 		layout: {
 			mousedown(e, l) {
 				e.deriv.render.goToTop();
+				if (e.section === 'adder') e.updateSelecetion = false;
+				l(e);
+			},
+			mouseup(e, l) {
+				if (e.section === 'adder') e.updateSelecetion = false;
 				l(e);
 			},
 		},
