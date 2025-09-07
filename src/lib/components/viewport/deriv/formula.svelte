@@ -1,14 +1,27 @@
 <script module lang="ts">
-	import { type BgType } from './bg.svelte';
-	export { formulaBg };
-</script>
-
-<script lang="ts">
 	import type Deriv from '$lib/state/deriv.svelte';
 	import { DT } from '../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
 	import DerivRenderState from './renderState.svelte';
+	// Prosemirror
+	import { Schema } from 'prosemirror-model';
+	import { EditorState } from 'prosemirror-state';
+	import { EditorView } from 'prosemirror-view';
+	import 'prosemirror-view/style/prosemirror.css';
+	// Bg
+	import { type BgType } from './bg.svelte';
+	import { onMount } from 'svelte';
+	export { formulaBg };
 
+	const textSchema = new Schema({
+		nodes: {
+			text: {},
+			doc: { content: 'text*' },
+		}
+	});
+</script>
+
+<script lang="ts">
 	interface Props {
 		deriv: Deriv;
 	}
@@ -20,18 +33,33 @@
 		() => deriv.conc,
 		() => deriv.render.baseWidth = element.offsetWidth
 	);
+
+	let editorElement: HTMLDivElement;
+	onMount(() => {
+		const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
+		const view = new EditorView(editorElement, {
+			state: EditorState.create({ doc }),
+			dispatchTransaction(tr) {
+				view.updateState(view.state.apply(tr));
+				deriv.conc = view.state.doc.textContent;
+			}
+		});
+
+		// Update width after setting up prosemirror
+		deriv.render.baseWidth = element.offsetWidth;
+	});
 </script>
 
 <!-- Draggable button, grabbed when clicked -->
 <div
-	class="wrapper bottom-0 translate-x-[-50%] h-(--DERIV-LINE-HEIGHT) leading-(--DERIV-LINE-HEIGHT) whitespace-nowrap cursor-auto"
+	class="wrapper bottom-0 translate-x-[-50%] h-(--DERIV-LINE-HEIGHT) leading-(--DERIV-LINE-HEIGHT) whitespace-nowrap cursor-auto overflow-hidden"
 	bind:this={element}
 	tabindex="-1"
 >
+	<!-- Prosemirror element -->
 	<div 
-		contenteditable
-		bind:innerText={deriv.conc}
-		class="relative! inline-block whitespace-pre px-(--DERIV-X-PADDING) overflow-hidden outline-hidden"
+		bind:this={editorElement}
+		class="relative! **:relative!"
 		class:opacity-25={deriv.render.bodyMuted}
 		data-part="body_formula"
 	></div>
@@ -51,6 +79,12 @@
 <style>
 	.wrapper:focus-within .outline_ {
 		opacity: 1;
+	}
+
+	* :global(.ProseMirror) {
+		padding-inline: var(--DERIV-X-PADDING);
+		outline: none;
+		white-space: nowrap;
 	}
 </style>
 
