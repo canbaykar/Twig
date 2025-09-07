@@ -10,7 +10,6 @@
 	import 'prosemirror-view/style/prosemirror.css';
 	// Bg
 	import { type BgType } from './bg.svelte';
-	import { onMount } from 'svelte';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -35,18 +34,33 @@
 	);
 
 	let editorElement: HTMLDivElement;
-	onMount(() => {
-		const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
-		const view = new EditorView(editorElement, {
-			state: EditorState.create({ doc }),
-			dispatchTransaction(tr) {
-				view.updateState(view.state.apply(tr));
-				deriv.conc = view.state.doc.textContent;
-			}
-		});
+	const editorAwake = $derived(deriv.render.bodyAwake);
 
-		// Update width after setting up prosemirror
-		deriv.render.baseWidth = element.offsetWidth;
+	let view: EditorView | null = null;
+	$effect(() => {
+		if (editorAwake) {
+			// Setup Prosemirror
+			if (view) return;
+			const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
+			view = new EditorView(editorElement, {
+				state: EditorState.create({ doc }),
+				dispatchTransaction(tr) {
+					view!.updateState(view!.state.apply(tr));
+					deriv.conc = view!.state.doc.textContent;
+				}
+			});
+			
+			// Update width
+			deriv.render.baseWidth = element.offsetWidth;
+		} else {
+			// Destroy Prosemirror
+			if (!view) return;
+			view.destroy();
+			view = null;
+			
+			// Update width
+			deriv.render.baseWidth = element.offsetWidth;
+		}
 	});
 </script>
 
@@ -62,8 +76,12 @@
 		class="relative! **:relative!"
 		class:opacity-25={deriv.render.bodyMuted}
 		data-part="body_formula"
-	></div>
-	{#if deriv.render.bodyAwake}
+	>
+		{#if !editorAwake}
+			<div class="ProseMirror">{deriv.conc}</div>
+		{/if}
+	</div>
+	{#if editorAwake}
 		<div
 			class="outline_ opacity-0 top-0 left-0 origin-top-left pointer-events-none outline-1 outline-fg -outline-offset-1 outline-dashed rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
 			style="
