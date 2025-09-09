@@ -56,6 +56,7 @@ export class MultiSelection extends Selection {
 			!(s instanceof MultiSelection) ||
 			this.selections.length !== s.selections.length
 		) return false;
+		if (!this.main.eq(s.main)) return false;
 		for (let i = 0; i < this.selections.length; i++) {
 			if (!this.selections[i].eq(s.selections[i])) return false;
 		}
