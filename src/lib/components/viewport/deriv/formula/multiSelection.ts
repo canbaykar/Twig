@@ -141,6 +141,16 @@ function getMods(event: KeyboardEvent) {
 }
 
 export const multiSelectionPlugin: Plugin = new Plugin({
+	// Holds altKey state
+	state: {
+		init() {
+			return false;
+		},
+		apply(tr, value) {
+			return tr.getMeta(multiSelectionPlugin)?.altKey ?? value;
+		},
+	},
+
 	props: {
 		createSelectionBetween(view, $anchor, $head) {
 			// Default behaviour:
@@ -148,25 +158,43 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			return MultiSelection.between($anchor, $head);
 		},
 
-		handleKeyDown(view, event) {
+		handleKeyDown(view, e) {
+			// Send altKey state
+			const key = e.key
+			if (key == 'Alt') {
+				view.dispatch(view.state.tr.setMeta(multiSelectionPlugin, { altKey: true }));
+				return;
+			}
+			
 			const state = view.state;
 			const sel = state.selection;
-			if (!(sel instanceof MultiSelection)) return false;
 
-			// Copied logic from prosemirror-view/src/capturekeys
-			let key = event.key, mods = getMods(event);
+			if (!(sel instanceof MultiSelection)) return;
+
+			// This function has some copied logic from prosemirror-view/src/capturekeys
+			const mods = getMods(e);
 			if (key == 'Backspace' || (mac && key == 'h' && mods == "c")) {
 				// Backspace, Ctrl-h on Mac
 				const tr = state.tr;
 				sel.delete(tr, -1);
 				view.dispatch(tr);
-			} else if ((key == 'Delete' && !event.shiftKey) || (mac && key == 'd' && mods == "c")) {
+			} else if ((key == 'Delete' && !e.shiftKey) || (mac && key == 'd' && mods == "c")) {
 				// Delete, Ctrl-d on Mac
 				const tr = state.tr;
 				sel.delete(tr, 1);
 				view.dispatch(tr);
 			}
-			return false;
+			return;
 		},
-	}
+
+		handleDOMEvents: {
+			keyup(view, e) {
+				// Send altKey state
+				const key = e.key
+				if (key == 'Alt')
+					view.dispatch(view.state.tr.setMeta(multiSelectionPlugin, { altKey: false }));
+				return;
+			},
+		},
+	},
 });

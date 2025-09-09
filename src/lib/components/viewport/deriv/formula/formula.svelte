@@ -44,17 +44,18 @@
 			if (view) return;
 			const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
 			view = new EditorView(editorElement, {
-				state: EditorState.create({ doc }),
+				state: EditorState.create({ 
+					doc,
+					plugins: [
+						multiSelectionPlugin,
+					],
+				}),
 
 				// Hook to sync with deriv.conc
 				dispatchTransaction(tr) {
 					view!.updateState(view!.state.apply(tr));
 					deriv.conc = view!.state.doc.textContent;
 				},
-
-				plugins: [
-					multiSelectionPlugin,
-				],
 			});
 			
 			// Update width
