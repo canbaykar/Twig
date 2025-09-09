@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Bar from './bar.svelte';
 	import Deriv from '$lib/state/deriv.svelte';
-	import Formula from './formula.svelte';
+	import Formula from './formula/formula.svelte';
 	import Dropzones from './dnd/dropzones.svelte';
 	import viewport from '$lib/state/viewport.svelte';
 	import { bgRoot } from './bg.svelte';

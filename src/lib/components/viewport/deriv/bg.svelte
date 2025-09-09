@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import Bg from './bg.svelte';
 	import Deriv from '$lib/state/deriv.svelte';
-	import { formulaBg } from './formula.svelte';
+	import { formulaBg } from './formula/formula.svelte';
 	import { barBg } from './bar.svelte';
 	import { addersBg } from "./adders.svelte";
 

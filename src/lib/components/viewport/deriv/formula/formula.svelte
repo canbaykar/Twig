@@ -1,15 +1,16 @@
 <script module lang="ts">
 	import type Deriv from '$lib/state/deriv.svelte';
-	import { DT } from '../../../../DT';
+	import { DT } from '../../../../../DT';
 	import viewport from '$lib/state/viewport.svelte';
-	import DerivRenderState from './renderState.svelte';
+	import DerivRenderState from '../renderState.svelte';
 	// Prosemirror
 	import { Schema } from 'prosemirror-model';
 	import { EditorState } from 'prosemirror-state';
 	import { EditorView } from 'prosemirror-view';
 	import 'prosemirror-view/style/prosemirror.css';
 	// Bg
-	import { type BgType } from './bg.svelte';
+	import { type BgType } from '../bg.svelte';
+	import { multiSelectionPlugin } from './multiSelection';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -44,10 +45,16 @@
 			const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
 			view = new EditorView(editorElement, {
 				state: EditorState.create({ doc }),
+
+				// Hook to sync with deriv.conc
 				dispatchTransaction(tr) {
 					view!.updateState(view!.state.apply(tr));
 					deriv.conc = view!.state.doc.textContent;
-				}
+				},
+
+				plugins: [
+					multiSelectionPlugin,
+				],
 			});
 			
 			// Update width
