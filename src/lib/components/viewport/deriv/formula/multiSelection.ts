@@ -245,10 +245,6 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				if (e.altKey) 
 					setAltState(view, { altKey: true, fresh: true, deletionMode: false });
 			},
-			mousemove(view, e) {
-				if (e.altKey) 
-					setAltState(view, { altKey: true, fresh: false, deletionMode: false });
-			},
 			keyup(view, e) {
 				if (e.key === 'Alt') setAltState(view, altUp);
 			}
@@ -259,8 +255,10 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			const newS = TextSelection.between($anchor, $head);
 			if (!altState.altKey)
 				return newS; // Default behaviour
-
-			if (altState.fresh) return MultiSelection.withAdded(view.state.selection, newS);
+			if (altState.fresh) {
+				setAltState(view, { altKey: true, fresh: false, deletionMode: false });
+				return MultiSelection.withAdded(view.state.selection, newS);
+			}
 			else return MultiSelection.withReplacedMain(view.state.selection, newS);
 		},
 
