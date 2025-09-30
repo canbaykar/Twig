@@ -81,7 +81,7 @@
 	<!-- Prosemirror element -->
 	<div 
 		bind:this={editorElement}
-		class="relative! **:relative!"
+		class="relative! **:relative! caret-transparent selection:bg-transparent"
 		class:opacity-25={deriv.render.bodyMuted}
 		data-part="body_formula"
 	>

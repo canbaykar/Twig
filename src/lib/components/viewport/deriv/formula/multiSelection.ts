@@ -1,7 +1,7 @@
 import { Slice, type Node, type ResolvedPos } from "prosemirror-model";
 import { Plugin, Selection, TextSelection, Transaction } from "prosemirror-state";
 import type { Mappable } from "prosemirror-transform";
-import type { EditorView } from "prosemirror-view";
+import { Decoration, DecorationSet, type EditorView } from "prosemirror-view";
 
 const jsonID = 'multi';
 
@@ -290,6 +290,30 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				view.dispatch(tr);
 				return true;
 			}
+		},
+
+		decorations(state) {
+			const selections = state.selection instanceof MultiSelection
+				? state.selection.selections
+				: [state.selection];
+
+			const caretCSS = (left = true) => `
+			box-shadow: ${left ? '-' : ''}10px 0 0 var(--color-fg), ${left ? '' : '-'}10px 0 0 var(--color-fg) inset
+			`;
+			
+			return DecorationSet.create(state.doc, selections.map(s => {
+				if (!s.empty)
+					return Decoration.inline(s.from, s.to, { style: 'background: crimson;' + caretCSS(s.head < s.anchor) });
+				return s.from !== 0
+					? Decoration.inline(s.from, s.from + 1, { style: caretCSS() })
+					: state.doc.content.size !== 0
+						? Decoration.inline(0, 1, { style: caretCSS() })
+						: Decoration.widget(s.head, () => {
+							const caret = document.createElement('span');
+							caret.style = "outline: 10px solid";
+							return caret;
+						});
+			}).flat());
 		},
 	},
 });
