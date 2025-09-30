@@ -245,6 +245,10 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				if (e.altKey) 
 					setAltState(view, { altKey: true, fresh: true, deletionMode: false });
 			},
+			mousemove(view, e) {
+				if (e.altKey) 
+					setAltState(view, { altKey: true, fresh: false, deletionMode: false });
+			},
 			keyup(view, e) {
 				if (e.key === 'Alt') setAltState(view, altUp);
 			}
