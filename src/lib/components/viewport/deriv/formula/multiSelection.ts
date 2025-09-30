@@ -34,7 +34,7 @@ export class MultiSelection extends Selection {
 				if (prev.to < curr.from) return [...acc, curr];
 				if (prev.empty && prev.head === curr.head) {
 					if (prev === main) main = curr;
-					return [...acc.slice(0, acc.length - 2), curr];
+					return [...acc.slice(0, -1), curr];
 				}
 				if (curr.empty && prev.head === curr.head) {
 					if (curr === main) main = prev;
@@ -42,7 +42,7 @@ export class MultiSelection extends Selection {
 				}
 				if (prev.to === curr.from) return [...acc, curr];
 				if (prev === main) return acc;
-				return [...acc.slice(0, acc.length - 2), curr];
+				return [...acc.slice(0, -1), curr];
 			}, []);
 		
 		const ranges = selections.map(s => s.ranges).flat();
