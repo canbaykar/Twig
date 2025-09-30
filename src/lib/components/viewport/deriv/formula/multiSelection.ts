@@ -155,7 +155,7 @@ export class MultiSelection extends Selection {
 		const toMoved = mods.indexOf('s') > -1 
 			? (s: Selection) => TextSelection.between(s.$anchor, offsetHead(s))
 			: (s: Selection) => {
-				const $h = s.empty ? (offsetHead(s)) : (dir < 0 ? s.$to : s.$from);
+				const $h = s.empty ? (offsetHead(s)) : (dir < 0 ? s.$from : s.$to);
 				return TextSelection.between($h, $h);
 			};
 		let newS: Selection[] = [];
@@ -289,7 +289,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				view.dispatch(tr);
 				return true;
 			} else if (key === 'ArrowRight' || (mac && key === 'f' && mods == "c")) {
-				let dir = key === 'ArrowRight' ? (findDirection(view, view.state.selection.from) == "ltr" ? -1 : 1) : -1;
+				let dir = key === 'ArrowRight' ? (findDirection(view, view.state.selection.from) == "ltr" ? 1 : -1) : 1;
 				sel.move(tr, dir, mods);
 				view.dispatch(tr);
 				return true;
