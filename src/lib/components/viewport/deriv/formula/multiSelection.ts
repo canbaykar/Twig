@@ -234,7 +234,6 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			return altUp;
 		},
 		apply(tr, value): AltState {
-			if (tr.getMeta(multiSelectionPlugin) ?? value !== value) console.log(tr.getMeta(multiSelectionPlugin))
 			return tr.getMeta(multiSelectionPlugin) ?? value;
 		},
 	},
