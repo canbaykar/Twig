@@ -13,7 +13,7 @@ export class MultiSelection extends Selection {
 	/** Index of main */
 	get mainIndex() { return this.selections.indexOf(this.main); }
 
-	constructor(selections: Selection[], main = selections[selections.length - 1]) {
+	constructor(selections: Selection[], main = selections[selections.length - 1], doc = main.$from.doc) {
 		if (!main) 
 			throw new Error("Invalid arguments for MultiSelection. Main selection doesn't exist.");
 		
