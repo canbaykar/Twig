@@ -22,7 +22,8 @@ export class MultiSelection extends Selection {
 
 		// Normalise selections
 		selections = selections
-			.map(s => s instanceof MultiSelection ? s.selections : s).flat();
+			.map(s => s instanceof MultiSelection ? s.selections : s).flat()
+			.map(s => s.$from.doc === doc ? s : TextSelection.create(doc, s.anchor, s.head));
 		if (!selections.includes(main)) 
 			throw new Error("Invalid arguments for MultiSelection. Main selection isn't in selections.");
 		selections = selections
