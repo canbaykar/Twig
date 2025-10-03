@@ -83,7 +83,6 @@ export class MultiSelection extends Selection {
 			sel_.replace(tr, content);
 			newS.push(tr.selection);
 		}
-		// newS = newS.map(s => s.map(tr.doc, tr.mapping));
 		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex]));
 	}
 	replaceWith(tr: Transaction, node: Node): void {
@@ -93,7 +92,6 @@ export class MultiSelection extends Selection {
 			sel_.replaceWith(tr, node);
 			newS.push(tr.selection);
 		}
-		// newS = newS.map(s => s.map(tr.doc, tr.mapping));
 		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex]));
 	}
 
@@ -219,9 +217,9 @@ function getMods(event: KeyboardEvent) {
 type AltState = {
 	altKey: boolean;
 	fresh: boolean; // mousedown fired but selection didn't update yet
-	deletionMode: boolean; // selection updated and deleted a selection but didn't update yet after that
+	deselectMode: boolean; // selection updated and deleted a selection but didn't update yet after that
 };
-const altUp = { altKey: false, fresh: false, deletionMode: false };
+const altUp = { altKey: false, fresh: false, deselectMode: false };
 function getAltState(view: EditorView): AltState {
 	return multiSelectionPlugin.getState(view.state);
 }
@@ -242,8 +240,13 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 	props: {
 		handleDOMEvents: {
 			mousedown(view, e) {
-				if (e.altKey) 
-					setAltState(view, { altKey: true, fresh: true, deletionMode: false });
+				// If Alt key down and deselectFeature (which has side-effects) didn't handle altState
+				if (e.altKey) {
+					if (deselectFeature(view, e))
+						setAltState(view, { altKey: true, fresh: true, deselectMode: true });
+					else 
+						setAltState(view, { altKey: true, fresh: true, deselectMode: false });
+				}
 			},
 			keyup(view, e) {
 				if (e.key === 'Alt') setAltState(view, altUp);
@@ -253,13 +256,24 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		createSelectionBetween(view, $anchor, $head) {
 			const altState = getAltState(view);
 			const newS = TextSelection.between($anchor, $head);
+
+			// If Alt isn't pressed, default behaviour
 			if (!altState.altKey)
-				return newS; // Default behaviour
+				return newS;
+
+			const oldS = view.state.selection;
+			
+			// If the deselect feature is used on mousedown, do nothing
+			if (altState.deselectMode) return oldS;
+			
+			// If createSelectionBetween triggered by mousedown (newS is empty)
 			if (altState.fresh) {
-				setAltState(view, { altKey: true, fresh: false, deletionMode: false });
-				return MultiSelection.withAdded(view.state.selection, newS);
+				setAltState(view, { altKey: true, fresh: false, deselectMode: false });
+				return MultiSelection.withAdded(oldS, newS);
 			}
-			else return MultiSelection.withReplacedMain(view.state.selection, newS);
+
+			// Else createSelectionBetween triggered by dragging
+			return MultiSelection.withReplacedMain(oldS, newS);
 		},
 
 		handleKeyDown(view, e) {
@@ -319,3 +333,30 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		},
 	},
 });
+
+/**
+ * For feature: Alt+Click on selection deselects it (when there are multiple selections).
+ * Returns whether feature is used or not. Call in mousedown.
+ */
+function deselectFeature(view: EditorView, e: MouseEvent) {
+	const sel = view.state.selection;
+	if (!(sel instanceof MultiSelection) || sel.length < 2) return false;
+
+	const posObj = view.posAtCoords({ left: e.clientX, top: e.clientY });;
+	if (!posObj) return false;
+
+	const { pos } = posObj;
+	// Selection to be deselected (or undefined)
+	const target = sel.selections.find(s => 
+		(s.from < pos && pos < s.to) || pos === s.head
+	);
+	if (!target) return false;
+
+	const tr = view.state.tr
+		.setSelection(new MultiSelection(
+			sel.selections.filter(s => s !== target),
+			sel.main !== target ? sel.main : undefined
+		))
+	view.dispatch(tr);
+	return true;
+}
