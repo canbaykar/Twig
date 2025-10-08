@@ -241,7 +241,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		handleDOMEvents: {
 			mousedown(view, e) {
 				// If Alt key down and deselectFeature (which has side-effects) didn't handle altState
-				if (e.altKey) {
+				if (e.altKey && view.hasFocus()) {
 					if (deselectFeature(view, e))
 						setAltState(view, { altKey: true, fresh: true, deselectMode: true });
 					else 
