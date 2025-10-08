@@ -57,17 +57,11 @@
 					deriv.conc = view!.state.doc.textContent;
 				},
 			});
-			
-			// Update width
-			deriv.render.baseWidth = element.offsetWidth;
 		} else {
 			// Destroy Prosemirror
 			if (!view) return;
 			view.destroy();
 			view = null;
-			
-			// Update width
-			deriv.render.baseWidth = element.offsetWidth;
 		}
 	});
 </script>
