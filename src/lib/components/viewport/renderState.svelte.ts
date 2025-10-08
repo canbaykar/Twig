@@ -98,6 +98,7 @@ export default class ViewportRenderState {
 				: deriv.render.bodySelected = true;
 	}
 	addToSelection(deriv: Deriv, bar = false) {
+		if (this.selection.find(s => s.deriv === deriv && s.bar === bar)) return;
 		this.selection = [...this.selection, { deriv, bar }];
 		bar ? deriv.render.barSelected  = true
 			: deriv.render.bodySelected = true;
