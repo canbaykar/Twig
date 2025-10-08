@@ -97,6 +97,16 @@ export default class ViewportRenderState {
 			bar ? deriv.render.barSelected  = true
 				: deriv.render.bodySelected = true;
 	}
+	addToSelection(deriv: Deriv, bar = false) {
+		this.selection = [...this.selection, { deriv, bar }];
+		bar ? deriv.render.barSelected  = true
+			: deriv.render.bodySelected = true;
+	}
+	updateSelectionOnInteraction(e: MouseEvent, deriv?: Deriv | null, bar = false) {
+		if (e.shiftKey || e.altKey)
+			deriv && this.addToSelection(deriv, bar);
+		else this.selectOnly(deriv, bar);
+	}
 }
 
 // ---- Popups ----

@@ -72,7 +72,8 @@
 		const { deriv, part, section } = lastTarget = DerivRenderState.lookup(e.target);
 		const bar = section === 'bar';
 		const e_ = callListener("mousedown", part, section, deriv, e);
-		if (e_.updateSelecetion && deriv && !deriv.render.isSelected(bar)) viewport.render.selectOnly(deriv, bar);
+		if (e_.updateSelecetion && deriv && !deriv.render.isSelected(bar))
+			viewport.render.updateSelectionOnInteraction(e_, deriv, bar);
 	}
 	function onmouseup(e: MouseEvent) {
 		const { deriv, part, section } = DerivRenderState.lookup(e.target);
@@ -85,7 +86,8 @@
 			// omouseover doesnt update hover while dragging so we have to do it on dragend here
 		) return viewport.render.hover(deriv, part);
 		const e_ = callListener("mouseup", part, section, deriv, e);
-		if (e_.updateSelecetion) viewport.render.selectOnly(deriv, section === 'bar');
+		if (e_.updateSelecetion)
+			viewport.render.updateSelectionOnInteraction(e_, deriv, section === 'bar');
 	}
 </script>
 
