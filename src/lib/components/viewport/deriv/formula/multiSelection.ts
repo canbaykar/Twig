@@ -7,18 +7,26 @@ const jsonID = 'multi';
 
 export class MultiSelection extends Selection {
 	readonly selections: Selection[];
-	readonly main: Selection;
+	readonly main: Selection | null;
 	/** Number of selections */
 	get length() { return this.selections.length; }
-	/** Index of main */
-	get mainIndex() { return this.selections.indexOf(this.main); }
+	/** Index of main (-1 if fullyEmpty) */
+	get mainIndex() { return this.selections.indexOf(this.main!); }
+	/** True if selections array is emty (so it doesn't even have an empty selection!) */
+	fullyEmpty = false;
 
 	constructor(selections: Selection[], main = selections[selections.length - 1], doc = main.$from.doc) {
-		if (!main) 
-			throw new Error("Invalid arguments for MultiSelection. Main selection doesn't exist.");
+		if (!main) {
+			const last = doc.resolve(doc.content.size - 1);
+			super(last, last);
+			this.fullyEmpty = true;
+			this.selections = [];
+			this.main = null;
+			return;
+		}
 		
 		// Normalise main
-		while (main instanceof MultiSelection) main = main.main;
+		while (main instanceof MultiSelection) main = main.main!;
 
 		// Normalise selections
 		selections = selections
@@ -54,10 +62,10 @@ export class MultiSelection extends Selection {
 
 	// Default imlementation of these falsely assumed ranges[0] is the main range
     get $from() {
-        return this.main.$from;
+        return this.fullyEmpty ? this.ranges[0].$from : this.main!.$from;
     }
     get $to() {
-        return this.main.$to;
+        return this.fullyEmpty ? this.ranges[0].$to : this.main!.$to;
     }
 
 	map(doc: Node, mapping: Mappable): Selection {
@@ -69,7 +77,8 @@ export class MultiSelection extends Selection {
 			!(s instanceof MultiSelection) ||
 			this.selections.length !== s.selections.length
 		) return false;
-		if (!this.main.eq(s.main)) return false;
+		if (this.fullyEmpty) return s.fullyEmpty;
+		if (!this.main!.eq(s.main!)) return false;
 		for (let i = 0; i < this.selections.length; i++) {
 			if (!this.selections[i].eq(s.selections[i])) return false;
 		}
@@ -137,9 +146,9 @@ export class MultiSelection extends Selection {
 	/** If s isn't an instance of MultiSelection, return newMain. 
 	 *  Else return s with it's main selection thrown out and replaced with newMain */
 	static withReplacedMain(s: Selection, newMain: Selection) {
-		if (!(s instanceof MultiSelection)) return newMain;
+		if (!(s instanceof MultiSelection) || s.fullyEmpty) return newMain;
 		const selections = [...s.selections];
-		selections.splice(selections.indexOf(s.main), 1, newMain);
+		selections.splice(selections.indexOf(s.main!), 1, newMain);
 		return new MultiSelection(selections, newMain);
 	}
 
@@ -235,6 +244,11 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		apply(tr, value): AltState {
 			return tr.getMeta(multiSelectionPlugin) ?? value;
 		},
+	},
+
+	view(view) {
+		view.dispatch(view.state.tr.setSelection(new MultiSelection([], undefined, view.state.doc)))
+		return {};
 	},
 
 	props: {
@@ -355,7 +369,7 @@ function deselectFeature(view: EditorView, e: MouseEvent) {
 	const tr = view.state.tr
 		.setSelection(new MultiSelection(
 			sel.selections.filter(s => s !== target),
-			sel.main !== target ? sel.main : undefined
+			sel.main! !== target ? sel.main! : undefined
 		))
 	view.dispatch(tr);
 	return true;

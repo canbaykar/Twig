@@ -53,8 +53,8 @@
 
 				// Hook to sync with deriv.conc
 				dispatchTransaction(tr) {
-					view!.updateState(view!.state.apply(tr));
-					deriv.conc = view!.state.doc.textContent;
+					(this as any as EditorView).updateState(this.state.apply(tr));
+					deriv.conc = this.state.doc.textContent;
 				},
 			});
 		} else {
