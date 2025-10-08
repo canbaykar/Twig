@@ -118,6 +118,10 @@ export class MultiSelection extends Selection {
 		return new MultiSelection([TextSelection.between($anchor, $head, bias)]);
 	}
 
+	static empty(doc: Node) {
+		return new MultiSelection([], undefined, doc);
+	}
+
 	/** Backspace or Delete, dir is -1(Backspace) or 1 based on direction */
 	delete(tr: Transaction, dir = -1) {
 		// When a selection is empty, head of selection is moved in direction of dir
@@ -247,7 +251,8 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 	},
 
 	view(view) {
-		view.dispatch(view.state.tr.setSelection(new MultiSelection([], undefined, view.state.doc)))
+		// Make the initial selection empty
+		view.dispatch(view.state.tr.setSelection(MultiSelection.empty(view.state.doc)));
 		return {};
 	},
 
