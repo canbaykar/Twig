@@ -6,6 +6,7 @@ import { browser } from "$app/environment";
 import { onDestroy } from "svelte";
 import Rule from "$lib/state/logic/rule";
 import { Hover } from "../renderState.svelte";
+import type { EditorView } from "prosemirror-view";
 
 // Exported below as DerivRenderData.displayed
 const displayed = $derived(flatten(viewport.children));
@@ -268,6 +269,9 @@ export default class DerivRenderState {
         if (viewport.children.length - 1 > this.deriv.root.childIndex)
             this.deriv.root.attach(viewport);
 	}
+
+    // --- ProseMirror ---
+    editorView: EditorView | null = null;
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth

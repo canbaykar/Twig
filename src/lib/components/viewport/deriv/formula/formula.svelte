@@ -37,13 +37,13 @@
 	let editorElement: HTMLDivElement;
 	const editorAwake = $derived(deriv.render.bodyAwake);
 
-	let view: EditorView | null = null;
+	const r = deriv.render;
 	$effect(() => {
 		if (editorAwake) {
 			// Setup Prosemirror
-			if (view) return;
+			if (r.editorView) return;
 			const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
-			view = new EditorView(editorElement, {
+			r.editorView = new EditorView(editorElement, {
 				state: EditorState.create({ 
 					doc,
 					plugins: [
@@ -59,9 +59,9 @@
 			});
 		} else {
 			// Destroy Prosemirror
-			if (!view) return;
-			view.destroy();
-			view = null;
+			if (!r.editorView) return;
+			r.editorView.destroy();
+			r.editorView = null;
 		}
 	});
 </script>
