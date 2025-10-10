@@ -28,10 +28,13 @@ export class MultiSelection extends Selection {
 		// Normalise main
 		while (main instanceof MultiSelection) main = main.main!;
 
+		const size = doc.content.size;
 		// Normalise selections
 		selections = selections
 			.map(s => s instanceof MultiSelection ? s.selections : s).flat()
-			.map(s => s.$from.doc === doc ? s : TextSelection.create(doc, s.anchor, s.head));
+			.map(s => s.$from.doc === doc ? s
+				: TextSelection.create(doc, Math.min(size, s.anchor), Math.min(size, s.head))
+			).flat();
 		if (!selections.includes(main)) 
 			throw new Error("Invalid arguments for MultiSelection. Main selection isn't in selections.");
 		selections = selections
@@ -92,7 +95,7 @@ export class MultiSelection extends Selection {
 			sel_.replace(tr, content);
 			newS.push(tr.selection);
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex]));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length].$from.doc));
 	}
 	replaceWith(tr: Transaction, node: Node): void {
 		let newS: Selection[] = [];
@@ -101,7 +104,7 @@ export class MultiSelection extends Selection {
 			sel_.replaceWith(tr, node);
 			newS.push(tr.selection);
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex]));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length].$from.doc));
 	}
 
 	toJSON() {
