@@ -1,3 +1,4 @@
+import viewport from "$lib/state/viewport.svelte";
 import { Slice, type Node, type ResolvedPos } from "prosemirror-model";
 import { Plugin, Selection, TextSelection, Transaction } from "prosemirror-state";
 import type { Mappable } from "prosemirror-transform";
@@ -301,6 +302,8 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		},
 
 		handleKeyDown(view, e) {
+			broadcast(view, e);
+
 			const state = view.state;
 			const sel = state.selection;
 			
@@ -330,6 +333,12 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				view.dispatch(tr);
 				return true;
 			}
+		},
+
+		// This event is deprecated but Prosemirror seems to use it? Even though
+		// https://discuss.prosemirror.net/t/simulate-keypress-event/2939/3 states otherwise.
+		handleKeyPress(view, e) {
+			broadcast(view, e);
 		},
 
 		decorations(state) {
@@ -383,4 +392,40 @@ function deselectFeature(view: EditorView, e: MouseEvent) {
 		))
 	view.dispatch(tr);
 	return true;
+}
+
+let broadcasting = false;
+/** 
+ * Pass a keyboard event to other active formula fields.
+ * To make a multiselection feature that can effectively span multiple editors.
+ */
+function broadcast(self: EditorView, e: KeyboardEvent) {
+	// To make sure there's only one broadcaster at a time
+	if (broadcasting) return;
+	broadcasting = true;
+
+	for (const { deriv, bar } of viewport.render.selection) {
+		// Do nothing if the selection entry is for bar
+		if (bar) continue;
+
+		const view = deriv.render.editorView;
+		if (!view || view === self) continue;
+
+		const e_ = new KeyboardEvent(e.type, e);
+		// Try to dispatch event. If nothing happens change selection to 
+		// MultiSelection instance if it's not and try again.
+		if (view.dom.dispatchEvent(e_)) {
+			const s1 = view.state.selection;
+			if (s1 instanceof MultiSelection) return;
+			view.dispatch(view.state.tr.setSelection(new MultiSelection([s1])));
+
+			view.dom.dispatchEvent(e_);
+
+			// Change back to single selection if applicable
+			const s2 = view.state.selection;
+			if (s2 instanceof MultiSelection && s2.length === 1)
+				view.dispatch(view.state.tr.setSelection(s2.selections[0]));
+		}
+	}
+	broadcasting = false;
 }
