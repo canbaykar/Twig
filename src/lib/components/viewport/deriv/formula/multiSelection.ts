@@ -95,7 +95,7 @@ export class MultiSelection extends Selection {
 			sel_.replace(tr, content);
 			newS.push(tr.selection);
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length].$from.doc));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length]?.$from?.doc));
 	}
 	replaceWith(tr: Transaction, node: Node): void {
 		let newS: Selection[] = [];
@@ -104,7 +104,7 @@ export class MultiSelection extends Selection {
 			sel_.replaceWith(tr, node);
 			newS.push(tr.selection);
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length].$from.doc));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length]?.$from?.doc));
 	}
 
 	toJSON() {
