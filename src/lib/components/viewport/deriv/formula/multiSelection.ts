@@ -95,7 +95,7 @@ export class MultiSelection extends Selection {
 			sel_.replace(tr, content);
 			newS.push(tr.selection);
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length]?.$from?.doc));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], tr.doc));
 	}
 	replaceWith(tr: Transaction, node: Node): void {
 		let newS: Selection[] = [];
@@ -104,7 +104,7 @@ export class MultiSelection extends Selection {
 			sel_.replaceWith(tr, node);
 			newS.push(tr.selection);
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], newS[newS.length]?.$from?.doc));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], tr.doc));
 	}
 
 	toJSON() {
@@ -141,8 +141,7 @@ export class MultiSelection extends Selection {
 			else sel_.replace(tr, Slice.empty);
 			newS.push(tr.selection);
 		}
-		// newS = newS.map(s => s.map(tr.doc, tr.mapping));
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex]));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], tr.doc));
 	}
 
 	/** Add s2 (as main) to s1 and return the resulting MultiSelection */
