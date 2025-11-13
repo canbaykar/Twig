@@ -184,6 +184,11 @@ export class MultiSelection extends Selection {
 	}
 }
 
+// Utility for fullyEmpty method of MultiSelection
+function fullyEmpty(s: Selection): boolean {
+	return !!(s as any)?.fullyEmpty;
+}
+
 // TODO: Uncomment the following after you're done with this file
 // bc it causes errors with hot-reload.
 // Register jsonID
@@ -265,8 +270,9 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 	props: {
 		handleDOMEvents: {
 			mousedown(view, e) {
-				// If Alt key down and deselectFeature (which has side-effects) didn't handle altState
-				if (e.altKey && view.hasFocus()) {
+				// Alt+Click feature adds a selection to an existing one, 
+				// but (fully)empty selection just gets replaced (so feature isn't triggered)
+				if (e.altKey && !fullyEmpty(view.state.selection)) {
 					if (deselectFeature(view, e))
 						setAltState(view, { altKey: true, fresh: true, deselectMode: true });
 					else 
