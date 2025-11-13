@@ -380,7 +380,20 @@ export const multiSelectionPlugin: Plugin = new Plugin({
  */
 function deselectFeature(view: EditorView, e: MouseEvent) {
 	const sel = view.state.selection;
-	if (!(sel instanceof MultiSelection) || sel.length < 2) return false;
+
+	// Edge case: view has only 1 or no selections
+	if (!(sel instanceof MultiSelection) || sel.length < 2) {
+		if (sel instanceof MultiSelection && sel.fullyEmpty) return false;
+		if (!viewport.render.selection.find(({deriv, bar}) => {
+			if (bar) return false;
+			const v = deriv.render.editorView;
+			return v && v !== view && !fullyEmpty(v.state.selection);
+		})) return false;
+		const tr = view.state.tr
+			.setSelection(MultiSelection.empty(view.state.doc));
+		view.dispatch(tr);
+		return true;
+	}
 
 	const posObj = view.posAtCoords({ left: e.clientX, top: e.clientY });;
 	if (!posObj) return false;
@@ -395,7 +408,8 @@ function deselectFeature(view: EditorView, e: MouseEvent) {
 	const tr = view.state.tr
 		.setSelection(new MultiSelection(
 			sel.selections.filter(s => s !== target),
-			sel.main! !== target ? sel.main! : undefined
+			sel.main! !== target ? sel.main! : undefined,
+			view.state.doc
 		))
 	view.dispatch(tr);
 	return true;
