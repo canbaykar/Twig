@@ -37,7 +37,7 @@ export class MultiSelection extends Selection {
 				if (s.$from.doc === doc) return s;
 				const s_ = TextSelection.create(doc, Math.min(size, s.anchor), Math.min(size, s.head));
 				if (main === s) main = s_;
-				return s;
+				return s_;
 			});
 		if (!selections.includes(main)) 
 			throw new Error("Invalid arguments for MultiSelection. Main selection isn't in selections.");
