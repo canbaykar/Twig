@@ -379,20 +379,17 @@ export const multiSelectionPlugin: Plugin = new Plugin({
  * Returns whether feature is used or not. Call in mousedown.
  */
 function deselectFeature(view: EditorView, e: MouseEvent) {
-	const sel = view.state.selection;
+	const sel_ = view.state.selection;
+	const sel = sel_ instanceof MultiSelection ? sel_ : new MultiSelection([sel_]);
 
 	// Edge case: view has only 1 or no selections
-	if (!(sel instanceof MultiSelection) || sel.length < 2) {
-		if (sel instanceof MultiSelection && sel.fullyEmpty) return false;
+	if (sel.length < 2) {
+		if (sel.fullyEmpty) return false;
 		if (!viewport.render.selection.find(({deriv, bar}) => {
 			if (bar) return false;
 			const v = deriv.render.editorView;
 			return v && v !== view && !fullyEmpty(v.state.selection);
 		})) return false;
-		const tr = view.state.tr
-			.setSelection(MultiSelection.empty(view.state.doc));
-		view.dispatch(tr);
-		return true;
 	}
 
 	const posObj = view.posAtCoords({ left: e.clientX, top: e.clientY });;
