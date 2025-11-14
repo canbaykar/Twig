@@ -434,7 +434,7 @@ function broadcast(self: EditorView, e: KeyboardEvent) {
 		// MultiSelection instance if it's not and try again.
 		if (view.dom.dispatchEvent(e_)) {
 			const s1 = view.state.selection;
-			if (s1 instanceof MultiSelection) return;
+			if (s1 instanceof MultiSelection) continue;
 			view.dispatch(view.state.tr.setSelection(new MultiSelection([s1])));
 
 			view.dom.dispatchEvent(e_);
