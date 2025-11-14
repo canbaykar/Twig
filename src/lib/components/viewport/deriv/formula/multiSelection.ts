@@ -16,7 +16,7 @@ export class MultiSelection extends Selection {
 	/** True if selections array is emty (so it doesn't even have an empty selection!) */
 	fullyEmpty = false;
 
-	constructor(selections: Selection[], main = selections[selections.length - 1], doc = main.$from.doc) {
+	constructor(selections: Selection[], main = selections[selections.length - 1], doc = main?.$from?.doc) {
 		if (!main) {
 			if (!doc) throw new Error("doc undefined in MultiSelection.");
 			const last = doc.resolve(doc.content.size - 1);
@@ -77,7 +77,7 @@ export class MultiSelection extends Selection {
     }
 
 	map(doc: Node, mapping: Mappable): Selection {
-		return new MultiSelection(this.selections.map(s => s.map(doc, mapping)));
+		return new MultiSelection(this.selections.map(s => s.map(doc, mapping)), undefined, doc);
 	}
 
 	eq(s: Selection): boolean {
@@ -118,12 +118,12 @@ export class MultiSelection extends Selection {
 	static fromJSON(doc: Node, json: any): Selection {
 		if (!Array.isArray(json.selections))
 			throw new RangeError("Invalid input for MultiSelection.fromJSON");
-		return new MultiSelection(json.selections.map((j: any) => Selection.fromJSON(doc, j)));
+		return new MultiSelection(json.selections.map((j: any) => Selection.fromJSON(doc, j)), undefined, doc);
 	}
 
 	/** Wrapper for TextSelection.between */
 	static between($anchor: ResolvedPos, $head: ResolvedPos, bias?: number) {
-		return new MultiSelection([TextSelection.between($anchor, $head, bias)]);
+		return new MultiSelection([TextSelection.between($anchor, $head, bias)], undefined, $anchor.doc);
 	}
 
 	static empty(doc: Node) {
@@ -151,7 +151,7 @@ export class MultiSelection extends Selection {
 
 	/** Add s2 (as main) to s1 and return the resulting MultiSelection */
 	static withAdded(s1: Selection, s2: Selection) {
-		return new MultiSelection([s1, s2]);
+		return new MultiSelection([s1, s2], s2, s2.$from.doc);
 	}
 
 	/** If s isn't an instance of MultiSelection, return newMain. 
@@ -160,7 +160,7 @@ export class MultiSelection extends Selection {
 		if (!(s instanceof MultiSelection) || s.fullyEmpty) return newMain;
 		const selections = [...s.selections];
 		selections.splice(selections.indexOf(s.main!), 1, newMain);
-		return new MultiSelection(selections, newMain);
+		return new MultiSelection(selections, newMain, newMain.$from.doc);
 	}
 
 	/** Apply left(dir = -1) or right(dir = 1) arrow press. Accounts for Shift+Arrow but
@@ -181,7 +181,7 @@ export class MultiSelection extends Selection {
 		for (const sel of this.selections) {
 			newS.push(toMoved(sel));
 		}
-		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex]));
+		tr.setSelection(new MultiSelection(newS, newS[this.mainIndex], tr.doc));
 	}
 }
 
@@ -380,7 +380,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
  */
 function deselectFeature(view: EditorView, e: MouseEvent) {
 	const sel_ = view.state.selection;
-	const sel = sel_ instanceof MultiSelection ? sel_ : new MultiSelection([sel_]);
+	const sel = sel_ instanceof MultiSelection ? sel_ : new MultiSelection([sel_], undefined, view.state.doc);
 
 	// Edge case: view has only 1 or no selections
 	if (sel.length < 2) {
