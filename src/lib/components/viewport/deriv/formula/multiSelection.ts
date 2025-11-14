@@ -359,7 +359,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			
 			return DecorationSet.create(state.doc, selections.map(s => {
 				if (!s.empty)
-					return Decoration.inline(s.from, s.to, { style: 'background: crimson;' + caretCSS(s.head < s.anchor) });
+					return Decoration.inline(s.from, s.to, { style: 'background: RoyalBlue;' + caretCSS(s.head < s.anchor) });
 				return s.from !== 0
 					? Decoration.inline(s.from, s.from + 1, { style: caretCSS() })
 					: state.doc.content.size !== 0
