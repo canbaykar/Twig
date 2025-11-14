@@ -353,7 +353,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				? state.selection.selections
 				: [state.selection];
 
-			const caretCSS = (left = true) => `
+			const caretCSS = (left = false) => `
 			box-shadow: ${left ? '-' : ''}10px 0 0 var(--color-fg), ${left ? '' : '-'}10px 0 0 var(--color-fg) inset
 			`;
 			
@@ -361,9 +361,9 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				if (!s.empty)
 					return Decoration.inline(s.from, s.to, { style: 'background: RoyalBlue;' + caretCSS(s.head < s.anchor) });
 				return s.from !== 0
-					? Decoration.inline(s.from, s.from + 1, { style: caretCSS() })
+					? Decoration.inline(s.from - 1, s.from, { style: caretCSS() })
 					: state.doc.content.size !== 0
-						? Decoration.inline(0, 1, { style: caretCSS() })
+						? Decoration.inline(0, 1, { style: caretCSS(true) })
 						: Decoration.widget(s.head, () => {
 							const caret = document.createElement('span');
 							caret.style = "outline: 10px solid";
