@@ -10,7 +10,7 @@
 	import 'prosemirror-view/style/prosemirror.css';
 	// Bg
 	import { type BgType } from '../bg.svelte';
-	import { multiSelectionPlugin } from './multiSelection';
+	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -55,6 +55,7 @@
 				dispatchTransaction(tr) {
 					(this as any as EditorView).updateState(this.state.apply(tr));
 					deriv.conc = this.state.doc.textContent;
+					r.editorFocused = !fullyEmpty(this.state.selection);
 				},
 			});
 		} else {
@@ -85,9 +86,10 @@
 	</div>
 	{#if editorAwake}
 		<div
-			class="outline_ opacity-0 top-0 left-0 origin-top-left pointer-events-none outline-1 outline-fg -outline-offset-1 outline-dashed rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
+			class="top-0 left-0 origin-top-left pointer-events-none outline-1 outline-fg -outline-offset-1 outline-dashed rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
+			class:opacity-0={!r.editorFocused}
 			style="
-				height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
+			height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
 				width: {deriv.render.baseWidth / DT.UNIT * viewport.render.scale}px;
 				font-size: {DT.derivSizeN / DT.UNIT * viewport.render.scale}px;
 				scale: {DT.UNIT / viewport.render.scale};
@@ -97,10 +99,6 @@
 </div>
 
 <style>
-	.wrapper:focus-within .outline_ {
-		opacity: 1;
-	}
-
 	* :global(.ProseMirror) {
 		padding-inline: var(--DERIV-X-PADDING);
 		outline: none;

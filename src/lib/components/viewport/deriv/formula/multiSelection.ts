@@ -186,7 +186,7 @@ export class MultiSelection extends Selection {
 }
 
 // Utility for fullyEmpty method of MultiSelection
-function fullyEmpty(s: Selection): boolean {
+export function fullyEmpty(s: Selection): boolean {
 	return !!(s as any)?.fullyEmpty;
 }
 

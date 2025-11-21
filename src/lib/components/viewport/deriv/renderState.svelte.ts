@@ -272,6 +272,8 @@ export default class DerivRenderState {
 
     // --- ProseMirror ---
     editorView: EditorView | null = null;
+    // Multiple editors can be focused simultaneously (not native focus)
+    editorFocused: boolean = $state(false);
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth
