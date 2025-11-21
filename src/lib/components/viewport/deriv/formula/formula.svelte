@@ -42,7 +42,7 @@
 		if (editorAwake) {
 			// Setup Prosemirror
 			if (r.editorView) return;
-			const doc = textSchema.node('doc', null, textSchema.text(deriv.conc));
+			const doc = textSchema.node('doc', null, deriv.conc ? textSchema.text(deriv.conc) : undefined);
 			r.editorView = new EditorView(editorElement, {
 				state: EditorState.create({ 
 					doc,
