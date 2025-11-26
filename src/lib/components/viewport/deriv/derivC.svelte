@@ -46,9 +46,20 @@
 			mouseup(e) {
 				const d = new Deriv();
 				e.deriv.attachChild(d);
-				e.deriv.children[0].render.focusEditor();
+				d.render.focusEditor();
 			}
-		}
+		},
+		adder_bottom: {
+			mouseup(e) {
+				const [x, y] = e.deriv.render.xy;
+				const d = new Deriv();
+				viewport.attachChild(d);
+				d.attachChild(e.deriv);
+				e.deriv.render.resetTranslate();
+				d.render.moveTo(x, y + DT.derivRowOffsetN);
+				d.render.focusEditor();
+			}
+		},
 	};
 </script>
 
