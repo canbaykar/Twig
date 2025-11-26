@@ -7,6 +7,7 @@ import { onDestroy } from "svelte";
 import Rule from "$lib/state/logic/rule";
 import { Hover } from "../renderState.svelte";
 import type { EditorView } from "prosemirror-view";
+import { focusEditor } from "./formula/formula.svelte";
 
 // Exported below as DerivRenderData.displayed
 const displayed = $derived(flatten(viewport.children));
@@ -24,6 +25,7 @@ export default class DerivRenderState {
     }
 
     deriv: Deriv;
+    element: HTMLElement | null = $state(null);
 
     /** ($state) Width of formula element. Maintained in formula.svelte. Use width instead. */
     baseWidth = $state(0);
@@ -274,6 +276,10 @@ export default class DerivRenderState {
     editorView: EditorView | null = null;
     // Multiple editors can be focused simultaneously (not native focus)
     editorFocused: boolean = $state(false);
+	/** rafBefore: Await requestAnimationFrame before anything (default: true) */
+    focusEditor(rafBefore = true) {
+        focusEditor(this.deriv, rafBefore);
+    }
 }
 
 // Annoyingly have to account for font loading on page load for maintainWidth

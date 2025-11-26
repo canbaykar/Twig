@@ -5,7 +5,7 @@
 	import DerivRenderState from '../renderState.svelte';
 	// Prosemirror
 	import { Schema } from 'prosemirror-model';
-	import { EditorState } from 'prosemirror-state';
+	import { EditorState, TextSelection } from 'prosemirror-state';
 	import { EditorView } from 'prosemirror-view';
 	import 'prosemirror-view/style/prosemirror.css';
 	// Bg
@@ -19,6 +19,27 @@
 			doc: { content: 'text*' },
 		}
 	});
+
+	const rafPromise = async () => new Promise((res) => requestAnimationFrame(res));
+	/** rafBefore: Await requestAnimationFrame before doing anything */
+	export async function focusEditor(d: Deriv, rafBefore = true) {
+		if (rafBefore) await rafPromise();
+		const r = d.render;
+		if (r.editorFocused) return;
+		viewport.render.selectOnly(d);
+
+		let outer = r.element;
+		if (!outer) {
+			await rafPromise();
+			outer = r.element;
+			if (!outer) return;
+		}
+		let inner = r.editorView;
+		if (!inner) return;
+
+		inner.focus();
+		inner.dispatch(inner.state.tr.setSelection(TextSelection.create(inner.state.doc, 0, 0)));
+	}
 </script>
 
 <script lang="ts">

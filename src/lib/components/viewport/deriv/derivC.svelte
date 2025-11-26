@@ -42,6 +42,13 @@
 				e.deriv.render.bodyMuted = false;
 			},
 		},
+		adder_top: {
+			mouseup(e) {
+				const d = new Deriv();
+				e.deriv.attachChild(d);
+				e.deriv.children[0].render.focusEditor();
+			}
+		}
 	};
 </script>
 
@@ -64,6 +71,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="deriv"
+	bind:this={deriv.render.element}
 	class:pointer-events-none={deriv.render.inDragged}
 	style:translate="{deriv.render.x}px {deriv.render.y}px"
 	class:z-1={deriv.render.inDragged}
