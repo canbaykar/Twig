@@ -11,6 +11,7 @@
 	import { DT } from '../../../../DT';
 	import draggable from '$lib/utils/interact/draggable.svelte';
 	import Adders from './adders.svelte';
+	import { rafPromise } from '$lib/utils';
 
 	// When there are more listeners to be sent to viewport,
 	// they are going to be merged here.
@@ -74,12 +75,37 @@
 
 	// Helper for side adders (between adders are actually right adders)
 	function addSibling(d: Deriv, right = 0) {
-		const p = d.derivParent;
-		if (!p) return; /////////////////////////////////
+		// To store old x positions of nearby derivs
+		const fixer: [Deriv, number][] = [];
+		const addToFixer = (d?: Deriv) => d && fixer.push([d, d.render.x]);
+
+		let p = d.derivParent;
+		if (p) {
+			addToFixer(p.children[d.childIndex]);
+			addToFixer(p.children[d.childIndex + (right * 2 - 1)]);
+		}
+		else {
+			addToFixer(d);
+			p = new Deriv();
+			p.render.bodyMuted = true;
+			p.attachChild(d);
+			p.attach(viewport);
+			p.render.moveTo(d.render.x, d.render.y + 2 * DT.derivRowOffsetN);
+			d.render.resetTranslate();
+		}
 
 		const s = new Deriv();
 		p.attachChild(s, d.childIndex + right);
 		s.render.focusEditor();
+
+		// Apply fixer
+		rafPromise().then(() => {
+			let offset = 0;
+			for (const [d, x] of fixer)
+				offset += x - d.render.x;
+			offset /= fixer.length || 1;
+			d.root.render.moveBy(offset, 0);
+		});
 	}
 </script>
 
