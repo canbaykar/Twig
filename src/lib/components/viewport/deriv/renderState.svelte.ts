@@ -100,7 +100,7 @@ export default class DerivRenderState {
     get yBar() { return this.xyBar[1] }
 
 	// - Movement Utils -
-    /** Takes world coordinates */
+    /** Takes world coordinates (alters translate) */
     moveTo(x: number, y: number, bar = false) {
         if (!bar) {
 			this.xTranslate += x - this.x;
@@ -108,6 +108,16 @@ export default class DerivRenderState {
 		} else {
 			this.xTranslateBar += x - this.xBar;
         	this.yTranslateBar += y - this.yBar;
+		}
+    }
+    /** Takes world coordinates (alters translate) */
+    moveBy(x: number, y: number, bar = false) {
+        if (!bar) {
+			this.xTranslate += x;
+        	this.yTranslate += y;
+		} else {
+			this.xTranslateBar += x;
+        	this.yTranslateBar += y;
 		}
     }
     /** Util for changing anchor without moving element */
