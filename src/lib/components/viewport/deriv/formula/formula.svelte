@@ -11,6 +11,7 @@
 	// Bg
 	import { type BgType } from '../bg.svelte';
 	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
+	import { rafPromise } from '$lib/utils';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -20,7 +21,6 @@
 		}
 	});
 
-	const rafPromise = async () => new Promise((res) => requestAnimationFrame(res));
 	/** rafBefore: Await requestAnimationFrame before doing anything */
 	export async function focusEditor(d: Deriv, rafBefore = true) {
 		if (rafBefore) await rafPromise();

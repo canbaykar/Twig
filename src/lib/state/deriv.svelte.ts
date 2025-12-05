@@ -1,6 +1,6 @@
 import DerivRenderState from "$lib/components/viewport/deriv/renderState.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
-import { uid } from "$lib/utils/uid";
+import { uid } from "$lib/utils";
 import { LogicState } from "./logic/index.svelte";
 import viewport, { type Serial, type Viewport } from "./viewport.svelte";
 
