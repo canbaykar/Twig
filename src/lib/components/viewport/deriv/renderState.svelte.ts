@@ -277,8 +277,8 @@ export default class DerivRenderState {
     // Multiple editors can be focused simultaneously (not native focus)
     editorFocused: boolean = $state(false);
 	/** rafBefore: Await requestAnimationFrame before anything (default: true) */
-    focusEditor(rafBefore = true) {
-        focusEditor(this.deriv, rafBefore);
+    async focusEditor(rafBefore = true) {
+        return focusEditor(this.deriv, rafBefore);
     }
 }
 
