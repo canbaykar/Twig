@@ -28,13 +28,12 @@
 		if (r.editorFocused) return;
 		viewport.render.selectOnly(d);
 
-		let outer = r.element;
-		if (!outer) {
-			await rafPromise();
-			outer = r.element;
-			if (!outer) return;
-		}
 		let inner = r.editorView;
+		if (!inner) {
+			await rafPromise();
+			inner = r.editorView;
+			if (!inner) return;
+		}
 		if (!inner) return;
 
 		inner.focus();

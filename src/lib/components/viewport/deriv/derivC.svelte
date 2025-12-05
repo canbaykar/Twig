@@ -60,7 +60,27 @@
 				d.render.focusEditor();
 			}
 		},
+		adder_left: {
+			mouseup(e) {
+				addSibling(e.deriv);
+			}
+		},
+		adder_right: {
+			mouseup(e) {
+				addSibling(e.deriv, 1);
+			}
+		},
 	};
+
+	// Helper for side adders (between adders are actually right adders)
+	function addSibling(d: Deriv, right = 0) {
+		const p = d.derivParent;
+		if (!p) return; /////////////////////////////////
+
+		const s = new Deriv();
+		p.attachChild(s, d.childIndex + right);
+		s.render.focusEditor();
+	}
 </script>
 
 <script lang="ts">
