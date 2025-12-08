@@ -11,7 +11,7 @@
 	// Bg
 	import { type BgType } from '../bg.svelte';
 	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
-	import { rafPromise } from '$lib/utils';
+	import { tick } from 'svelte';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -23,14 +23,14 @@
 
 	/** rafBefore: Await requestAnimationFrame before doing anything */
 	export async function focusEditor(d: Deriv, rafBefore = true) {
-		if (rafBefore) await rafPromise();
+		if (rafBefore) await tick();
 		const r = d.render;
 		if (r.editorFocused) return;
 		viewport.render.selectOnly(d);
 
 		let inner = r.editorView;
 		if (!inner) {
-			await rafPromise();
+			await tick();
 			inner = r.editorView;
 			if (!inner) return;
 		}

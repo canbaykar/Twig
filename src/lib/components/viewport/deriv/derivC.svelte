@@ -11,7 +11,7 @@
 	import { DT } from '../../../../DT';
 	import draggable from '$lib/utils/interact/draggable.svelte';
 	import Adders from './adders.svelte';
-	import { rafPromise } from '$lib/utils';
+	import { tick } from 'svelte';
 
 	// When there are more listeners to be sent to viewport,
 	// they are going to be merged here.
@@ -99,7 +99,7 @@
 		s.render.focusEditor();
 
 		// Apply fixer
-		rafPromise().then(() => {
+		tick().then(() => {
 			let offset = 0;
 			for (const [d, x] of fixer)
 				offset += x - d.render.x;
