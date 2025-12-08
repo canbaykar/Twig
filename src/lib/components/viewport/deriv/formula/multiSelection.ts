@@ -1,4 +1,3 @@
-import viewport from "$lib/state/viewport.svelte";
 import { Slice, type Node, type ResolvedPos } from "prosemirror-model";
 import { Plugin, Selection, TextSelection, Transaction } from "prosemirror-state";
 import type { Mappable } from "prosemirror-transform";
@@ -238,6 +237,9 @@ function getMods(event: KeyboardEvent) {
 }
 // == End of copied dependencies ==
 
+/** Holds views with multiSelectionPlugin */
+const activeViews: EditorView[] = [];
+
 /** Selection state preserved while holding alt */
 type AltState = {
 	altKey: boolean;
@@ -265,7 +267,15 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 	view(view) {
 		// Make the initial selection empty
 		view.dispatch(view.state.tr.setSelection(MultiSelection.empty(view.state.doc)));
-		return {};
+
+		// Maintain activeViews
+		if (!activeViews.includes(view)) activeViews.push(view);
+		return {
+			destroy() {
+				const i = activeViews.indexOf(view);
+				if (i !== -1) activeViews.splice(i, 1);
+			},
+		};
 	},
 
 	props: {
@@ -385,11 +395,8 @@ function deselectFeature(view: EditorView, e: MouseEvent) {
 	// Edge case: view has only 1 or no selections
 	if (sel.length < 2) {
 		if (sel.fullyEmpty) return false;
-		if (!viewport.render.selection.find(({deriv, bar}) => {
-			if (bar) return false;
-			const v = deriv.render.editorView;
-			return v && v !== view && !fullyEmpty(v.state.selection);
-		})) return false;
+		if (!activeViews.find((v) => v !== view && !fullyEmpty(v.state.selection)))
+			return false;
 	}
 
 	const posObj = view.posAtCoords({ left: e.clientX, top: e.clientY });;
@@ -422,11 +429,7 @@ function broadcast(self: EditorView, e: KeyboardEvent) {
 	if (broadcasting) return;
 	broadcasting = true;
 
-	for (const { deriv, bar } of viewport.render.selection) {
-		// Do nothing if the selection entry is for bar
-		if (bar) continue;
-
-		const view = deriv.render.editorView;
+	for (const view of activeViews) {
 		if (!view || view === self) continue;
 
 		const e_ = new KeyboardEvent(e.type, e);
