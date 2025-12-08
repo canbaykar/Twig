@@ -288,7 +288,8 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 						setAltState(view, { altKey: true, fresh: true, deselectMode: true });
 					else 
 						setAltState(view, { altKey: true, fresh: true, deselectMode: false });
-				}
+				// Setting altUp in keyup isn't enough when selection spans multiple views
+				} else setAltState(view, altUp);
 			},
 			keyup(view, e) {
 				if (e.key === 'Alt') setAltState(view, altUp);
@@ -416,6 +417,14 @@ function deselectFeature(view: EditorView, e: MouseEvent) {
 			view.state.doc
 		))
 	view.dispatch(tr);
+
+	// If (fully)emptied a view's selection, switch focus to a non-fullyempty one,
+	// otherwise keyboard inputs are sent to the empty one and do nothing.
+	if (fullyEmpty(view.state.selection)) {
+		const v = activeViews.find(v => v !== view && !fullyEmpty(v.state.selection));
+		if (v) v.focus(); // v should exist here if there isn't a bug
+	}
+
 	return true;
 }
 
