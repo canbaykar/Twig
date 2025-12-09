@@ -242,11 +242,11 @@ const activeViews: EditorView[] = [];
 
 /** Selection state preserved while holding alt */
 type AltState = {
-	altKey: boolean;
+	alt: boolean;
+	feature: boolean; // Alt+Select feature is disabled on fullyEmpty views even if alt pressed
 	fresh: boolean; // mousedown fired but selection didn't update yet
 	deselectMode: boolean; // selection updated and deleted a selection but didn't update yet after that
 };
-const altUp = { altKey: false, fresh: false, deselectMode: false };
 function getAltState(view: EditorView): AltState {
 	return multiSelectionPlugin.getState(view.state);
 }
@@ -264,7 +264,7 @@ function emptyOtherViewsSelections(view: EditorView) {
 export const multiSelectionPlugin: Plugin = new Plugin({
 	state: {
 		init(): AltState {
-			return altUp;
+			return { alt: false, feature: false, fresh: false, deselectMode: false };
 		},
 		apply(tr, value): AltState {
 			return tr.getMeta(multiSelectionPlugin) ?? value;
@@ -292,30 +292,31 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				// but (fully)empty selection just gets replaced (so feature isn't triggered)
 				if (e.altKey && !fullyEmpty(view.state.selection)) {
 					if (deselectFeature(view, e))
-						setAltState(view, { altKey: true, fresh: true, deselectMode: true });
+						setAltState(view, { alt: true, feature: true, fresh: true, deselectMode: true });
 					else 
-						setAltState(view, { altKey: true, fresh: true, deselectMode: false });
+						setAltState(view, { alt: true, feature: true, fresh: true, deselectMode: false });
 				} else {
 					// Setting altUp in keyup isn't enough when selection spans multiple views
-					setAltState(view, altUp);
+					setAltState(view, { alt: e.altKey, feature: false, fresh: false, deselectMode: false });
 					// If altKey actually up, empty selection for other views
 					if (e.altKey === false) emptyOtherViewsSelections(view);
 				}
 			},
 			keyup(view, e) {
-				if (e.key === 'Alt') {
-					setAltState(view, altUp);
-					emptyOtherViewsSelections(view);
-				}
-			}
+				if (e.key === 'Alt')
+					setAltState(view, { alt: false, feature: false, fresh: false, deselectMode: false });
+			},
 		},
 
 		createSelectionBetween(view, $anchor, $head) {
 			const altState = getAltState(view);
 			const newS = TextSelection.between($anchor, $head);
 
-			// If Alt isn't pressed, default behaviour
-			if (!altState.altKey)
+			if (!altState.alt)
+				emptyOtherViewsSelections(view);
+
+			// If Alt is up or selection is fullyEmpty, default behaviour
+			if (!altState.feature)
 				return newS;
 
 			const oldS = view.state.selection;
@@ -325,7 +326,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			
 			// If createSelectionBetween triggered by mousedown (newS is empty)
 			if (altState.fresh) {
-				setAltState(view, { altKey: true, fresh: false, deselectMode: false });
+				setAltState(view, { alt: altState.alt, feature: true, fresh: false, deselectMode: false });
 				return MultiSelection.withAdded(oldS, newS);
 			}
 
