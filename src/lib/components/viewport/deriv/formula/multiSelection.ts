@@ -253,6 +253,13 @@ function getAltState(view: EditorView): AltState {
 function setAltState(view: EditorView, val: AltState) {
 	view.dispatch(view.state.tr.setMeta(multiSelectionPlugin, val));
 }
+// Used when altKey is released while using the Alt+Select feature
+function emptyOtherViewsSelections(view: EditorView) {
+	if (activeViews.length < 2) return;
+	activeViews.forEach(v => (v !== view) &&
+		v.dispatch(v.state.tr.setSelection(MultiSelection.empty(v.state.doc)))
+	);
+}
 
 export const multiSelectionPlugin: Plugin = new Plugin({
 	state: {
@@ -288,11 +295,18 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 						setAltState(view, { altKey: true, fresh: true, deselectMode: true });
 					else 
 						setAltState(view, { altKey: true, fresh: true, deselectMode: false });
-				// Setting altUp in keyup isn't enough when selection spans multiple views
-				} else setAltState(view, altUp);
+				} else {
+					// Setting altUp in keyup isn't enough when selection spans multiple views
+					setAltState(view, altUp);
+					// If altKey actually up, empty selection for other views
+					if (e.altKey === false) emptyOtherViewsSelections(view);
+				}
 			},
 			keyup(view, e) {
-				if (e.key === 'Alt') setAltState(view, altUp);
+				if (e.key === 'Alt') {
+					setAltState(view, altUp);
+					emptyOtherViewsSelections(view);
+				}
 			}
 		},
 
