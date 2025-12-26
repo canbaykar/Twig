@@ -114,6 +114,7 @@
         state={viewport.render}
 		onStart={() => viewport.render.dragType = DraggableType.Panzoom}
 		onEnd={() => viewport.render.dragType = DraggableType.None}
+		class="multiSelection-prevent-blur"
     >
         {#each DerivRenderState.displayed as deriv (deriv)}
             <DerivC {deriv}></DerivC>

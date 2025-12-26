@@ -253,14 +253,25 @@ function getAltState(view: EditorView): AltState {
 function setAltState(view: EditorView, val: AltState) {
 	view.dispatch(view.state.tr.setMeta(multiSelectionPlugin, val));
 }
+
+/** Doesn't delete anything, just makes selections the empty selection */
+function deselectAllSelections() {
+	activeViews.forEach(v =>
+		v.dispatch(v.state.tr.setSelection(MultiSelection.empty(v.state.doc)))
+	);
+}
 // Used when altKey is released while using the Alt+Select feature
-function emptyOtherViewsSelections(view: EditorView) {
+function deselectOtherViewsSelections(view: EditorView) {
 	if (activeViews.length < 2) return;
 	activeViews.forEach(v => (v !== view) &&
 		v.dispatch(v.state.tr.setSelection(MultiSelection.empty(v.state.doc)))
 	);
 }
 
+/**
+ * (Intentionally) loses focus on blur unless the focus recieving element classList has
+ * "multiSelection-prevent-blur" class.
+ */
 export const multiSelectionPlugin: Plugin = new Plugin({
 	state: {
 		init(): AltState {
@@ -299,13 +310,27 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 					// Setting altUp in keyup isn't enough when selection spans multiple views
 					setAltState(view, { alt: e.altKey, feature: false, fresh: false, deselectMode: false });
 					// If altKey actually up, empty selection for other views
-					if (e.altKey === false) emptyOtherViewsSelections(view);
+					if (e.altKey === false) deselectOtherViewsSelections(view);
 				}
 			},
+			
 			keyup(view, e) {
 				if (e.key === 'Alt')
 					setAltState(view, { alt: false, feature: false, fresh: false, deselectMode: false });
 			},
+
+			blur(view, e) {
+				const rt = e.relatedTarget; // Focus recieving element
+				if (
+					rt instanceof Element &&
+					activeViews.find(v => v.dom === rt) &&
+					// Exception elements feature (e.g. panzoom so that you can pan without losing
+					// selection, on single click panzoom, it removes ProseMirror elements, so it 
+					// doesn't need to lose ProseMirror selection manually.)
+					rt.classList.contains("multiSelection-prevent-blur")
+				) return;
+				deselectAllSelections();
+			}
 		},
 
 		createSelectionBetween(view, $anchor, $head) {
@@ -313,7 +338,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			const newS = TextSelection.between($anchor, $head);
 
 			if (!altState.alt)
-				emptyOtherViewsSelections(view);
+				deselectOtherViewsSelections(view);
 
 			// If Alt is up or selection is fullyEmpty, default behaviour
 			if (!altState.feature)
