@@ -254,6 +254,10 @@ function setAltState(view: EditorView, val: AltState) {
 	view.dispatch(view.state.tr.setMeta(multiSelectionPlugin, val));
 }
 
+function restoreProseMirrorFocus() {
+	if (activeViews.length !== 0)
+		activeViews[activeViews.length - 1].focus();
+}
 /** Doesn't delete anything, just makes selections the empty selection */
 function deselectAllSelections() {
 	activeViews.forEach(v =>
@@ -321,14 +325,14 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 
 			blur(view, e) {
 				const rt = e.relatedTarget; // Focus recieving element
-				if (
-					rt instanceof Element &&
-					(activeViews.find(v => v.dom === rt) ||
+				if (rt instanceof Element) {
+					if (activeViews.find(v => v.dom === rt)) return;
 					// Exception elements feature (e.g. panzoom so that you can pan without losing
 					// selection, on single click panzoom, it removes ProseMirror elements, so it 
 					// doesn't need to lose ProseMirror selection manually.)
-					rt.classList.contains("multiSelection-prevent-blur"))
-				) return;
+					if (rt.classList.contains("multiSelection-prevent-blur"))
+						return restoreProseMirrorFocus();
+				}
 				deselectAllSelections();
 			}
 		},
