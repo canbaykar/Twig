@@ -313,7 +313,7 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 					if (e.altKey === false) deselectOtherViewsSelections(view);
 				}
 			},
-			
+
 			keyup(view, e) {
 				if (e.key === 'Alt')
 					setAltState(view, { alt: false, feature: false, fresh: false, deselectMode: false });
@@ -323,11 +323,11 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				const rt = e.relatedTarget; // Focus recieving element
 				if (
 					rt instanceof Element &&
-					activeViews.find(v => v.dom === rt) &&
+					(activeViews.find(v => v.dom === rt) ||
 					// Exception elements feature (e.g. panzoom so that you can pan without losing
 					// selection, on single click panzoom, it removes ProseMirror elements, so it 
 					// doesn't need to lose ProseMirror selection manually.)
-					rt.classList.contains("multiSelection-prevent-blur")
+					rt.classList.contains("multiSelection-prevent-blur"))
 				) return;
 				deselectAllSelections();
 			}
