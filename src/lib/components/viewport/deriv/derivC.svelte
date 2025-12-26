@@ -132,6 +132,7 @@
 	class:pointer-events-none={deriv.render.inDragged}
 	style:translate="{deriv.render.x}px {deriv.render.y}px"
 	class:z-1={deriv.render.inDragged}
+	tabindex="-1"
 	data-uid={deriv.uid}
 	data-part="body_"
 >

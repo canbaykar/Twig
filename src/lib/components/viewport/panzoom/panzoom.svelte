@@ -152,6 +152,7 @@
     bind:contentRect={null, (r: DOMRect) => rect = r}
     {onwheel}
     class="panzoom **:absolute w-full h-full overflow-hidden {restProps?.class ?? ''}" 
+	tabindex="-1"
     use:draggable={draggableOptions}
 >
     <!-- Has .dnd to not be disabled on drag and drop, see viewport.svelte -->
