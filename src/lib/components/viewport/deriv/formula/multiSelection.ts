@@ -18,7 +18,7 @@ export class MultiSelection extends Selection {
 	constructor(selections: Selection[], main = selections[selections.length - 1], doc = main?.$from?.doc) {
 		if (!main) {
 			if (!doc) throw new Error("doc undefined in MultiSelection.");
-			const last = doc.resolve(Math.max(0, doc.content.size - 1));
+			const last = doc.resolve(Math.max(0, doc.content.size));
 			super(last, last);
 			this.fullyEmpty = true;
 			this.selections = [];
