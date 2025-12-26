@@ -290,6 +290,17 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		// Make the initial selection empty
 		view.dispatch(view.state.tr.setSelection(MultiSelection.empty(view.state.doc)));
 
+		// Very dirty trick to fix the bug where clicking at the very left or right
+		// part of an editor doesn't make selection. (Because ProseMirror doesn't
+		// account for our fullyEmpty selections, so it thinks selection isn't altered.)
+		const o = (view as any).domObserver;
+		const flush: () => void = o.flush.bind(o);
+		o.flush = (() => {
+			if (fullyEmpty(view.state.selection))
+				o.currentSelection.clear();
+			return flush();
+		}).bind(o);
+
 		// Maintain activeViews
 		if (!activeViews.includes(view)) activeViews.push(view);
 		return {
