@@ -269,7 +269,7 @@ function deselectOtherViewsSelections(view: EditorView) {
 }
 
 /**
- * (Intentionally) loses focus on blur unless the focus recieving element classList has
+ * (Intentionally) deselects on blur unless the focus recieving element classList has
  * "multiSelection-prevent-blur" class.
  */
 export const multiSelectionPlugin: Plugin = new Plugin({
