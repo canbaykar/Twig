@@ -290,17 +290,6 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		// Make the initial selection empty
 		view.dispatch(view.state.tr.setSelection(MultiSelection.empty(view.state.doc)));
 
-		// Very dirty trick to fix the bug where clicking at the very left or right
-		// part of an editor doesn't make selection. (Because ProseMirror doesn't
-		// account for our fullyEmpty selections, so it thinks selection isn't altered.)
-		const o = (view as any).domObserver;
-		const flush: () => void = o.flush.bind(o);
-		o.flush = (() => {
-			if (fullyEmpty(view.state.selection))
-				o.currentSelection.clear();
-			return flush();
-		}).bind(o);
-
 		// Maintain activeViews
 		if (!activeViews.includes(view)) activeViews.push(view);
 		return {
@@ -326,6 +315,12 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 					setAltState(view, { alt: e.altKey, feature: false, fresh: false, deselectMode: false });
 					// If altKey actually up, empty selection for other views
 					if (e.altKey === false) deselectOtherViewsSelections(view);
+
+					// Sometimes clicking to the very right side of an editor with fullyEmpty selection
+					// doesn't do anything. This fix causes caret to briefly show at the end of text
+					// even when clicked elsewhere, to be improved later.
+					if (fullyEmpty(view.state.selection))
+						view.dispatch(view.state.tr.setSelection(MultiSelection.atEnd(view.state.doc)));
 				}
 			},
 
@@ -344,6 +339,12 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 					if (rt.classList.contains("multiSelection-prevent-blur"))
 						return restoreProseMirrorFocus();
 				}
+
+				// For some reason sometimes alt+click blurs with rt null and for some reason this
+				// fixed it without breaking other stuff. (?)
+				if (rt === null && getAltState(view).alt) 
+					return restoreProseMirrorFocus();
+
 				deselectAllSelections();
 			}
 		},
@@ -356,8 +357,11 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				deselectOtherViewsSelections(view);
 
 			// If Alt is up or selection is fullyEmpty, default behaviour
-			if (!altState.feature)
-				return newS;
+			if (!altState.feature) {
+				// Normally this returned just newS but that was inconsistent and 
+				// broadcast() wasn't being called when necessary when typing.
+				return new MultiSelection([newS]);
+			}
 
 			const oldS = view.state.selection;
 			
