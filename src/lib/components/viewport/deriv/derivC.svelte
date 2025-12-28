@@ -20,6 +20,9 @@
 		layout: {
 			mousedown(e, l) {
 				e.deriv.render.goToTop();
+				// Selection shouldn't go automatically to the deriv that renders that adder, which is very
+				// arbitrary. Instead it's manually set to the newly added deriv somewhere else.
+				// This just disables that automatic behaviour.
 				if (e.section === 'adder') e.updateSelecetion = false;
 				l(e);
 			},
