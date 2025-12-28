@@ -2,7 +2,7 @@
 	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
 	import type { Viewport } from "$lib/state/viewport.svelte";
 	import { onDestroy } from "svelte";
-	import DerivC, { listeners } from "./deriv/derivC.svelte";
+	import DerivC, { partListeners } from "./deriv/derivC.svelte";
 	import DerivRenderState from "./deriv/renderState.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
@@ -18,8 +18,10 @@
 	 * Type for different parts' listeners to be managed by viewport. (See part + uid 
 	 * system in deriv render state.) Only listeners in part "layout" can take a 2nd 
 	 * argument, I just couldn't enfore it with TS.
+	 * 
+	 * Supported events for parts and layout: mousedown, mouseup
 	 */
-	export type Listeners = {
+	export type PartListeners = {
 		[part: string]: {
 			[K in keyof HTMLElementEventMap]?: LayoutListener<K>;
 		};
@@ -31,8 +33,8 @@
 	) {
 		const e = Object.assign(evt, { deriv, part, section, updateSelecetion: true });
 		if (!deriv || !part) return e;
-		const layoutListener = listeners["layout"]?.[type] ?? ((e, l) => l(e));
-		layoutListener(e as any, listeners[part]?.[type] ?? (() => {}) as any);
+		const layoutListener = partListeners["layout"]?.[type] ?? ((e, l) => l(e));
+		layoutListener(e as any, partListeners[part]?.[type] ?? (() => {}) as any);
 		return e;
 	}
 </script>

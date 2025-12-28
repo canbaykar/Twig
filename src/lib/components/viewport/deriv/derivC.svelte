@@ -6,7 +6,7 @@
 	import viewport from '$lib/state/viewport.svelte';
 	import { bgRoot } from './bg.svelte';
 	import { dndOptions } from './dnd/dndOptions';
-	import type { Listeners } from '../viewportC.svelte';
+	import type { PartListeners } from '../viewportC.svelte';
 	import Grip from './dnd/grip.svelte';
 	import { DT } from '../../../../DT';
 	import draggable from '$lib/utils/interact/draggable.svelte';
@@ -16,7 +16,7 @@
 
 	// When there are more listeners to be sent to viewport,
 	// they are going to be merged here.
-	export const listeners: Listeners = {
+	export const partListeners: PartListeners = {
 		layout: {
 			mousedown(e, l) {
 				e.deriv.render.goToTop();
