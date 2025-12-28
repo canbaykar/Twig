@@ -12,6 +12,7 @@
 	import draggable from '$lib/utils/interact/draggable.svelte';
 	import Adders from './adders.svelte';
 	import { tick } from 'svelte';
+	import { forceFocus } from './formula/multiSelection';
 
 	// When there are more listeners to be sent to viewport,
 	// they are going to be merged here.
@@ -32,6 +33,12 @@
 				e.deriv.render.bodyMuted = false;
 				draggable.once(dndOptions(e.deriv, false));
 			},
+			mouseup(e) { 
+				// Panzoom element that normally recieves focus on mousedown has multiSelection-prevent-blur
+				// to prevent text selections being lost while navigating. So we have to manually focus it
+				// with a function from multiSelection.
+				forceFocus(viewport.render.panzoomElement);
+			}
 		},
 		bar_: {
 			mousedown(e) {
@@ -132,7 +139,6 @@
 	class:pointer-events-none={deriv.render.inDragged}
 	style:translate="{deriv.render.x}px {deriv.render.y}px"
 	class:z-1={deriv.render.inDragged}
-	tabindex="-1"
 	data-uid={deriv.uid}
 	data-part="body_"
 >

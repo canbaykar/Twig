@@ -254,10 +254,24 @@ function setAltState(view: EditorView, val: AltState) {
 	view.dispatch(view.state.tr.setMeta(multiSelectionPlugin, val));
 }
 
+let focusForced = false;
+/** Use this to focus an element with multiSelection-prevent-blur class when an editor is focused */
+export function forceFocus(el?: HTMLElement | null) {
+	focusForced = true;
+	el ? el.focus() : document.documentElement.focus();
+	// Make sure focusForced isn't left true in case of an error
+	requestAnimationFrame(() => focusForced = false);
+}
 function restoreProseMirrorFocus() {
+	if (focusForced) {
+		focusForced = false;
+		deselectAllSelections();
+		return;
+	}
 	if (activeViews.length !== 0)
 		activeViews[activeViews.length - 1].focus();
 }
+
 /** Doesn't delete anything, just makes selections the empty selection */
 function deselectAllSelections() {
 	activeViews.forEach(v =>
@@ -274,7 +288,7 @@ function deselectOtherViewsSelections(view: EditorView) {
 
 /**
  * (Intentionally) deselects on blur unless the focus recieving element classList has
- * "multiSelection-prevent-blur" class.
+ * "multiSelection-prevent-blur" class. See forceFocus.
  */
 export const multiSelectionPlugin: Plugin = new Plugin({
 	state: {

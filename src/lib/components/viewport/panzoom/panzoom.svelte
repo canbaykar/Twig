@@ -58,15 +58,17 @@
 		// Events
 		onStart?(e: MouseEvent & { dx: number, dy: number; }): void;
 		onEnd?(e: MouseEvent & { dx: number, dy: number; }): void;
+		/** ($bindable) */
+		element?: HTMLElement | null;
         [key: string]: any;
     }
 
 	let { 
         state: stt, children, noPanzoom, 
 		onStart = () => {}, onEnd = () => {},
+		element = $bindable(null),
         ...restProps 
     }: Props = $props();
-    let element: HTMLElement;
     let rect = $state({
         left: 0, right: 0,
         top: 0, bottom: 0,
@@ -132,10 +134,10 @@
 	}
 
     function updateCSS() {
-        element.style.setProperty('--panzoom-x', stt.x + 'px');
-        element.style.setProperty('--panzoom-y', stt.y + 'px');
-        element.style.setProperty('--panzoom-scale', stt.scale / DT.UNIT + '');
-        element.style.setProperty('--panzoom-gs', grid_scale / DT.UNIT + '');
+        element!.style.setProperty('--panzoom-x', stt.x + 'px');
+        element!.style.setProperty('--panzoom-y', stt.y + 'px');
+        element!.style.setProperty('--panzoom-scale', stt.scale / DT.UNIT + '');
+        element!.style.setProperty('--panzoom-gs', grid_scale / DT.UNIT + '');
     }
     onMount(updateCSS);
     $effect(() => {

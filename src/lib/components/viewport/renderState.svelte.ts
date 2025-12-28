@@ -36,6 +36,8 @@ export default class ViewportRenderState {
 
 	/** ($state) */
 	element: HTMLElement | null = $state(null);
+	/** ($state) This is the viewport element with tabindex (can recieve focus) */
+	panzoomElement: HTMLElement | null = $state(null);
 
     popups = popups;
     panzoomPopups = panzoomPopups;
