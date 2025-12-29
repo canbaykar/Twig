@@ -11,7 +11,7 @@
 	// Bg
 	import { type BgType } from '../bg.svelte';
 	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
-	import { tick } from 'svelte';
+	import { onDestroy, tick } from 'svelte';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -80,9 +80,14 @@
 			});
 		} else {
 			// Destroy Prosemirror
-			if (!r.editorView) return;
-			r.editorView.destroy();
-			r.editorView = null;
+			if (r.editorView) {
+				r.editorView.destroy();
+				r.editorView = null;
+			}
+			// If there was a focused element in the if clause that's removed, focus goes
+			// to body, without firing focus event on body. Pass it on to viewport instead.
+			if (document.activeElement === document.body)
+				viewport.render.panzoomElement?.focus?.();
 		}
 	});
 </script>
