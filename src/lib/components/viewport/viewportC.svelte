@@ -112,6 +112,7 @@
 		if (e_.updateSelecetion)
 			viewport.render.updateSelectionOnInteraction(e_, deriv, section === 'bar');
 	}
+	
 	function ondblclick(e: MouseEvent) {
 		const { deriv, part, section } = lastTarget = DerivRenderState.lookup(e.target);
 		if (!deriv) { // Dblclick on background adds new blank deriv
