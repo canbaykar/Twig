@@ -8,6 +8,7 @@
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/bg.svelte";
 	import { DraggableType, Hover } from "./renderState.svelte";
+	import { DT } from "../../../DT";
 
 	type KeyboardListener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K]) => void;
@@ -21,7 +22,7 @@
 	 * system in deriv render state.) Only listeners in part "layout" can take a 2nd 
 	 * argument, I just couldn't enfore it with TS.
 	 * 
-	 * Supported events for parts and layout: mousedown, mouseup
+	 * Supported events for parts and layout: mousedown, mouseup, dblclick
 	 */
 	export type PartListeners = {
 		[part: string]: {
@@ -111,6 +112,16 @@
 		if (e_.updateSelecetion)
 			viewport.render.updateSelectionOnInteraction(e_, deriv, section === 'bar');
 	}
+	function ondblclick(e: MouseEvent) {
+		const { deriv, part, section } = lastTarget = DerivRenderState.lookup(e.target);
+		if (!deriv) { // Dblclick on background adds new blank deriv
+			const { x, y } = viewport.render.mouse;
+			const d = new Deriv({ render: { xTranslate: x, yTranslate: y + DT.derivLineHeightN / 2 } });
+			d.attach(viewport);
+			d.render.focusEditor();
+		}
+		callListener("dblclick", part, section, deriv, e);
+	}
 </script>
 
 {@render bgDependency()}
@@ -129,6 +140,7 @@
 	ondragleave={onmouseleave}
 	{onmousedown}
 	{onmouseup}
+	{ondblclick}
 	role="presentation"
 	data-part="viewport"
 >
