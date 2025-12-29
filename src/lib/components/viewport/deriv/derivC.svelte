@@ -20,40 +20,11 @@
 			if (viewport.render.dragging) return;
 
 			if (e.key === 'Delete') {
-				if (e.shiftKey) // Delete selection with all their children
-					for (const { deriv } of viewport.render.selection)
-						deriv.detach();
-				else deleteSelection(); // (Re-attaches children)
+				if (e.shiftKey) viewport.render.shiftDeleteSelection();
+				else viewport.render.deleteSelection();
 			}
 		},
 	};
-
-	function deleteSelection() {
-		// Children of deleted derivs will be re-added (unless that
-		// child's also deleted, solved recursively...)
-		const orphans = new Set<Deriv>();
-		function addOrphan(deleted: Deriv) {
-			for (const child of deleted.children)
-				if (!child.render.bodySelected && !child.render.barSelected)
-					orphans.add(child);
-				else addOrphan(child);
-		}
-		for (const { deriv } of viewport.render.selection) addOrphan(deriv);
-
-		// Record positions to place orphans to when re-adding
-		const pos: [Deriv, [number, number]][] = [];
-		orphans.forEach(orp => pos.push([orp, orp.render.xy]));
-
-		// Remove the selected
-		for (const { deriv } of viewport.render.selection)
-			deriv.detach();
-
-		// Re-add
-		for (const [orp, [x, y]] of pos) {
-			orp.attach(viewport);
-			orp.render.moveTo(x, y);
-		}
-	}
 
 	export const partListeners: PartListeners = {
 		layout: {

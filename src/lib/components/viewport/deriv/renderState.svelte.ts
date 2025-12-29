@@ -282,6 +282,11 @@ export default class DerivRenderState {
             this.deriv.root.attach(viewport);
 	}
 
+	/** Use this (or viewport.render.delete) instead of detach, detaches and deselects! */
+	delete() {
+		viewport.render.delete([this.deriv]);
+	}
+
     // --- ProseMirror ---
     editorView: EditorView | null = null;
     // Multiple editors can be focused simultaneously (not native focus)

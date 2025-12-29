@@ -86,6 +86,7 @@ export default class ViewportRenderState {
 		} else this.hovered = new Hover();
 	}
 
+	// --- Selection ---
 	/** ($raw) DO NOT modify directly! Use related methods instead.
 	 *  Partially implemented in viewportC and deriv.render */
 	selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
@@ -109,6 +110,58 @@ export default class ViewportRenderState {
 		if (e.shiftKey || e.altKey)
 			deriv && this.addToSelection(deriv, bar);
 		else this.selectOnly(deriv, bar);
+	}
+	deselect(entries: { deriv: Deriv, bar?: boolean }[]) {
+		const sel = this.selection;
+		for (const { deriv, bar } of entries) {
+			const i = sel.findIndex(({ deriv: d, bar: b }) => deriv === d || bar === b);
+			if (i > -1) sel.splice(i, 1); 
+			bar ? deriv.render.barSelected  = false
+				: deriv.render.bodySelected = false;
+		}
+		this.selection = sel;
+	}
+	/** Deselect both bar and self of each deriv */
+	deselectPairs(derivs: Deriv[]) {
+		this.deselect(derivs.flatMap(deriv => [{ deriv, bar: true }, { deriv, bar: false }]));
+	}
+	/** Use this or (or deriv.render.delete) instead of detach, detaches and deselects! */
+	delete(derivs: Deriv[]) {
+		this.deselectPairs(derivs);
+		derivs.forEach(d => d.detach());
+	}
+	/** Delete selection with all their children */
+	shiftDeleteSelection() {
+		for (const { deriv } of this.selection) {
+			deriv.render.barSelected  = false;
+			deriv.render.bodySelected = false;
+			deriv.detach();
+		}
+		this.selection = [];
+	}
+	/** Deletes selection but re-adds non-selected children of selected */
+	deleteSelection() {
+		const orphans = new Set<Deriv>();
+		function addOrphan(deleted: Deriv) {
+			for (const child of deleted.children)
+				if (!child.render.bodySelected && !child.render.barSelected)
+					orphans.add(child);
+				else addOrphan(child);
+		}
+		for (const { deriv } of viewport.render.selection) addOrphan(deriv);
+
+		// Record positions to place orphans to when re-adding
+		const pos: [Deriv, [number, number]][] = [];
+		orphans.forEach(orp => pos.push([orp, orp.render.xy]));
+
+		// Remove the selected
+		this.shiftDeleteSelection();
+
+		// Re-add
+		for (const [orp, [x, y]] of pos) {
+			orp.attach(viewport);
+			orp.render.moveTo(x, y);
+		}
 	}
 }
 
