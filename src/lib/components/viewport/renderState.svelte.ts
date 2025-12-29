@@ -132,14 +132,14 @@ export default class ViewportRenderState {
 	}
 	/** Re-adds not-in-array children of derivs in array */
 	delete(derivs: Deriv[]) {
+		const set = new Set(derivs);
 		const orphans = new Set<Deriv>();
 		function addOrphan(deleted: Deriv) {
 			for (const child of deleted.children)
-				if (!child.render.bodySelected && !child.render.barSelected)
-					orphans.add(child);
+				if (!set.has(child)) orphans.add(child);
 				else addOrphan(child);
 		}
-		for (const deriv of derivs) addOrphan(deriv);
+		for (const deriv of set) addOrphan(deriv);
 
 		// Record positions to place orphans to when re-adding
 		const pos: [Deriv, [number, number]][] = [];
