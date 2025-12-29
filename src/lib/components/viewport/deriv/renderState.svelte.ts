@@ -283,6 +283,10 @@ export default class DerivRenderState {
 	}
 
 	/** Use this (or viewport.render.delete) instead of detach, detaches and deselects! */
+	shiftDelete() {
+		viewport.render.shiftDelete([this.deriv]);
+	}
+	/** Re-adds children in place. Also see .shiftDelete() */
 	delete() {
 		viewport.render.delete([this.deriv]);
 	}

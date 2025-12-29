@@ -126,21 +126,12 @@ export default class ViewportRenderState {
 		this.deselect(derivs.flatMap(deriv => [{ deriv, bar: true }, { deriv, bar: false }]));
 	}
 	/** Use this or (or deriv.render.delete) instead of detach, detaches and deselects! */
-	delete(derivs: Deriv[]) {
+	shiftDelete(derivs: Deriv[]) {
 		this.deselectPairs(derivs);
 		derivs.forEach(d => d.detach());
 	}
-	/** Delete selection with all their children */
-	shiftDeleteSelection() {
-		for (const { deriv } of this.selection) {
-			deriv.render.barSelected  = false;
-			deriv.render.bodySelected = false;
-			deriv.detach();
-		}
-		this.selection = [];
-	}
-	/** Deletes selection but re-adds non-selected children of selected */
-	deleteSelection() {
+	/** Re-adds not-in-array children of derivs in array */
+	delete(derivs: Deriv[]) {
 		const orphans = new Set<Deriv>();
 		function addOrphan(deleted: Deriv) {
 			for (const child of deleted.children)
@@ -155,13 +146,21 @@ export default class ViewportRenderState {
 		orphans.forEach(orp => pos.push([orp, orp.render.xy]));
 
 		// Remove the selected
-		this.shiftDeleteSelection();
+		this.shiftDelete(derivs);
 
 		// Re-add
 		for (const [orp, [x, y]] of pos) {
 			orp.attach(viewport);
 			orp.render.moveTo(x, y);
 		}
+	}
+	/** Delete selection with all their children */
+	shiftDeleteSelection() {
+		this.shiftDelete(this.selection.map(({ deriv }) => deriv));
+	}
+	/** Deletes selection but re-adds non-selected children of selected */
+	deleteSelection() {
+		this.delete(this.selection.map(({ deriv }) => deriv));
 	}
 }
 
