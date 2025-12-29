@@ -255,6 +255,8 @@ export default class DerivRenderState {
 	bodySelected = $state(false);
     /** ($derived) Partially implemented in viewportC and viewport.render */
 	barSelected = $state(false);
+    /** ($derived) bodySelected || barSelected */
+	anySelected = $derived(this.bodySelected || this.barSelected);
 	/** Util for checking bodySelected & barSelected */
 	isSelected(bar = false) { return bar ? this.barSelected : this.bodySelected; }
 

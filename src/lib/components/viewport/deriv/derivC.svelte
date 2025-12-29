@@ -135,6 +135,31 @@
 	let { deriv }: Props = $props();
 
 	const gripX = $derived((deriv.render.width + DT.UNIT) / 2 + DT.derivBgPaddingN);
+
+	// Auto-deletion feature: When you deselect a deriv with blank conc, it's deleted
+	// unless you used one of it's adders to deselect it. Adder rule: If you use an 
+	// adder and deselect immediately, the use of adder should leave no trace.
+	let sel_ = false;
+	$effect(() => {
+		const sel = deriv.render.anySelected;
+		if (!sel && sel_) ondeselect(deriv);
+		sel_ = sel;
+	});
+	async function ondeselect(d: Deriv) { // Async bc syncronous reads affect $effect logic
+		if (d.conc) return;
+		const par = d.derivParent;
+		if ( // Exception case: Used adder attached to this, which deselected this
+			[
+				...d.children, par,
+				par?.children?.[d.childIndex - 1],
+				par?.children?.[d.childIndex + 1]
+			].find((d) => d && d.render.anySelected && !d.conc)
+		) return;
+		// Side adders of roots add 2 derivs so they're both deleted based on the rule.
+		if (d.children.length || !par || par.conc || par.derivParent)
+			return d.render.delete();
+		viewport.render.delete([d, par]);
+	}
 </script>
 
 <!-- Background -->
