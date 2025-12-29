@@ -103,8 +103,7 @@
 		if (p) {
 			addToFixer(p.children[d.childIndex]);
 			addToFixer(p.children[d.childIndex + (right * 2 - 1)]);
-		}
-		else {
+		} else {
 			addToFixer(d);
 			p = new Deriv();
 			p.render.bodyMuted = true;
@@ -121,8 +120,7 @@
 		// Apply fixer
 		tick().then(() => {
 			let offset = 0;
-			for (const [d, x] of fixer)
-				offset += x - d.render.x;
+			for (const [d, x] of fixer) offset += x - d.render.x;
 			offset /= fixer.length || 1;
 			d.root.render.moveBy(offset, 0);
 		});
