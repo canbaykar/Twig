@@ -139,7 +139,7 @@ export default class ViewportRenderState {
 					orphans.add(child);
 				else addOrphan(child);
 		}
-		for (const { deriv } of viewport.render.selection) addOrphan(deriv);
+		for (const deriv of derivs) addOrphan(deriv);
 
 		// Record positions to place orphans to when re-adding
 		const pos: [Deriv, [number, number]][] = [];
