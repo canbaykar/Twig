@@ -1,18 +1,20 @@
 <script module lang="ts">
 	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
 	import type { Viewport } from "$lib/state/viewport.svelte";
-	import { onDestroy } from "svelte";
-	import DerivC, { partListeners } from "./deriv/derivC.svelte";
+	import { onDestroy, onMount } from "svelte";
+	import DerivC, { keyboardListeners, partListeners } from "./deriv/derivC.svelte";
 	import DerivRenderState from "./deriv/renderState.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/bg.svelte";
 	import { DraggableType, Hover } from "./renderState.svelte";
 
-	type Listener<K extends keyof HTMLElementEventMap> 
+	type KeyboardListener<K extends keyof HTMLElementEventMap> 
+		= (ev: HTMLElementEventMap[K]) => void;
+	type PartListener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K] & { deriv: Deriv, part: string, section: string, updateSelecetion: boolean }) => void;
 	type LayoutListener <K extends keyof HTMLElementEventMap> 
-		= (ev: HTMLElementEventMap[K] & { deriv: Deriv, part: string, section: string, updateSelecetion: boolean }, listener: Listener<K>) => void;
+		= (ev: HTMLElementEventMap[K] & { deriv: Deriv, part: string, section: string, updateSelecetion: boolean }, listener: PartListener<K>) => void;
 
 	/** 
 	 * Type for different parts' listeners to be managed by viewport. (See part + uid 
@@ -25,6 +27,10 @@
 		[part: string]: {
 			[K in keyof HTMLElementEventMap]?: LayoutListener<K>;
 		};
+	};
+	/** Fired when using keyboard with viewport (panzoom element) focused */
+	export type KeyboardListeners = {
+		[K in keyof HTMLElementEventMap]?: KeyboardListener<K>;
 	};
 
 	/** Note: Modifies evt argument! (And returns it.) */
@@ -52,6 +58,20 @@
     // Lifecycle hooks
     mouse.init();
     onDestroy(() => DerivRenderState.onDestroy());
+
+	// Keyboard listeners
+	onMount(() => {
+		function handler(e: Event, opt?: any) {
+			if (document.activeElement === viewport.render.panzoomElement) // @ts-expect-error
+				keyboardListeners[e.type](e, opt);
+		}
+		for (const type in keyboardListeners)
+			viewport.render.element!.addEventListener(type, handler);
+		return () => {
+			for (const type in keyboardListeners)
+				viewport.render.element!.removeEventListener(type, handler);
+		};
+	});
 
 	// --- Implementations of hovered & Selected ---
     // Update hovered for both viewport and derivs if its changed. These are also used for
