@@ -3,8 +3,6 @@ import { Plugin, Selection, TextSelection, Transaction } from "prosemirror-state
 import type { Mappable } from "prosemirror-transform";
 import { Decoration, DecorationSet, type EditorView } from "prosemirror-view";
 
-const jsonID = 'multi';
-
 export class MultiSelection extends Selection {
 	readonly selections: Selection[];
 	readonly main: Selection | null;
@@ -189,10 +187,9 @@ export function fullyEmpty(s: Selection): boolean {
 	return !!(s as any)?.fullyEmpty;
 }
 
-// TODO: Uncomment the following after you're done with this file
-// bc it causes errors with hot-reload.
-// Register jsonID
-// Selection.jsonID(jsonID, MultiSelection); //////////////////////////////////////////////////////////////////////////
+// Register jsonID (throws error if already registered like on hot reload)
+const jsonID = 'gentzenMultiSelection';
+try { Selection.jsonID(jsonID, MultiSelection); } catch (e) {}
 
 // == Copied from prosemirror-view (browser.ts and capturekeys.ts) for handleKeyDown below ==
 const nav = typeof navigator != "undefined" ? navigator : null;
