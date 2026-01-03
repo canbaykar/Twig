@@ -11,7 +11,8 @@
 	// Bg
 	import { type BgType } from '../bg.svelte';
 	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
-	import { onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
+	import { symbolInputPlugin } from './symbolInput';
 	export { formulaBg };
 
 	const textSchema = new Schema({
@@ -68,6 +69,7 @@
 					doc,
 					plugins: [
 						multiSelectionPlugin,
+						symbolInputPlugin,
 					],
 				}),
 
