@@ -11,19 +11,19 @@
   /* Background */
   --color-bg: hsl(222.2 84% 4.9%);
   --color-bg-muted: hsl(217.2 32.6% 17.5%);
-  --color-bg-emphasis: black;
-  --color-bg-inset: black;
+  --color-bg-emphasis: hsl(209, 100%, 91%);
+  --color-bg-inset: hsl(223, 88%, 3%);
 
   /* Foreground */
   --color-fg: hsl(210 40% 98%);
   --color-fg-muted: hsl(215 20.2% 65.1%);
-  --color-fg-onEmphasis: black;
+  --color-fg-onEmphasis: hsl(223, 88%, 3%);
   --color-fg-link: black;
 
   /* Border */
   --color-border: hsl(217.2 32.6% 17.5%);
-  --color-border-muted: black;
-  --color-border-emphasis: black;
+  --color-border-muted: hsla(217, 23%, 35%, 1.00);
+  --color-border-emphasis: hsl(210 40% 98%);
 
   /* SEMANTIC */
   --color-fg-accent: black;
@@ -44,7 +44,7 @@
   --color-border-success-emphasis: black;
   --color-border-success-muted: black;
 
-  --color-fg-danger: black;
+  --color-fg-danger: hsl(0 72.2% 50.6%);
   --color-bg-danger-emphasis: hsl(0 72.2% 50.6%);
   --color-bg-danger-muted: hsl(0, 45%, 63%);
   --color-border-danger-emphasis: black;
