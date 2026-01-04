@@ -7,7 +7,7 @@
 	let profileRadioValue = $state('benoit');
 </script>
 
-<Menubar.Root class="absolute">
+<Menubar.Root class="absolute border-t-0 border-l-0 rounded-none rounded-br-md">
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
