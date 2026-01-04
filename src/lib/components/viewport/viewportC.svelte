@@ -117,6 +117,13 @@
 		}
 		callListener("dblclick", part, section, deriv, e);
 	}
+
+	// TODO: Remove this line when drag-n-drop starts to work without it again.
+	// This variable stopped reactively updating on DND (which uses mouseAnchor)
+	// package-lock.json change of commit ae32277110ca3b54ba9481261d4d5e9962c99c03
+	// is probably responsible for it. (Not even package.json! If I didn't miss anything.)
+	// Probably some svelte reactivity bug that'll be fixed soon.
+	$effect(() => { viewport.render.mouse.x });
 </script>
 
 {@render bgDependency()}
