@@ -1,6 +1,6 @@
 <script module lang="ts">
 	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
-	import type { Viewport } from "$lib/state/viewport.svelte";
+	import viewport from "$lib/state/viewport.svelte";
 	import { onDestroy, onMount } from "svelte";
 	import DerivC, { keyboardListeners, partListeners } from "./deriv/derivC.svelte";
 	import DerivRenderState from "./deriv/renderState.svelte";
@@ -47,12 +47,6 @@
 </script>
 
 <script lang="ts">
-    interface Props {
-        viewport: Viewport;
-    }
-    
-    let { viewport }: Props = $props();
-
     viewport.detachAll();
     addExampleProof();
 
