@@ -126,12 +126,12 @@ export default class ViewportRenderState {
 		this.deselect(derivs.flatMap(deriv => [{ deriv, bar: true }, { deriv, bar: false }]));
 	}
 	/** Use this or (or deriv.render.delete) instead of detach, detaches and deselects! */
-	shiftDelete(derivs: Deriv[]) {
+	delete(derivs: Deriv[]) {
 		this.deselectPairs(derivs);
 		derivs.forEach(d => d.detach());
 	}
 	/** Re-adds not-in-array children of derivs in array */
-	delete(derivs: Deriv[]) {
+	shiftDelete(derivs: Deriv[]) {
 		const set = new Set(derivs);
 		const orphans = new Set<Deriv>();
 		function addOrphan(deleted: Deriv) {
@@ -146,7 +146,7 @@ export default class ViewportRenderState {
 		orphans.forEach(orp => pos.push([orp, orp.render.xy]));
 
 		// Remove the selected
-		this.shiftDelete(derivs);
+		this.delete(derivs);
 
 		// Re-add
 		for (const [orp, [x, y]] of pos) {
@@ -155,12 +155,12 @@ export default class ViewportRenderState {
 		}
 	}
 	/** Delete selection with all their children */
-	shiftDeleteSelection() {
-		this.shiftDelete(this.selection.map(({ deriv }) => deriv));
-	}
-	/** Deletes selection but re-adds non-selected children of selected */
 	deleteSelection() {
 		this.delete(this.selection.map(({ deriv }) => deriv));
+	}
+	/** Deletes selection but re-adds non-selected children of selected */
+	shiftDeleteSelection() {
+		this.shiftDelete(this.selection.map(({ deriv }) => deriv));
 	}
 }
 

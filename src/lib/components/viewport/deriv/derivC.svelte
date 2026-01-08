@@ -157,8 +157,8 @@
 		) return;
 		// Side adders of roots add 2 derivs so they're both deleted based on the rule.
 		if (d.children.length || !par || par.conc || par.derivParent)
-			return d.render.delete();
-		viewport.render.delete([d, par]);
+			return d.render.shiftDelete();
+		viewport.render.shiftDelete([d, par]);
 	}
 </script>
 

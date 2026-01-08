@@ -292,13 +292,13 @@ export default class DerivRenderState {
             this.deriv.root.attach(viewport);
 	}
 
-	/** Use this (or viewport.render.delete) instead of detach, detaches and deselects! */
-	shiftDelete() {
-		viewport.render.shiftDelete([this.deriv]);
-	}
-	/** Re-adds children in place. Also see .shiftDelete() */
+	/** Use this (or viewport.render.shiftDelete) instead of detach, detaches and deselects! */
 	delete() {
 		viewport.render.delete([this.deriv]);
+	}
+	/** Re-adds children in place. Also see .delete() */
+	shiftDelete() {
+		viewport.render.shiftDelete([this.deriv]);
 	}
 
     // --- ProseMirror ---
