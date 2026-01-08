@@ -1,18 +1,7 @@
 import ViewportRenderState from "$lib/components/viewport/renderState.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
-import type Deriv from "./deriv.svelte";
+import Deriv from "./deriv.svelte";
 
-export type { Viewport };
-/** Works as the root element of everything in panzoom, like document in HTML */
-class Viewport extends Parent {
-    declare readonly children: Deriv[];
-
-    /** Render state */
-    render = new ViewportRenderState();
-}
-
-const viewport = new Viewport();
-export default viewport;
 
 // (RecursivePartial) Thanks to stackoverflow.com/a/51365037/13217729
 /** 
@@ -21,8 +10,31 @@ export default viewport;
  * interface. Use for viewport's children.
  */
 export type Serial<T> = {
-    [P in keyof T]?:
-      T[P] extends (infer U)[] ? Serial<U>[] :
-      T[P] extends object | undefined ? Serial<T[P]> :
-      T[P];
-  };
+	[P in keyof T]?:
+	T[P] extends (infer U)[] ? Serial<U>[] :
+	T[P] extends object | undefined ? Serial<T[P]> :
+	T[P];
+};
+
+export type { Viewport };
+/** Works as the root element of everything in panzoom, like document in HTML */
+class Viewport extends Parent {
+    declare readonly children: Deriv[];
+
+    /** Render state */
+    render = new ViewportRenderState();
+
+	serialize(): Serial<Viewport> {
+		return {
+			children: this.children.map(c => c.serialize()),
+		};
+	}
+	deserialize(s: Serial<Viewport>) {
+		this.detachAll();
+		if (s.children)
+			this.attachChildren(s.children.map(c => new Deriv(c)));
+	}
+}
+
+const viewport = new Viewport();
+export default viewport;

@@ -201,7 +201,15 @@ export default class DerivRenderState {
         this.deriv = deriv;
         if (s.xTranslate) this.xTranslate = s.xTranslate;
         if (s.yTranslate) this.yTranslate = s.yTranslate;
+		if (s.bodyMuted) this.bodyMuted = s.bodyMuted;
     }
+	serialize(): Serial<DerivRenderState> {
+		return {
+			xTranslate: this.xTranslate,
+			yTranslate: this.yTranslate,
+			bodyMuted: this.bodyMuted,
+		};
+	}
 
 	// --- Part + UID System ---
 	// Viewport element has data-part='viewport' and for derivs:

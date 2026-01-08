@@ -43,6 +43,14 @@ export default class Deriv extends Parent {
 		this.logic = new LogicState(this);
 		this.render = new DerivRenderState(this, s.render ?? {});
 	}
+	serialize(): Serial<Deriv> {
+		return {
+			conc: this.conc,
+			children: this.children.map(c => c.serialize()),
+			logic: this.logic.serialize(),
+			render: this.render.serialize(),
+		};
+	}
 
 	/** Util for crawling Derivs to find the first one that satisfies fn
 	 * 	The ordering isn't symmetric so going backwards in the ordering and going forwards in the reversed ordering are different.

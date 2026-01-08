@@ -3,6 +3,7 @@ import { defaultDownPropogateAttrs, defaultRootUpPropogateAttrs, defaultUpPropog
 import grammar, { Formula } from "./grammar";
 import type { AttributeRecord } from "./data";
 import Rule, { type RuleMatch } from "./rule";
+import type { Serial } from "../viewport.svelte";
 
 export class LogicError extends Error {
     constructor(message?: string, options?: ErrorOptions) {
@@ -101,6 +102,10 @@ export class LogicState {
     constructor(deriv: Deriv) {
         this.deriv = deriv;
     }
+	// For consistency for now, logic will have serializable state later
+	serialize(): Serial<LogicState> {
+		return {};
+	}
 }
 
 // Will consider preferences when choosing in the future
