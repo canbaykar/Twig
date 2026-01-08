@@ -24,6 +24,24 @@
 				else viewport.render.deleteSelection();
 			}
 		},
+		copy(e) {
+			const sel = viewport.render.selection;
+			if (!sel.length) return;
+			e.clipboardData?.setData(
+				'application/json', 
+				JSON.stringify(viewport.render.serializeSelection())
+			);
+			e.preventDefault();
+		},
+		paste(e) {
+			if (!e.clipboardData) return;
+			const str = e.clipboardData.getData('application/json');
+			if (!str) return;
+			const serial = JSON.parse(str);
+			if (!(serial instanceof Array)) return;
+			viewport.render.deselectAll();
+			viewport.render.deserializeSelection(serial);
+		}
 	};
 
 	export const partListeners: PartListeners = {

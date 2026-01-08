@@ -2,7 +2,7 @@ import { Child, Parent } from "$lib/utils/parent.svelte";
 import type { Component, ComponentProps } from "svelte";
 import { fallbackConverter } from "./panzoom/panzoom.svelte";
 import { mouse } from "$lib/utils/interact/mouse.svelte";
-import type Deriv from "$lib/state/deriv.svelte";
+import Deriv from "$lib/state/deriv.svelte";
 import viewport, { type Serial } from "$lib/state/viewport.svelte";
 
 export enum DraggableType {
@@ -113,11 +113,12 @@ export default class ViewportRenderState {
 			bar ? deriv.render.barSelected  = true
 				: deriv.render.bodySelected = true;
 	}
-	addToSelection(deriv: Deriv, bar = false) {
+	// Used in DerivRenderState constructor so sometimes deriv.render is undefined
+	addToSelection(deriv: Deriv, bar = false, _render = deriv.render) {
 		if (this.selection.find(s => s.deriv === deriv && s.bar === bar)) return;
 		this.selection = [...this.selection, { deriv, bar }];
-		bar ? deriv.render.barSelected  = true
-			: deriv.render.bodySelected = true;
+		bar ? _render.barSelected  = true
+			: _render.bodySelected = true;
 	}
 	updateSelectionOnInteraction(e: MouseEvent, deriv?: Deriv | null, bar = false) {
 		if (e.shiftKey || e.altKey)
@@ -137,6 +138,9 @@ export default class ViewportRenderState {
 	/** Deselect both bar and self of each deriv */
 	deselectPairs(derivs: Deriv[]) {
 		this.deselect(derivs.flatMap(deriv => [{ deriv, bar: true }, { deriv, bar: false }]));
+	}
+	deselectAll() {
+		this.deselect(this.selection);
 	}
 	/** Use this or (or deriv.render.delete) instead of detach, detaches and deselects! */
 	delete(derivs: Deriv[]) {
@@ -175,6 +179,59 @@ export default class ViewportRenderState {
 	shiftDeleteSelection() {
 		this.shiftDelete(this.selection.map(({ deriv }) => deriv));
 	}
+	/** Don't forget to reattach the output to viewport if manually deserializing to prevent selected-but-detached derivs. */
+	serializeSelection(): Serial<Deriv>[] {
+		// If both a parent and one of its children are selected, we should only
+		// add the parent to output, bc serializing loses equality info, which
+		// may duplicate the child...
+		const sel = this.selection.map(({ deriv }) => {
+			// Find the lowest parent with selection ('selection root')
+			let sRoot = deriv;
+			let curr = deriv;
+			while (curr = curr.derivParent as Deriv)
+				if (curr.render.anySelected) sRoot = curr;
+			return sRoot;
+		}); 
+		// Then remove duplicates and serialize (including selection state)
+		return [...new Set(sel)].map(d => {
+			const s = d.serialize(true);
+			// Will be considered detached from parent, so its pos. must be as if attached to viewport
+			if (d.derivParent) {
+				s.render!.xTranslate = d.render.x;
+				s.render!.yTranslate = d.render.y;
+			}
+			return s;
+		});
+	}
+	/** Reattaches derivs (with restored selection) to prevent selected-but-detached derivs! 
+	 *  Displacement feature offsets attached derivs if there's a deriv in it's paste location. */
+	deserializeSelection(s: Serial<Deriv>[], displacement = true) {
+		// For displacement feature to only consider derivs existing at this stage as occupiers.
+		const oldLen = viewport.children.length;
+		return s.map(sd => {
+			const d = new Deriv(sd);
+			const [x, y] = d.render.xy;
+			if (displacement) { // If offset location is also occupied, offset more, repeat
+				let offset = 0, limit = 10;
+				while (occupied(x + offset, y - offset, viewport.children, oldLen) || limit === 0) {
+					offset += 100; limit--;
+				}
+				if (offset) d.render.moveTo(x + offset, y - offset);
+			}
+			d.attach(viewport);
+			return d;
+		});
+	}
+}
+
+/** Utility to check if there's a deriv at x, y. Only consider upto length... */
+function occupied(x: number, y: number, arr: Deriv[], length = arr.length) {
+	for (let i = 0; i < length; i++) {
+		const d = arr[i];
+		const [x_, y_] = d.render.xy;
+		if ((x === x_ && y === y_) || occupied(x, y, d.children)) return true;
+	}
+	return false;
 }
 
 // ---- Popups ----

@@ -3,7 +3,7 @@ import viewport, { type Serial } from "$lib/state/viewport.svelte";
 import { treeState, type TreeState } from "./treeState";
 import { DT } from "../../../../DT";
 import { browser } from "$app/environment";
-import { onDestroy } from "svelte";
+import { onDestroy, tick } from "svelte";
 import Rule from "$lib/state/logic/rule";
 import { Hover } from "../renderState.svelte";
 import type { EditorView } from "prosemirror-view";
@@ -157,6 +157,7 @@ export default class DerivRenderState {
     static maintainWidth(textGetter: () => any, widthUpdater: () => void) {
         $effect(() => { textGetter(); widthUpdater(); });
         onFontLoad(widthUpdater);
+        tick().then(() => widthUpdater());
     }
     
 	// --- DND System ---
@@ -197,18 +198,28 @@ export default class DerivRenderState {
                 : null;
     }
 
+    /** If s has selection state, make sure resulting selected derivs' roots are attached to viewport! */
     constructor(deriv: Deriv, s: Serial<DerivRenderState> = {}) {
         this.deriv = deriv;
         if (s.xTranslate) this.xTranslate = s.xTranslate;
         if (s.yTranslate) this.yTranslate = s.yTranslate;
 		if (s.bodyMuted) this.bodyMuted = s.bodyMuted;
+        // Sync selection state with the appropriate methods.
+        if (s.bodySelected) viewport.render.addToSelection(deriv, false, this);
+        if (s.barSelected)  viewport.render.addToSelection(deriv,  true, this);
     }
-	serialize(): Serial<DerivRenderState> {
-		return {
+    /** If includeSelectionState is true, attach to viewport when deserializing to prevent selected-but-detached derivs. */
+	serialize(includeSelectionState = false): Serial<DerivRenderState> {
+		const s = {
 			xTranslate: this.xTranslate,
 			yTranslate: this.yTranslate,
 			bodyMuted: this.bodyMuted,
-		};
+		}
+        return !includeSelectionState ? s : {
+            ...s,
+            bodySelected: this.bodySelected,
+            barSelected: this.barSelected,
+        };
 	}
 
 	// --- Part + UID System ---

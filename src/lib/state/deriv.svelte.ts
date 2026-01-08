@@ -34,7 +34,8 @@ export default class Deriv extends Parent {
 	readonly render: DerivRenderState;
 	readonly logic: LogicState;
 
-	/** @param s Serialized Deriv */
+	/** If s has selection state, make sure resulting selected derivs' roots are attached to viewport!
+	 * @param s Serialized Deriv */
 	constructor(s: Serial<Deriv> = {}) {
 		super();
 		if (s.conc) this.conc = s.conc;
@@ -43,12 +44,13 @@ export default class Deriv extends Parent {
 		this.logic = new LogicState(this);
 		this.render = new DerivRenderState(this, s.render ?? {});
 	}
-	serialize(): Serial<Deriv> {
+    /** If includeSelectionState is true, attach to viewport when deserializing to prevent selected-but-detached derivs. */
+	serialize(includeSelectionState = false): Serial<Deriv> {
 		return {
 			conc: this.conc,
 			children: this.children.map(c => c.serialize()),
 			logic: this.logic.serialize(),
-			render: this.render.serialize(),
+			render: this.render.serialize(includeSelectionState),
 		};
 	}
 
