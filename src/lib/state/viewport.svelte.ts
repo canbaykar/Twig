@@ -31,8 +31,8 @@ class Viewport extends Parent {
 	}
 	deserialize(s: Serial<Viewport>) {
 		this.detachAll();
-		if (s.children)
-			this.attachChildren(s.children.map(c => new Deriv(c)));
+		if (s.children) this.attachChildren(s.children.map(c => new Deriv(c)));
+		if (s.render) this.render.deserialize(s.render);
 	}
 }
 

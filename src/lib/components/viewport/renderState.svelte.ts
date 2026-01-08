@@ -3,7 +3,7 @@ import type { Component, ComponentProps } from "svelte";
 import { fallbackConverter } from "./panzoom/panzoom.svelte";
 import { mouse } from "$lib/utils/interact/mouse.svelte";
 import type Deriv from "$lib/state/deriv.svelte";
-import viewport from "$lib/state/viewport.svelte";
+import viewport, { type Serial } from "$lib/state/viewport.svelte";
 
 export enum DraggableType {
 	None, Panzoom, Deriv, Bar
@@ -33,6 +33,19 @@ export default class ViewportRenderState {
     x = $state(0);
     y = $state(0);
     scale = $state(1);
+
+	serialize(): Serial<ViewportRenderState> {
+		return {
+			x: this.x,
+			y: this.y,
+			scale: this.scale,
+		};
+	}
+	deserialize(s: Serial<ViewportRenderState>) {
+		this.x = s.x ?? 0;
+		this.y = s.y ?? 0;
+		if (s.scale) this.scale = s.scale;
+	}
 
 	/** ($state) */
 	element: HTMLElement | null = $state(null);
