@@ -210,66 +210,66 @@ export function addExampleProof() {
 		})
 	);
 
-	viewport.attachChild(
-		new Deriv({
-			conc: 'a',
-			render: {
-				xTranslate: 0,
-				yTranslate: 6000
-			},
-			children: [
-				// ---- Right leaning stack ----
-				{
-					conc: 'b',
-					children: [
-						{ conc: 'c' },
-						{
-							conc: 'd',
-							children: [
-								{ conc: 'e' },
-								{
-									conc: 'f',
-									children: [
-										{ conc: 'g' },
-										{
-											conc: 'h',
-											children: [{ conc: 'i' }, { conc: 'j' }]
-										}
-									]
-								}
-							]
-						}
-					]
-				},
+	// viewport.attachChild(
+	// 	new Deriv({
+	// 		conc: 'a',
+	// 		render: {
+	// 			xTranslate: 0,
+	// 			yTranslate: 6000
+	// 		},
+	// 		children: [
+	// 			// ---- Right leaning stack ----
+	// 			{
+	// 				conc: 'b',
+	// 				children: [
+	// 					{ conc: 'c' },
+	// 					{
+	// 						conc: 'd',
+	// 						children: [
+	// 							{ conc: 'e' },
+	// 							{
+	// 								conc: 'f',
+	// 								children: [
+	// 									{ conc: 'g' },
+	// 									{
+	// 										conc: 'h',
+	// 										children: [{ conc: 'i' }, { conc: 'j' }]
+	// 									}
+	// 								]
+	// 							}
+	// 						]
+	// 					}
+	// 				]
+	// 			},
 
-				// ---- Middle ----
-				{ conc: 'k' },
-				{ conc: 'l' },
+	// 			// ---- Middle ----
+	// 			{ conc: 'k' },
+	// 			{ conc: 'l' },
 
-				// ---- Left leaning stack ----
-				{
-					conc: 'm',
-					children: [
-						{
-							conc: 'n',
-							children: [
-								{
-									conc: 'o',
-									children: [
-										{
-											conc: 'p',
-											children: [{ conc: 'q' }, { conc: 'r' }]
-										},
-										{ conc: 's' }
-									]
-								},
-								{ conc: 't' }
-							]
-						},
-						{ conc: 'u' }
-					]
-				}
-			]
-		})
-	);
+	// 			// ---- Left leaning stack ----
+	// 			{
+	// 				conc: 'm',
+	// 				children: [
+	// 					{
+	// 						conc: 'n',
+	// 						children: [
+	// 							{
+	// 								conc: 'o',
+	// 								children: [
+	// 									{
+	// 										conc: 'p',
+	// 										children: [{ conc: 'q' }, { conc: 'r' }]
+	// 									},
+	// 									{ conc: 's' }
+	// 								]
+	// 							},
+	// 							{ conc: 't' }
+	// 						]
+	// 					},
+	// 					{ conc: 'u' }
+	// 				]
+	// 			}
+	// 		]
+	// 	})
+	// );
 }
