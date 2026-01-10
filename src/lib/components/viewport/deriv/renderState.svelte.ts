@@ -284,7 +284,7 @@ export default class DerivRenderState {
 	/** ($derived) Is body selected or hovered? */
     readonly bodyAwake = $derived.by(() => this.bodySelected || this.hoveredSection === 'body');
 	/** ($derived) Is bar selected or hovered? */
-    readonly barAwake = $derived.by(() => this.bodySelected || this.hoveredSection === 'bar');
+    readonly barAwake = $derived.by(() => this.barSelected || this.hoveredSection === 'bar');
 	/** ($derived) Deriv selected or hovered? */
     readonly awake = $derived.by(() => this.bodySelected || this.barSelected || !!this.hoveredPart);
 	
