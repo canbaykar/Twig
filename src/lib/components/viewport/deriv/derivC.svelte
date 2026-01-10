@@ -41,6 +41,10 @@
 			if (!(serial instanceof Array)) return;
 			viewport.render.deselectAll();
 			viewport.render.deserializeSelection(serial);
+		},
+		cut(e) {
+			keyboardListeners.copy!(e);
+			viewport.render.deleteSelection();
 		}
 	};
 
