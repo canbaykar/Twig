@@ -96,14 +96,14 @@
 
 <!-- Draggable button, grabbed when clicked -->
 <div
-	class="wrapper bottom-0 translate-x-[-50%] h-(--DERIV-LINE-HEIGHT) leading-(--DERIV-LINE-HEIGHT) whitespace-nowrap cursor-auto overflow-hidden"
+	class="wrapper bottom-0 translate-x-[-50%] h-(--DERIV-LINE-HEIGHT) leading-(--DERIV-LINE-HEIGHT) whitespace-nowrap cursor-auto"
 	bind:this={element}
 	tabindex="-1"
 >
 	<!-- Prosemirror element -->
 	<div 
 		bind:this={editorElement}
-		class="relative! **:relative! caret-transparent selection:bg-transparent"
+		class="relative! **:relative! caret-transparent selection:bg-transparent overflow-hidden"
 		class:opacity-25={deriv.render.bodyMuted}
 		data-part="body_formula"
 	>
