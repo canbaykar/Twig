@@ -27,6 +27,7 @@ class Viewport extends Parent {
 	serialize(): Serial<Viewport> {
 		return {
 			children: this.children.map(c => c.serialize()),
+			render: this.render.serialize(),
 		};
 	}
 	deserialize(s: Serial<Viewport>) {
@@ -38,6 +39,8 @@ class Viewport extends Parent {
 	reset() {
 		this.deserialize({});
 	}
+
+	// save
 }
 
 const viewport = new Viewport();
