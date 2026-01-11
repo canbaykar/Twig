@@ -46,6 +46,9 @@ export default class ViewportRenderState {
 		this.y = s.y ?? 0;
 		if (s.scale) this.scale = s.scale;
 	}
+	reset() {
+		this.deserialize({});
+	}
 
 	/** ($state) */
 	element: HTMLElement | null = $state(null);

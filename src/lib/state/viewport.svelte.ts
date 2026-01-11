@@ -33,6 +33,10 @@ class Viewport extends Parent {
 		this.detachAll();
 		if (s.children) this.attachChildren(s.children.map(c => new Deriv(c)));
 		if (s.render) this.render.deserialize(s.render);
+		else this.render.reset();
+	}
+	reset() {
+		this.deserialize({});
 	}
 }
 
