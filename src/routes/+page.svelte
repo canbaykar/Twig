@@ -7,5 +7,6 @@
 
 {#if browser}
 	<ViewportC />
-	<Menubar />
 {/if}
+
+<Menubar />
