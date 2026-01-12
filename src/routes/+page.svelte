@@ -3,7 +3,10 @@
 	import ViewportC from "$lib/components/viewport/viewportC.svelte";
 	import { browser } from '$app/environment';
 	import Menubar from '$lib/components/menubar/menubar.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
 </script>
+
+<Toaster position="top-center" />
 
 {#if browser}
 	<ViewportC />
