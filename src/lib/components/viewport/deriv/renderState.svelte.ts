@@ -191,10 +191,10 @@ export default class DerivRenderState {
     private bgColor(val: any, awake: boolean): string | null {
         return val instanceof Error 
             ? awake
-                ? 'var(--color-bg-danger-muted)'
-                : 'var(--color-bg-danger-emphasis)'
+                ? 'var(--color-deriv-bg-danger-hover)'
+                : 'var(--color-deriv-bg-danger)'
             : awake
-                ? 'var(--color-bg-muted)'
+                ? 'var(--color-deriv-bg-hover)'
                 : null;
     }
 

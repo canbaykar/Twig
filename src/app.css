@@ -10,50 +10,90 @@
   /* NEUTRAL */
   /* Background */
   --color-bg: hsl(222.2 84% 4.9%);
-  --color-bg-muted: hsl(217.2 32.6% 17.5%);
-  --color-bg-emphasis: hsl(209, 100%, 91%);
+  --color-bg-muted: hsl(219, 39%, 13%);
+  --color-bg-emphasis: hsl(220, 30%, 26%);
   --color-bg-inset: hsl(223, 88%, 3%);
 
   /* Foreground */
   --color-fg: hsl(210 40% 98%);
-  --color-fg-muted: hsl(215 20.2% 65.1%);
-  --color-fg-onEmphasis: hsl(223, 88%, 3%);
+  --color-fg-muted: hsl(215, 20%, 56%);
+  --color-fg-onEmphasis: hsl(210 40% 98%);
   --color-fg-link: black;
 
   /* Border */
   --color-border: hsl(217.2 32.6% 17.5%);
-  --color-border-muted: hsla(217, 23%, 35%, 1.00);
-  --color-border-emphasis: hsl(210 40% 98%);
+  --color-border-muted: hsl(219, 28%, 24%);
+  --color-border-emphasis: hsl(210, 44%, 74%);
 
   /* SEMANTIC */
+  /* Accent */
   --color-fg-accent: black;
   --color-bg-accent-emphasis: black;
   --color-bg-accent-muted: black;
   --color-border-accent-emphasis: black;
   --color-border-accent-muted: black;
 
+  /* Warning */
   --color-fg-warning: black;
   --color-bg-warning-emphasis: black;
   --color-bg-warning-muted: black;
   --color-border-warning-emphasis: black;
   --color-border-warning-muted: black;
 
+  /* Success */
   --color-fg-success: black;
   --color-bg-success-emphasis: black;
   --color-bg-success-muted: black;
   --color-border-success-emphasis: black;
   --color-border-success-muted: black;
 
+  /* Danger */
   --color-fg-danger: hsl(0 72.2% 50.6%);
   --color-bg-danger-emphasis: hsl(0 72.2% 50.6%);
-  --color-bg-danger-muted: hsl(0, 45%, 63%);
-  --color-border-danger-emphasis: black;
-  --color-border-danger-muted: black;
+  --color-bg-danger-muted: hsl(0, 48%, 18%);
+  --color-border-danger-emphasis: hsl(0 72.2% 50.6%);
+  --color-border-danger-muted: hsl(0 72.2% 50.6%);
 
   /* --- PATTERN --- */
-  /* (Only universal patterns like focus are here.) */
+  /* Control > Bg */
+  --color-control-bg: hsl(219, 39%, 13%);
+  --color-control-bg-hover: hsl(220, 32%, 28%);
+  --color-control-bg-active: hsl(220, 29%, 30%);
+  --color-control-bg-disabled: hsl(220, 29%, 30%);
+  /* Control > Border */
+  --color-control-border: hsl(220, 32%, 24%);
+  --color-control-border-hover: hsl(220, 32%, 24%);
+  --color-control-border-active: hsl(220, 33%, 61%);
+  --color-control-border-disabled: hsl(221, 23%, 24%);
+  /* Control > Fg */
+  --color-control-fg: hsl(210 40% 98%);
+  --color-control-fg-hover: hsl(210 40% 98%);
+  --color-control-fg-disabled: hsl(215, 20%, 56%);
+  /* Control > Overlay (control-transparent-bgColor in Primer) */
+  --color-control-overlay: transparent;
+  --color-control-overlay-hover: hsla(210, 95%, 85%, 0.10);
+  --color-control-overlay-active: hsla(211, 33%, 69%, 0.15);
+  --color-control-overlay-disabled: hsla(211, 33%, 69%, 0.15);
+  /* Control > Inverted (not in Primer) */
+  --color-control-inverted: var(--color-fg);
+  --color-control-inverted-hover: hsl(215, 32%, 72%);
+  --color-control-inverted-active: var(--color-fg-muted);
+  --color-control-inverted-disabled: var(--color-fg-muted);
+  --color-control-fg-inverted: var(--color-bg);
+
   /* Focus */
-  --color-focus-outline: black;
+  --color-focus-outline: hsl(219, 89%, 48%);
+
+  /* Deriv (use at 75% opacity) */
+  --color-deriv-bg-hover: hsl(219, 35%, 16%);
+  --color-deriv-bg-accent: black;
+  --color-deriv-bg-accent-hover: black;
+  --color-deriv-bg-warning: black;
+  --color-deriv-bg-warning-hover: black;
+  --color-deriv-bg-success: black;
+  --color-deriv-bg-success-hover: black;
+  --color-deriv-bg-danger: hsl(0 72.2% 50.6%);
+  --color-deriv-bg-danger-hover: hsl(2, 92%, 66%);
 
   /* --- FONT --- */
   --font-math: 'M PLUS 1p', var(--font-sans);

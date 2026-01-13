@@ -13,7 +13,7 @@
 	bind:ref
 	data-slot="menubar-trigger"
 	class={cn(
-		"focus:bg-bg-muted focus:text-fg data-[state=open]:bg-bg-muted data-[state=open]:text-fg flex items-center rounded-sm px-2 py-1 text-sm font-medium outline-hidden select-none",
+		"focus:bg-control-bg-hover focus:text-control-fg-hover data-[state=open]:bg-control-bg-hover data-[state=open]:text-control-fg-hover flex items-center rounded-sm px-2 py-1 text-sm font-medium outline-hidden select-none",
 		className
 	)}
 	{...restProps}

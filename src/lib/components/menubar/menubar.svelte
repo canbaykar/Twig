@@ -39,7 +39,7 @@
 			<Menubar.Item>
 				Undo <Menubar.Shortcut>⌘Z</Menubar.Shortcut>
 			</Menubar.Item>
-			<Menubar.Item>
+			<Menubar.Item disabled>
 				Redo <Menubar.Shortcut>⇧⌘Z</Menubar.Shortcut>
 			</Menubar.Item>
 			<Menubar.Separator />
@@ -69,7 +69,7 @@
 			<Menubar.Item inset>
 				Reload <Menubar.Shortcut>⌘R</Menubar.Shortcut>
 			</Menubar.Item>
-			<Menubar.Item inset>
+			<Menubar.Item inset variant="destructive">
 				Force Reload <Menubar.Shortcut>⇧⌘R</Menubar.Shortcut>
 			</Menubar.Item>
 			<Menubar.Separator />

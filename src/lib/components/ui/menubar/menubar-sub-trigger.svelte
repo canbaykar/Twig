@@ -19,7 +19,7 @@
 	data-slot="menubar-sub-trigger"
 	data-inset={inset}
 	class={cn(
-		"focus:bg-bg-muted focus:text-fg data-[state=open]:bg-bg-muted data-[state=open]:text-fg flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[inset]:ps-8",
+		"focus:bg-control-bg focus:text-control-fg data-[state=open]:bg-control-bg-hover data-[state=open]:text-control-fg flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[inset]:ps-8",
 		className
 	)}
 	{...restProps}
