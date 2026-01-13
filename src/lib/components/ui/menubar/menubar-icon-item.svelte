@@ -11,7 +11,7 @@
 		children: childrenProp,
 		...restProps
 	}: MenubarPrimitive.ItemProps & {
-		/** Snippet with icon preferably from @lucide/svelte/icons/ */
+		/** Snippet with icon like <Icon icon="lucide:minus" class="size-4" /> (from @iconify/svelte) */
 		icon?: Snippet;
 		children?: Snippet;
 		variant?: 'default' | 'destructive';
