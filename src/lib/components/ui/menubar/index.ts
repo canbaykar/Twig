@@ -15,6 +15,7 @@ import Trigger from "./menubar-trigger.svelte";
 import Label from "./menubar-label.svelte";
 import GroupHeading from "./menubar-group-heading.svelte";
 import Portal from "./menubar-portal.svelte";
+import IconItem from "./menubar-icon-item.svelte";
 
 export {
 	Root,
@@ -34,6 +35,7 @@ export {
 	Label,
 	GroupHeading,
 	Portal,
+	IconItem,
 	//
 	Root as Menubar,
 	CheckboxItem as MenubarCheckboxItem,
@@ -52,4 +54,5 @@ export {
 	Label as MenubarLabel,
 	GroupHeading as MenubarGroupHeading,
 	Portal as MenubarPortal,
+	IconItem as MenubarIconItem,
 };
