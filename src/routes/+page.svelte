@@ -6,7 +6,7 @@
 	import { Toaster } from '$lib/components/ui/sonner';
 </script>
 
-<Toaster position="top-center" />
+<Toaster position="bottom-center" />
 
 {#if browser}
 	<ViewportC />
