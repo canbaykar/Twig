@@ -39,8 +39,6 @@ class Viewport extends Parent {
 	reset() {
 		this.deserialize({});
 	}
-
-	// save
 }
 
 const viewport = new Viewport();
