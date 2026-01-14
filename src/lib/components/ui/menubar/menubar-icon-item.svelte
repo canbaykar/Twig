@@ -23,7 +23,7 @@
 	data-slot="menubar-item"
 	data-variant={variant}
 	class={cn(
-		"focus:bg-control-bg-hover focus:text-control-fg-hover data-[variant=destructive]:text-fg-danger data-[variant=destructive]:focus:bg-bg-danger-emphasis data-[variant=destructive]:focus:text-fg-onEmphasis data-[variant=destructive]:*:[svg]:!text-fg-danger [&_svg:not([class*='text-'])]:text-control-fg-disabled data-[disabled]:text-control-fg-disabled relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 ps-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+		"focus:bg-control-bg-hover focus:text-control-fg-hover data-[variant=destructive]:text-fg-danger data-[variant=destructive]:focus:bg-bg-danger-emphasis data-[variant=destructive]:focus:text-fg-onEmphasis data-[variant=destructive]:*:[svg]:!text-fg-danger data-[disabled]:text-control-fg-disabled relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 ps-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 		className
 	)}
 	{...restProps}
