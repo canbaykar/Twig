@@ -32,6 +32,12 @@
 				{/snippet}
 				Save As…
 			</Menubar.IconItem>
+			<Menubar.IconItem onclick={download}>
+				{#snippet icon()}
+					<Icon icon="lucide:download" />
+				{/snippet}
+				Save to Downloads
+			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
 	<Menubar.Menu>
@@ -88,4 +94,10 @@
 			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
+
+	<!-- Separator -->
+	<div class="bg-border w-px h-9"></div>
+
+	<!-- File name -->
+	<MenubarInput />
 </Menubar.Root>
