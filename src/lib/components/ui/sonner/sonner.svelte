@@ -45,7 +45,7 @@
 	:global([data-sonner-toast]) :global([data-description]) {
 		font-weight: 400;
 		line-height: 1.4;
-		color: var(--color-control-fg-disabled);
+		color: var(--color-control-fg-muted);
 	}
 
 	:global([data-rich-colors='true'][data-sonner-toast]

@@ -68,6 +68,7 @@
   /* Control > Fg */
   --color-control-fg: hsl(210 40% 98%);
   --color-control-fg-hover: hsl(210 40% 98%);
+  --color-control-fg-muted: hsl(214, 30%, 73%); /* e.g. Input placeholder */ 
   --color-control-fg-disabled: hsl(215, 20%, 56%);
   /* Control > Overlay (control-transparent-bgColor in Primer) */
   --color-control-overlay: transparent;
@@ -79,7 +80,9 @@
   --color-control-inverted-hover: hsl(215, 32%, 72%);
   --color-control-inverted-active: var(--color-fg-muted);
   --color-control-inverted-disabled: var(--color-fg-muted);
-  --color-control-fg-inverted: var(--color-bg);
+  --color-control-inverted-fg: var(--color-bg);
+  --color-control-inverted-fg-muted: var(--color-bg-muted);
+  --color-control-inverted-fg-disabled: var(--color-bg-emphasis);
 
   /* Focus */
   --color-focus-outline: hsl(219, 89%, 48%);
