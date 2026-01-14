@@ -12,7 +12,7 @@
 	}
 
 	let {
-		placeholder = "Untitled Project",
+		placeholder = "",
 		value = $bindable(""),
 	}: Props = $props();
 </script>
@@ -23,7 +23,7 @@
 	data-placeholder={placeholder}
 >
 	<Input 
-		class="bg-transparent border-transparent h-7 inline-grid" 
+		class="bg-transparent border-transparent h-7 inline-grid text-sm" 
 		{placeholder}
 		oninput={({ target: t }) => { // @ts-ignore
 			return t.parentNode.dataset.value = t.value || t.placeholder;
