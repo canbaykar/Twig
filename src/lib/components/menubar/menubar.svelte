@@ -38,6 +38,7 @@
 			input.accept = pickerOpt.accept;
 			input.onchange = async e => {
 				const file = input.files![0];
+				name = file.name;
 				viewport.deserialize(JSON.parse(await file.text()));
 			};
 			input.click();
@@ -46,6 +47,7 @@
 		// @ts-expect-error
 		[handle] = await window.showOpenFilePicker(pickerOpt);
 		const file = await handle!.getFile();
+		name = file.name;
 		viewport.deserialize(JSON.parse(await file.text()));
 	}
 	
