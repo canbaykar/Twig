@@ -91,15 +91,17 @@
 				Open
 			</Menubar.IconItem>
 			<Menubar.Separator />
-			<Menubar.IconItem onclick={save} disabled={fallbackMode}>
-				{#snippet icon()}
-					<Icon icon="lucide:save" />
-				{/snippet}
-				Save
-			</Menubar.IconItem>
-			<Menubar.IconItem onclick={saveAs} disabled={fallbackMode}>
-				Save As…
-			</Menubar.IconItem>
+			<div title={fallbackMode ? "Not supperted by this browser" : ""}>
+				<Menubar.IconItem onclick={save} disabled={fallbackMode}>
+					{#snippet icon()}
+						<Icon icon="lucide:save" />
+					{/snippet}
+					Save
+				</Menubar.IconItem>
+				<Menubar.IconItem onclick={saveAs} disabled={fallbackMode}>
+					Save As…
+				</Menubar.IconItem>
+			</div>
 			<Menubar.IconItem onclick={download}>
 				{#snippet icon()}
 					<Icon icon="lucide:download" />
@@ -111,25 +113,27 @@
 	<Menubar.Menu>
 		<Menubar.Trigger>Edit</Menubar.Trigger>
 		<Menubar.Content>
-			<Menubar.IconItem disabled>
-				{#snippet icon()}
-					<Icon icon="lucide:undo" />
-				{/snippet}
-				Undo <Menubar.Shortcut>(WIP)</Menubar.Shortcut>
-			</Menubar.IconItem>
-			<Menubar.IconItem disabled>
-				{#snippet icon()}
-					<Icon icon="lucide:redo" />
-				{/snippet}
-				Redo <Menubar.Shortcut>(WIP)</Menubar.Shortcut>
-			</Menubar.IconItem>
-			<Menubar.Separator />
-			<Menubar.IconItem disabled>
-				{#snippet icon()}
-					<Icon icon="lucide:search" />
-				{/snippet}
-				Find <Menubar.Shortcut>(WIP)</Menubar.Shortcut>
-			</Menubar.IconItem>
+			<div title="Work in progress">
+				<Menubar.IconItem disabled>
+					{#snippet icon()}
+						<Icon icon="lucide:undo" />
+					{/snippet}
+					Undo
+				</Menubar.IconItem>
+				<Menubar.IconItem disabled>
+					{#snippet icon()}
+						<Icon icon="lucide:redo" />
+					{/snippet}
+					Redo
+				</Menubar.IconItem>
+				<Menubar.Separator />
+				<Menubar.IconItem disabled>
+					{#snippet icon()}
+						<Icon icon="lucide:search" />
+					{/snippet}
+					Find
+				</Menubar.IconItem>
+			</div>
 			<Menubar.Separator />
 			<Menubar.IconItem>
 				{#snippet icon()}
