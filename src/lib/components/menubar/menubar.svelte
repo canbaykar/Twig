@@ -53,13 +53,24 @@
 			input.type = "file";
 			input.id = pickerOpt.id;
 			input.accept = pickerOpt.accept;
+			let res, rej;
+			const promise = new Promise((resolve, reject) => {
+				res = resolve;
+				rej = reject;
+			});
 			input.onchange = async e => {
-				const file = input.files![0];
-				nameInput = file.name.replace(/\.json$/, '');
-				viewport.deserialize(JSON.parse(await file.text()));
+				try {
+					const file = input.files![0];
+					nameInput = file.name.replace(/\.json$/, '');
+					viewport.deserialize(JSON.parse(await file.text()));
+					res!();
+				} catch (err) { rej!(err) }
+			}
+			input.oncancel = () => {
+				rej!({ name: 'AbortError' });
 			};
 			input.click();
-			return;
+			return promise;
 		}
 		// @ts-expect-error
 		[handle] = await window.showOpenFilePicker(pickerOpt);
