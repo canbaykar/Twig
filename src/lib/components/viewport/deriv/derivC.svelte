@@ -15,7 +15,7 @@
 	import { forceFocus } from './formula/multiSelection';
 
 	export const keyboardListeners: KeyboardListeners = {
-		keyup(e) {
+		keydown(e) {
 			// Edge case: Keyboard use while dragging
 			if (viewport.render.dragging) return;
 
