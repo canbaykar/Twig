@@ -4,10 +4,13 @@
 	import Icon from '@iconify/svelte';
 	import MenubarInput from './menubarInput.svelte';
 	import { browser } from '$app/environment';
+	import { toast } from 'svelte-sonner';
+	import Html from './html.svelte';
 
 	const placeholder = "Untitled Project";
 	let nameInput = $state("");
-	let name = $derived((nameInput || placeholder) + ".json");
+	let firstName = $derived(nameInput || placeholder);
+	let fullName = $derived(firstName + ".json");
 
 	function newFile() {
 		viewport.reset();
@@ -29,8 +32,22 @@
 	// @ts-expect-error
 	const fallbackMode = browser && !(window.showOpenFilePicker && window.showSaveFilePicker);
 	let handle: FileSystemFileHandle | null = null;
+	// Utility for sonner
+	const html = (f: string | (() => string)) => ({ componentProps: { content: f } });
 
-	async function open() {
+	function open() {
+		let content = $state(`Opening…`);
+		toast.promise(_open, {
+			loading: `Opening…`,
+			success: () => {
+				content = `Opened <span class="font-normal italic">${firstName}</span>.`;
+				return Html
+			},
+			error: (err: any) => err?.name === 'AbortError' ? `Aborted open.` : `Failed to open file.`,
+			...html(() => content),
+		});
+	}
+	async function _open() {
 		if (fallbackMode) {
 			const input = document.createElement("input");
 			input.type = "file";
@@ -38,7 +55,7 @@
 			input.accept = pickerOpt.accept;
 			input.onchange = async e => {
 				const file = input.files![0];
-				name = file.name;
+				nameInput = file.name.replace(/\.json$/, '');
 				viewport.deserialize(JSON.parse(await file.text()));
 			};
 			input.click();
@@ -47,30 +64,49 @@
 		// @ts-expect-error
 		[handle] = await window.showOpenFilePicker(pickerOpt);
 		const file = await handle!.getFile();
-		name = file.name;
+		nameInput = file.name.replace(/\.json$/, '');
 		viewport.deserialize(JSON.parse(await file.text()));
 	}
-	
+
+	function saveWith<T>(f: () => Promise<T>) {
+		let content = $state(`Saving <span class="font-normal italic">${firstName}</span>…`);
+		toast.promise(f, {
+			loading: () => Html,
+			success: () => {
+				content = `Saved <span class="font-normal italic">${firstName}</span> successfully.`;
+				return Html
+			},
+			error: (err: any) => { 
+				if (err?.name === 'AbortError') return `Aborted save.`;
+				content = `Failed to save <span class="font-normal italic">${firstName}</span>.`;
+				return Html
+			},
+			...html(() => content),
+		});
+	}
+	// Use like () => saveWith(saveAs)
 	async function saveAs() {
 		// @ts-expect-error
-		handle = await window.showSaveFilePicker({ ...pickerOpt, suggestedName: name });
+		handle = await window.showSaveFilePicker({ ...pickerOpt, suggestedName: fullName });
+		nameInput = handle!.name.replace(/\.json$/, '');
 		const stream = await handle!.createWritable();
 		await stream.write(getContent());
 		await stream.close();
 	}
-
+	// Use like () => saveWith(save)
 	async function save() {
-		if (!handle || handle.name !== name) return saveAs();
+		if (!handle || handle.name !== fullName) return saveAs();
 		const stream = await handle.createWritable();
 		await stream.write(getContent());
 		await stream.close();
 	}
 
 	function download() {
+		toast.info(Html, html(`Downloading <span class="font-normal italic">${firstName}</span>…`));
 		const blob = new Blob([getContent()], { type: "application/json" });
 		const link = document.createElement("a");
 		link.href = URL.createObjectURL(blob);
-		link.download = name;
+		link.download = fullName;
 		link.click();
 		URL.revokeObjectURL(link.href); // Clean-up
 	}
@@ -94,13 +130,13 @@
 			</Menubar.IconItem>
 			<Menubar.Separator />
 			<div title={fallbackMode ? "Not supperted by this browser" : ""}>
-				<Menubar.IconItem onclick={save} disabled={fallbackMode}>
+				<Menubar.IconItem onclick={() => saveWith(save)} disabled={fallbackMode}>
 					{#snippet icon()}
 						<Icon icon="lucide:save" />
 					{/snippet}
 					Save
 				</Menubar.IconItem>
-				<Menubar.IconItem onclick={saveAs} disabled={fallbackMode}>
+				<Menubar.IconItem onclick={() => saveWith(saveAs)} disabled={fallbackMode}>
 					Save As…
 				</Menubar.IconItem>
 			</div>
