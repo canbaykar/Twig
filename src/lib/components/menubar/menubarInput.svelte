@@ -15,19 +15,20 @@
 		placeholder = "",
 		value = $bindable(""),
 	}: Props = $props();
+
+	let label: HTMLLabelElement | null = $state(null);
+	$effect(() => { label && (label.dataset.value = value || placeholder) });
 </script>
 
 <label
 	class="inline-grid font-medium text-sm" 
 	data-value={placeholder} 
 	data-placeholder={placeholder}
+	bind:this={label}
 >
 	<Input 
 		class="bg-transparent border-transparent h-7 inline-grid text-sm" 
 		{placeholder}
-		oninput={({ target: t }) => { // @ts-ignore
-			return t.parentNode.dataset.value = t.value || t.placeholder;
-		}}
 		style="grid-area: 1 / 3" size={1}
 		bind:value
 	/>
