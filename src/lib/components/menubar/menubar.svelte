@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as Menubar from '$lib/components/ui/menubar';
 	import viewport from '$lib/state/viewport.svelte';
 	import Icon from '@iconify/svelte';
@@ -6,6 +6,7 @@
 	import { browser } from '$app/environment';
 	import { toast } from 'svelte-sonner';
 	import Html from './html.svelte';
+	import { keyboardListeners } from '../viewport/deriv/derivC.svelte';
 
 	const placeholder = "Untitled Project";
 	let nameInput = $state("");
@@ -121,6 +122,27 @@
 		link.click();
 		URL.revokeObjectURL(link.href); // Clean-up
 	}
+
+	// These clipboard events only care about text data
+	function cut(e: Event) {
+		copy(e, "cut");
+	}
+	// newEventType is to reuse code for cut()
+	function copy(_: Event, newEventType = "copy") {
+		const clipboardData = new DataTransfer();
+		const e = new ClipboardEvent(newEventType);
+		// @ts-expect-error
+		keyboardListeners[newEventType]?.(e, clipboardData);
+		const copied = clipboardData.getData('text/plain');
+		if (copied) navigator.clipboard.writeText(copied);
+	}
+	export async function paste() {
+		const clipboardData = new DataTransfer();
+		const copied = await navigator.clipboard.readText();
+		clipboardData.setData("text/plain", copied);
+		// @ts-expect-error
+		keyboardListeners.paste?.(new ClipboardEvent("paste"), clipboardData);
+	}
 </script>
 
 <Menubar.Root class="absolute border-t-0 border-l-0 rounded-none rounded-br-md">
@@ -184,19 +206,19 @@
 				</Menubar.IconItem>
 			</div>
 			<Menubar.Separator />
-			<Menubar.IconItem>
+			<Menubar.IconItem onclick={cut}>
 				{#snippet icon()}
 					<Icon icon="lucide:scissors" />
 				{/snippet}
 				Cut
 			</Menubar.IconItem>
-			<Menubar.IconItem>
+			<Menubar.IconItem onclick={copy}>
 				{#snippet icon()}
 					<Icon icon="lucide:clipboard-copy" />
 				{/snippet}
 				Copy
 			</Menubar.IconItem>
-			<Menubar.IconItem>
+			<Menubar.IconItem onclick={paste}>
 				{#snippet icon()}
 					<Icon icon="lucide:clipboard-paste" />
 				{/snippet}

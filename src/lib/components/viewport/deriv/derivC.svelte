@@ -24,26 +24,27 @@
 				else viewport.render.deleteSelection();
 			}
 		},
-		copy(e) {
+		copy(e, clipboardData = e.clipboardData) {
 			const sel = viewport.render.selection;
 			if (!sel.length) return;
-			e.clipboardData?.setData(
-				'application/json', 
+			clipboardData?.setData(
+				'text/plain', 
 				JSON.stringify(viewport.render.serializeSelection())
 			);
 			e.preventDefault();
 		},
-		paste(e) {
-			if (!e.clipboardData) return;
-			const str = e.clipboardData.getData('application/json');
+		paste(e, clipboardData = e.clipboardData) {
+			if (!clipboardData) return;
+			const str = clipboardData.getData('text/plain');
+			console.log(str)
 			if (!str) return;
 			const serial = JSON.parse(str);
 			if (!(serial instanceof Array)) return;
 			viewport.render.deselectAll();
 			viewport.render.deserializeSelection(serial);
 		},
-		cut(e) {
-			keyboardListeners.copy!(e);
+		cut(e, clipboardData = e.clipboardData) { // @ts-expect-error
+			keyboardListeners.copy(e, clipboardData);
 			viewport.render.deleteSelection();
 		}
 	};

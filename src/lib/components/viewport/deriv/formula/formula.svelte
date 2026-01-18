@@ -1,19 +1,21 @@
 <script module lang="ts">
-	import type Deriv from '$lib/state/deriv.svelte';
-	import { DT } from '../../../../../DT';
-	import viewport from '$lib/state/viewport.svelte';
-	import DerivRenderState from '../renderState.svelte';
 	// Prosemirror
 	import { Schema } from 'prosemirror-model';
 	import { EditorState, TextSelection } from 'prosemirror-state';
 	import { EditorView } from 'prosemirror-view';
+	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
+	import { symbolInputPlugin } from './symbolInput';
 	import 'prosemirror-view/style/prosemirror.css';
 	// Bg
 	import { type BgType } from '../bg.svelte';
-	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
-	import { tick } from 'svelte';
-	import { symbolInputPlugin } from './symbolInput';
 	export { formulaBg };
+	// Other
+	import type Deriv from '$lib/state/deriv.svelte';
+	import { DT } from '../../../../../DT';
+	import viewport from '$lib/state/viewport.svelte';
+	import DerivRenderState from '../renderState.svelte';
+	import { tick } from 'svelte';
+	import { paste } from '$lib/components/menubar/menubar.svelte';
 
 	const textSchema = new Schema({
 		nodes: {
@@ -78,6 +80,19 @@
 					(this as any as EditorView).updateState(this.state.apply(tr));
 					deriv.conc = this.state.doc.textContent;
 					r.editorFocused = !fullyEmpty(this.state.selection);
+				},
+
+				// If pasting JSON, try to paste as deriv
+				transformPastedText(text, plain, view) {
+					if (text.includes('{')) {
+						try { 
+							JSON.parse(text);
+							paste();
+							return "";
+						}
+						catch (e) {}
+					}
+					return text;
 				},
 			});
 		} else {
