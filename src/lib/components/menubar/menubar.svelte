@@ -13,8 +13,9 @@
 	let firstName = $derived(nameInput || placeholder);
 	let fullName = $derived(firstName + ".json");
 
-	function newFile() {
+	function newProject() {
 		viewport.reset();
+		toast("New project created.");
 	}
 
 	const getContent = () => JSON.stringify(viewport.serialize());
@@ -154,11 +155,11 @@
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
-			<Menubar.IconItem onclick={newFile}>
+			<Menubar.IconItem onclick={newProject}>
 				{#snippet icon()}
 					<Icon icon="lucide:file" />
 				{/snippet}
-				New File
+				New Project
 			</Menubar.IconItem>
 			<Menubar.IconItem onclick={open}>
 				{#snippet icon()}
