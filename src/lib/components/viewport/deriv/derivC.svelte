@@ -36,7 +36,6 @@
 		paste(e, clipboardData = e.clipboardData) {
 			if (!clipboardData) return;
 			const str = clipboardData.getData('text/plain');
-			console.log(str)
 			if (!str) return;
 			const serial = JSON.parse(str);
 			if (!(serial instanceof Array)) return;
