@@ -32,6 +32,11 @@
 	// (browser check is bc window gives error on server.)
 	// @ts-expect-error
 	const fallbackMode = browser && !(window.showOpenFilePicker && window.showSaveFilePicker);
+	// Firefox makes paste button janky, isFirefox is to make a message in the button for that
+	// Thanks to https://stackoverflow.com/questions/7000190/detect-all-firefox-versions-in-js
+	const isFirefox = browser && navigator.userAgent.toLowerCase().includes('firefox');
+	console.log({ isFirefox }) //////////////////////////////////////////////////////////////////////////////////////////
+
 	let handle: FileSystemFileHandle | null = null;
 	// Utility for sonner
 	const html = (f: string | (() => string)) => ({ componentProps: { content: f } });
@@ -218,11 +223,14 @@
 				{/snippet}
 				Copy
 			</Menubar.IconItem>
-			<Menubar.IconItem onclick={paste}>
+			<Menubar.IconItem onclick={paste} title={isFirefox ? "May be buggy in this browser" : ""}>
 				{#snippet icon()}
 					<Icon icon="lucide:clipboard-paste" />
 				{/snippet}
 				Paste
+				{#if isFirefox}
+					<Icon icon="lucide:circle-alert" />
+				{/if}
 			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
