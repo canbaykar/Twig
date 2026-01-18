@@ -36,7 +36,6 @@
 	// Firefox makes paste button janky, isFirefox is to make a message in the button for that
 	// Thanks to https://stackoverflow.com/questions/7000190/detect-all-firefox-versions-in-js
 	const isFirefox = browser && navigator.userAgent.toLowerCase().includes('firefox');
-	console.log({ isFirefox }) //////////////////////////////////////////////////////////////////////////////////////////
 
 	let handle: FileSystemFileHandle | null = null;
 	// Utility for sonner
