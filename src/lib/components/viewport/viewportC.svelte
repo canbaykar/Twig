@@ -57,7 +57,7 @@
 	// Keyboard listeners
 	onMount(() => {
 		function handler(e: Event, opt?: any) {
-			if (document.activeElement === viewport.render.panzoomElement) // @ts-expect-error
+			if (document.activeElement === viewport.render.element) // @ts-expect-error
 				keyboardListeners[e.type](e, opt);
 		}
 		for (const type in keyboardListeners)
@@ -132,17 +132,10 @@
 <!-- See deriv.renderData.lookup for data-part -->
 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
-	bind:this={viewport.render.element}
+	bind:this={viewport.render.outerElement}
     class="font-math absolute w-full h-full overflow-hidden"
     class:dragging={viewport.render.dragging}
     class:hover={!viewport.render.dragging}
-	{onmouseover}
-	{onmouseleave}
-	ondragover={onmouseover}
-	ondragleave={onmouseleave}
-	{onmousedown}
-	{onmouseup}
-	{ondblclick}
 	role="presentation"
 	data-part="viewport"
 >
@@ -150,7 +143,14 @@
         state={viewport.render}
 		onStart={() => viewport.render.dragType = DraggableType.Panzoom}
 		onEnd={() => viewport.render.dragType = DraggableType.None}
-		bind:element={viewport.render.panzoomElement}
+		{onmouseover}
+		{onmouseleave}
+		ondragover={onmouseover}
+		ondragleave={onmouseleave}
+		{onmousedown}
+		{onmouseup}
+		{ondblclick}
+		bind:element={viewport.render.element}
 		class="multiSelection-prevent-blur"
     >
         {#each DerivRenderState.displayed as deriv (deriv)}

@@ -89,7 +89,7 @@
 			// If there was a focused element in the if clause that's removed, focus goes
 			// to body, without firing focus event on body. Pass it on to viewport instead.
 			if (document.activeElement === document.body)
-				viewport.render.panzoomElement?.focus?.();
+				viewport.render.element?.focus?.();
 		}
 	});
 </script>

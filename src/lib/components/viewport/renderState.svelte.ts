@@ -50,10 +50,10 @@ export default class ViewportRenderState {
 		this.deserialize({});
 	}
 
-	/** ($state) Usually it's best to use .panzoomElement instead. */
-	element: HTMLElement | null = $state(null);
+	/** ($state) */
+	outerElement: HTMLElement | null = $state(null);
 	/** ($state) This is the viewport element with tabindex (can recieve focus) */
-	panzoomElement: HTMLElement | null = $state(null);
+	element: HTMLElement | null = $state(null);
 
     popups = popups;
     panzoomPopups = panzoomPopups;
