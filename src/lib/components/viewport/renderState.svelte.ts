@@ -68,14 +68,17 @@ export default class ViewportRenderState {
     // screen2viewport = $derived(DT.UNIT / this.scale);
 
     // Converters (default values, maintain in panzoom!)
-    /** Convert client (px) to viewport (px) (pz: panzoom) */
-    cl2pz = fallbackConverter;
-    /** Convert viewport (px) to client (px) (pz: panzoom) */
-    pz2cl = fallbackConverter;
-    /** Convert client (px) to world (UNIT) */
-    cl2wrld = fallbackConverter;
-    /** Convert world (UNIT) to client (px) */
-    wrld2cl = fallbackConverter;
+    /** ($state) Convert client (px) to viewport (px) (pz: panzoom) */
+    cl2pz = $state(fallbackConverter);
+    /** ($state) Convert viewport (px) to client (px) (pz: panzoom) */
+    pz2cl = $state(fallbackConverter);
+    /** ($state) Convert client (px) to world (UNIT) */
+    cl2wrld = $state(fallbackConverter);
+    /** ($state) Convert world (UNIT) to client (px) */
+    wrld2cl = $state(fallbackConverter);
+
+	/** ($derived) World coordinates of center of the screen */
+	center: [number, number] = $derived([-this.x / this.scale * DT.UNIT, -this.y / this.scale * DT.UNIT]);
 
     /** ($state) DraggableType of what's being dragged */
     dragType: DraggableType = $state(DraggableType.None);
