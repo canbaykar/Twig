@@ -3,7 +3,7 @@
 	import { Schema } from 'prosemirror-model';
 	import { EditorState, TextSelection } from 'prosemirror-state';
 	import { EditorView } from 'prosemirror-view';
-	import { fullyEmpty, multiSelectionPlugin } from './multiSelection';
+	import { forceFocus, fullyEmpty, multiSelectionPlugin } from './multiSelection';
 	import { symbolInputPlugin } from './symbolInput';
 	import 'prosemirror-view/style/prosemirror.css';
 	// Bg
@@ -94,6 +94,14 @@
 						catch (e) {}
 					}
 					return text;
+				},
+
+				handleKeyDown(view, e) {
+					if (e.key === "Escape")
+						// This element has multiSelection-prevent-blur to prevent text 
+						// selections being lost while navigating. So we have to manually 
+						// focus it with a function from multiSelection.
+						forceFocus(viewport.render.element);
 				},
 			});
 		} else {
