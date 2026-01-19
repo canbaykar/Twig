@@ -43,9 +43,12 @@ export default class ViewportRenderState {
 		};
 	}
 	deserialize(s: Serial<ViewportRenderState>) {
-		this.x = s.x ?? 0;
-		this.y = s.y ?? 0;
-		if (s.scale) this.scale = s.scale;
+        if (typeof s.x === "number" && isFinite(s.x)) 
+			this.x = s.x;
+        if (typeof s.y === "number" && isFinite(s.y)) 
+			this.y = s.y;
+        if (typeof s.scale === "number" && isFinite(s.scale) && s.scale > 0) 
+			this.scale = s.scale;
 	}
 	reset() {
 		this.deserialize({});

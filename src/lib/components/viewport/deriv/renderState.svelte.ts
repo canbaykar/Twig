@@ -201,12 +201,14 @@ export default class DerivRenderState {
     /** If s has selection state, make sure resulting selected derivs' roots are attached to viewport! */
     constructor(deriv: Deriv, s: Serial<DerivRenderState> = {}) {
         this.deriv = deriv;
-        if (s.xTranslate) this.xTranslate = s.xTranslate;
-        if (s.yTranslate) this.yTranslate = s.yTranslate;
-		if (s.bodyMuted) this.bodyMuted = s.bodyMuted;
+        if (typeof s.xTranslate === "number" && isFinite(s.xTranslate)) 
+			this.xTranslate = s.xTranslate;
+        if (typeof s.yTranslate === "number" && isFinite(s.yTranslate)) 
+        	this.yTranslate = s.yTranslate;
+		if (typeof s.bodyMuted === "boolean") this.bodyMuted = s.bodyMuted;
         // Sync selection state with the appropriate methods.
-        if (s.bodySelected) viewport.render.addToSelection(deriv, false, this);
-        if (s.barSelected)  viewport.render.addToSelection(deriv,  true, this);
+        if (s.bodySelected === true) viewport.render.addToSelection(deriv, false, this);
+        if (s.barSelected === true)  viewport.render.addToSelection(deriv,  true, this);
     }
     /** If includeSelectionState is true, attach to viewport when deserializing to prevent selected-but-detached derivs. */
 	serialize(includeSelectionState = false): Serial<DerivRenderState> {

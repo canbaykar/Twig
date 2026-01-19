@@ -109,8 +109,9 @@
     );
     onDestroy(() => stt.cl2pz = stt.pz2cl = stt.cl2wrld = stt.wrld2cl = fallbackConverter);
 
-    // Helper functions for zoom(...) below
+    // Helper functions
 	const clamp = (s: number, min: number, max: number) => Math.min(Math.max(s, min), max);
+	stt.scale = clamp(stt.scale, MIN_SCALE, MAX_SCALE); // Clamp initial scale for sanitization
     // Weird step function to determine how the grid acts
     // Plot on desmos. The -1 is an arbitrary constant.
     const modulo = (x: number) => x - Math.min(0, Math.floor(x - 1));
