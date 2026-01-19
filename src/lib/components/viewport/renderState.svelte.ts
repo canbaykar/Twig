@@ -230,6 +230,8 @@ export default class ViewportRenderState {
 				if (offset) d.render.moveTo(x + offset, y - offset);
 			}
 			d.attach(viewport);
+			// In case s was hand written and thus wasn't originally a selection
+			viewport.render.addToSelection(d);
 			return d;
 		});
 	}

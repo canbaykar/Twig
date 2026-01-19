@@ -38,10 +38,31 @@
 			if (!clipboardData) return;
 			const str = clipboardData.getData('text/plain');
 			if (!str) return;
-			const serial = safeParseJSON(str);
-			if (!(serial instanceof Array)) return;
-			viewport.render.deselectAll();
-			viewport.render.deserializeSelection(serial);
+			try {
+				const serial = safeParseJSON(str);
+				if (Array.isArray(serial)) { // Try pasting as selection
+					viewport.render.deselectAll();
+					viewport.render.deserializeSelection(serial);
+				} else { // Try pasting as deriv
+					const deriv = new Deriv(serial);
+					viewport.render.deselectAll();
+					deriv.attach(viewport);
+					if (!serial.render || !("xTranslate" in serial.render || "yTranslate" in serial.render))
+						deriv.render.moveTo(...viewport.render.center);
+					viewport.render.selectOnly(deriv);
+				}
+			} catch (error) { // Paste as formula
+				viewport.render.deselectAll();
+				const deriv = new Deriv({
+					conc: str,
+					render: {
+						xTranslate: viewport.render.center[0],
+						yTranslate: viewport.render.center[1],
+						bodySelected: true,
+					},
+				});
+				deriv.attach(viewport);
+			}
 			// There's a bug where sometimes when in firefox, clipboardData.getData triggers the paste
 			// prompt, copy-paste stops working. This line seems to fix.
 			viewport.render.element!.focus();
