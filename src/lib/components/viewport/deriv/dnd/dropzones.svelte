@@ -32,21 +32,6 @@
 	{@render dropzone(data)}
 {/each}
 
-<!-- {#if data.root === data}
-    <!-- Root ->
-    {@render dropzone('root')}
-    <!-- Bottom ->
-    {@render dropzone('bottom')}
-{/if} -->
-
-<!-- {#if data.children.length === 0}
-    <!-- Top ->
-    {@render dropzone('top')}
-{:else}
-    <!-- Leaf ->
-    {@render dropzone('child')}
-{/if} -->
-
 <!-- SNIPPETS -->
 {#snippet dropzone(data: ZoneData)}
     {@const rect = data.getElementRect(deriv)}
