@@ -344,8 +344,8 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 				const rt = e.relatedTarget; // Focus recieving element
 				if (rt instanceof Element) {
 					if (activeViews.find(v => v.dom === rt)) return;
-					// Exception elements feature (e.g. panzoom so that you can pan without losing
-					// selection, on single click panzoom, it removes ProseMirror elements, so it 
+					// Exception elements feature (e.g. panzoom; so that you can pan without losing
+					// selection. On single click on panzoom, it removes ProseMirror elements, so it 
 					// doesn't need to lose ProseMirror selection manually.)
 					if (rt.classList.contains("multiSelection-prevent-blur"))
 						return restoreProseMirrorFocus();
