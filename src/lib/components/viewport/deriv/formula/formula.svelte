@@ -16,6 +16,7 @@
 	import DerivRenderState from '../renderState.svelte';
 	import { tick } from 'svelte';
 	import { paste } from '$lib/components/menubar/menubar.svelte';
+	import { safeParseJSON } from '$lib/utils';
 
 	const textSchema = new Schema({
 		nodes: {
@@ -86,7 +87,7 @@
 				transformPastedText(text, plain, view) {
 					if (text.includes('{')) {
 						try { 
-							JSON.parse(text);
+							safeParseJSON(text);
 							paste();
 							return "";
 						}

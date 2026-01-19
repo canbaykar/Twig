@@ -8,6 +8,7 @@
 	import { toast } from 'svelte-sonner';
 	import Html from './html.svelte';
 	import { keyboardListeners } from '../viewport/deriv/derivC.svelte';
+	import { safeParseJSON } from '$lib/utils';
 
 	const placeholder = "Untitled Project";
 	let nameInput = $state("");
@@ -71,7 +72,7 @@
 				try {
 					const file = input.files![0];
 					nameInput = file.name.replace(/\.json$/, '');
-					viewport.deserialize(JSON.parse(await file.text()));
+					viewport.deserialize(safeParseJSON(await file.text()));
 					res!();
 				} catch (err) { rej!(err) }
 			}
@@ -85,7 +86,7 @@
 		[handle] = await window.showOpenFilePicker(pickerOpt);
 		const file = await handle!.getFile();
 		nameInput = file.name.replace(/\.json$/, '');
-		viewport.deserialize(JSON.parse(await file.text()));
+		viewport.deserialize(safeParseJSON(await file.text()));
 	}
 
 	function saveWith<T>(f: () => Promise<T>) {

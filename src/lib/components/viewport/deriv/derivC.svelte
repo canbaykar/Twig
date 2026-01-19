@@ -13,6 +13,7 @@
 	import Adders from './adders.svelte';
 	import { tick } from 'svelte';
 	import { forceFocus } from './formula/multiSelection';
+	import { safeParseJSON } from '$lib/utils';
 
 	export const keyboardListeners: KeyboardListeners = {
 		keydown(e) {
@@ -37,7 +38,7 @@
 			if (!clipboardData) return;
 			const str = clipboardData.getData('text/plain');
 			if (!str) return;
-			const serial = JSON.parse(str);
+			const serial = safeParseJSON(str);
 			if (!(serial instanceof Array)) return;
 			viewport.render.deselectAll();
 			viewport.render.deserializeSelection(serial);
