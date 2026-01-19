@@ -15,7 +15,7 @@
 	let firstName = $derived(nameInput || placeholder);
 	let fullName = $derived(firstName + ".json");
 
-	function newProject() {
+	export function newProject() {
 		viewport.reset();
 		toast("New project created.");
 	}
@@ -45,7 +45,7 @@
 	// Utility for sonner
 	const html = (f: string | (() => string)) => ({ componentProps: { content: f } });
 
-	function open() {
+	export function open() {
 		let content = $state(`Opening…`);
 		toast.promise(_open, {
 			loading: `Opening…`,
@@ -105,8 +105,7 @@
 			...html(() => content),
 		});
 	}
-	// Use like () => saveWith(saveAs)
-	async function saveAs() {
+	async function _saveAs() {
 		// @ts-expect-error
 		handle = await window.showSaveFilePicker({ ...pickerOpt, suggestedName: fullName });
 		nameInput = handle!.name.replace(/\.json$/, '');
@@ -114,15 +113,16 @@
 		await stream.write(getContent());
 		await stream.close();
 	}
-	// Use like () => saveWith(save)
-	async function save() {
-		if (!handle || handle.name !== fullName) return saveAs();
+	async function _save() {
+		if (!handle || handle.name !== fullName) return _saveAs();
 		const stream = await handle.createWritable();
 		await stream.write(getContent());
 		await stream.close();
 	}
+	export async function saveAs() { return saveWith(_saveAs); }
+	export async function save() { return saveWith(_save); }
 
-	function download() {
+	export function download() {
 		toast.info(Html, html(`Downloading <span class="font-normal italic">${firstName}</span>…`));
 		const blob = new Blob([getContent()], { type: "application/json" });
 		const link = document.createElement("a");
@@ -152,7 +152,16 @@
 		// @ts-expect-error
 		keyboardListeners.paste?.(new ClipboardEvent("paste"), clipboardData);
 	}
+
+	function onkeydown(e: KeyboardEvent) {
+		if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+			e.preventDefault();
+			isFirefox ? download() : save();
+		}
+	}
 </script>
+
+<svelte:document {onkeydown} />
 
 <Menubar.Root class="absolute border-t-0 border-l-0 rounded-none rounded-br-md">
 	<Menubar.Menu>
@@ -172,13 +181,21 @@
 			</Menubar.IconItem>
 			<Menubar.Separator />
 			<div title={fallbackMode ? "Not supperted by this browser" : ""}>
-				<Menubar.IconItem onclick={() => saveWith(save)} disabled={fallbackMode}>
+				<Menubar.IconItem onclick={() => save} disabled={fallbackMode}>
 					{#snippet icon()}
 						<Icon icon="lucide:save" />
 					{/snippet}
 					Save
+					{#if !isFirefox}
+						<Menubar.Shortcut>
+							<Kbd.Group hidden={isMobile}>
+								<Kbd.Root>{CtrlCommand}</Kbd.Root>
+								<Kbd.Root>S</Kbd.Root>
+							</Kbd.Group>
+						</Menubar.Shortcut>
+					{/if}
 				</Menubar.IconItem>
-				<Menubar.IconItem onclick={() => saveWith(saveAs)} disabled={fallbackMode}>
+				<Menubar.IconItem onclick={() => saveAs} disabled={fallbackMode}>
 					Save As…
 				</Menubar.IconItem>
 			</div>
@@ -187,6 +204,14 @@
 					<Icon icon="lucide:download" />
 				{/snippet}
 				Save to Downloads
+					{#if isFirefox}
+						<Menubar.Shortcut>
+							<Kbd.Group hidden={isMobile}>
+								<Kbd.Root>{CtrlCommand}</Kbd.Root>
+								<Kbd.Root>S</Kbd.Root>
+							</Kbd.Group>
+						</Menubar.Shortcut>
+					{/if}
 			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
