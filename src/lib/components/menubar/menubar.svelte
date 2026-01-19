@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import * as Menubar from '$lib/components/ui/menubar';
+	import * as Kbd from "$lib/components/ui/kbd/index.js";
 	import viewport from '$lib/state/viewport.svelte';
 	import Icon from '@iconify/svelte';
 	import MenubarInput from './menubarInput.svelte';
@@ -33,9 +34,11 @@
 	// (browser check is bc window gives error on server.)
 	// @ts-expect-error
 	const fallbackMode = browser && !(window.showOpenFilePicker && window.showSaveFilePicker);
-	// Firefox makes paste button janky, isFirefox is to make a message in the button for that
-	// Thanks to https://stackoverflow.com/questions/7000190/detect-all-firefox-versions-in-js
-	const isFirefox = browser && navigator.userAgent.toLowerCase().includes('firefox');
+	// I guess I won't die if these checks aren't thorough
+	const isFirefox = browser && /Firefox/i.test(navigator.userAgent);
+	const isMobile = browser && /Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+	const isMac = browser && /Mac/i.test(navigator.userAgent);
+	const CtrlCommand = isMac ? "⌘" : "Ctrl";
 
 	let handle: FileSystemFileHandle | null = null;
 	// Utility for sonner
@@ -216,12 +219,24 @@
 					<Icon icon="lucide:scissors" />
 				{/snippet}
 				Cut
+				<Menubar.Shortcut>
+					<Kbd.Group hidden={isMobile}>
+						<Kbd.Root>{CtrlCommand}</Kbd.Root>
+						<Kbd.Root>X</Kbd.Root>
+					</Kbd.Group>
+				</Menubar.Shortcut>
 			</Menubar.IconItem>
 			<Menubar.IconItem onclick={copy}>
 				{#snippet icon()}
 					<Icon icon="lucide:clipboard-copy" />
 				{/snippet}
 				Copy
+				<Menubar.Shortcut>
+					<Kbd.Group hidden={isMobile}>
+						<Kbd.Root>{CtrlCommand}</Kbd.Root>
+						<Kbd.Root>C</Kbd.Root>
+					</Kbd.Group>
+				</Menubar.Shortcut>
 			</Menubar.IconItem>
 			<Menubar.IconItem onclick={paste} title={isFirefox ? "May be buggy in this browser" : ""}>
 				{#snippet icon()}
@@ -231,6 +246,12 @@
 				{#if isFirefox}
 					<Icon icon="lucide:circle-alert" />
 				{/if}
+				<Menubar.Shortcut>
+					<Kbd.Group hidden={isMobile}>
+						<Kbd.Root>{CtrlCommand}</Kbd.Root>
+						<Kbd.Root>V</Kbd.Root>
+					</Kbd.Group>
+				</Menubar.Shortcut>
 			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
