@@ -14,7 +14,7 @@
 	bind:this={ref}
 	data-slot="kbd"
 	class={cn(
-		"bg-bg-overlay text-fg-muted pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm px-1 font-sans text-xs font-medium select-none",
+		"bg-bg-overlay text-fg-muted border-border-muted/75 border border-b-2 pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm px-1 font-sans text-xs font-medium select-none",
 		"[&_svg:not([class*='size-'])]:size-3",
 		"[[data-slot=tooltip-content]_&]:bg-bg/20 [[data-slot=tooltip-content]_&]:text-bg",
 		className
