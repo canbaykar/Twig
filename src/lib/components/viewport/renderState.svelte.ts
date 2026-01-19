@@ -145,6 +145,10 @@ export default class ViewportRenderState {
 	deselectAll() {
 		this.deselect(this.selection);
 	}
+	setSelection(sel: { deriv: Deriv, bar: boolean }[]) {
+		this.deselectAll();
+		for (const s of sel) this.addToSelection(s.deriv, s.bar);
+	}
 	/** Use this or (or deriv.render.delete) instead of detach, detaches and deselects! */
 	delete(derivs: Deriv[]) {
 		this.deselectPairs(derivs);
