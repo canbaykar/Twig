@@ -89,7 +89,7 @@ export const partListeners: PartListeners = {
 			draggable.once(dndOptions(e.deriv, false));
 		},
 		mouseup(e) { 
-			// Panzoom element that normally recieves focus on mousedown has multiSelection-prevent-blur
+			// This element that normally recieves focus on mousedown has multiSelection-prevent-blur
 			// to prevent text selections being lost while navigating. So we have to manually focus it
 			// with a function from multiSelection.
 			forceFocus(viewport.render.element);
