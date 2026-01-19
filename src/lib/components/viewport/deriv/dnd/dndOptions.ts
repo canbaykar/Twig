@@ -24,7 +24,7 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 		const indicator = new IndicatorPopup();
 		const connection = new ConnectionPopup();
 		indicateBoundingRect(data, zs, indicator);
-		updateConnection(data, zs, connection);
+		updateConnection(data, zs, connection, bar);
 
 		// if (free()) shrinkTree();
 
@@ -53,7 +53,7 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 			// if (free()) shrinkTree();
 
 			indicateBoundingRect(data, zs, indicator);
-			updateConnection(data, zs, connection);
+			updateConnection(data, zs, connection, bar);
 		}
 
 		function getTransition(x: number, y: number, dragged: Deriv): false | [ZoneState | null, ZoneState | null] {
@@ -205,12 +205,11 @@ function indicateBoundingRect(dragged: Deriv, zs: ZoneState | null, ind: Indicat
 	}
 }
 
-function updateConnection(dragged: Deriv, zs: ZoneState | null, con: ConnectionPopup) {
-	con.x1 = dragged.render.x;
-	con.y1 = dragged.render.y;
+function updateConnection(dragged: Deriv, zs: ZoneState | null, con: ConnectionPopup, bar: boolean) {
+	[con.x1, con.y1] = bar ? dragged.render.xyBar : dragged.render.xy;
 	con.connected = !!zs;
 	if (zs) {
-		[con.x2, con.y2] = defaultAnchor(dragged.render);
+		[con.x2, con.y2] = bar ? defaultBarAnchor(dragged.render) : defaultAnchor(dragged.render);
 	}
 }
 
