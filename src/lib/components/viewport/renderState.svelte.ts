@@ -4,6 +4,7 @@ import { fallbackConverter } from "./panzoom/panzoom.svelte";
 import { mouse } from "$lib/utils/interact/mouse.svelte";
 import Deriv from "$lib/state/deriv.svelte";
 import viewport, { type Serial } from "$lib/state/viewport.svelte";
+import { DT } from "../../../DT";
 
 export enum DraggableType {
 	None, Panzoom, Deriv, Bar
