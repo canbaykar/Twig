@@ -41,6 +41,9 @@
 			if (!(serial instanceof Array)) return;
 			viewport.render.deselectAll();
 			viewport.render.deserializeSelection(serial);
+			// There's a bug where sometimes when in firefox, clipboardData.getData triggers the paste
+			// prompt, copy-paste stops working. This line seems to fix.
+			viewport.render.element!.focus();
 		},
 		cut(e, clipboardData = e.clipboardData) { // @ts-expect-error
 			keyboardListeners.copy(e, clipboardData);
