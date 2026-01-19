@@ -8,6 +8,7 @@ import { defaultAnchor, defaultBarAnchor } from '../renderState.svelte';
 import { mouse } from '$lib/utils/interact/mouse.svelte';
 import { DraggableType } from "../../renderState.svelte";
 import { prepareInitialZoneState, zoneDataObject, type Rect, type ZoneState } from "./zoneData";
+import { ConnectionPopup } from './connectionPopup.svelte';
 
 // See draggable util
 export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
@@ -21,6 +22,9 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 
 		// Rectangle popup that indicates current binding zone rect
 		const indicator = new IndicatorPopup();
+		const connection = new ConnectionPopup();
+		indicateBoundingRect(data, zs, indicator);
+		updateConnection(data, zs, connection);
 
 		// if (free()) shrinkTree();
 
@@ -49,6 +53,7 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 			// if (free()) shrinkTree();
 
 			indicateBoundingRect(data, zs, indicator);
+			updateConnection(data, zs, connection);
 		}
 
 		function getTransition(x: number, y: number, dragged: Deriv): false | [ZoneState | null, ZoneState | null] {
@@ -80,6 +85,7 @@ export const dndOptions = (data: Deriv, bar: boolean): DraggableOptions => ({
 				data.render.treeOverwrite = null;
 
 				indicator.detach();
+				connection.detach();
 
 				// Reset positioning
 				data.render.swapAnchor(defaultAnchor);
@@ -196,6 +202,15 @@ function indicateBoundingRect(dragged: Deriv, zs: ZoneState | null, ind: Indicat
 		ind.top = dragged.render.y - DT.derivBarBottomN;
 		ind.width = dragged.render.width;
 		ind.height = DT.derivRowOffsetN;
+	}
+}
+
+function updateConnection(dragged: Deriv, zs: ZoneState | null, con: ConnectionPopup) {
+	con.x1 = dragged.render.x;
+	con.y1 = dragged.render.y;
+	con.connected = !!zs;
+	if (zs) {
+		[con.x2, con.y2] = defaultAnchor(dragged.render);
 	}
 }
 
