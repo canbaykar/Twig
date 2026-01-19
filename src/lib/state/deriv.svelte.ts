@@ -48,7 +48,7 @@ export default class Deriv extends Parent {
 	serialize(includeSelectionState = false): Serial<Deriv> {
 		return {
 			conc: this.conc,
-			children: this.children.map(c => c.serialize()),
+			children: this.children.map(c => c.serialize(includeSelectionState)),
 			logic: this.logic.serialize(),
 			render: this.render.serialize(includeSelectionState),
 		};
