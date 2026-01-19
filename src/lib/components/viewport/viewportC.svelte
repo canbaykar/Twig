@@ -2,13 +2,14 @@
 	import Deriv, { addExampleProof } from "$lib/state/deriv.svelte";
 	import viewport from "$lib/state/viewport.svelte";
 	import { onDestroy, onMount } from "svelte";
-	import DerivC, { keyboardListeners, partListeners } from "./deriv/derivC.svelte";
+	import DerivC from "./deriv/derivC.svelte";
 	import DerivRenderState from "./deriv/renderState.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
 	import { bgDependency } from "./deriv/bg.svelte";
 	import { DraggableType, Hover } from "./renderState.svelte";
 	import { DT } from "../../../DT";
+	import { keyboardListeners, partListeners } from "./listeners";
 
 	type KeyboardListener<K extends keyof HTMLElementEventMap> 
 		= (ev: HTMLElementEventMap[K]) => void;

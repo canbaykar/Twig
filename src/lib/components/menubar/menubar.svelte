@@ -7,8 +7,8 @@
 	import { browser } from '$app/environment';
 	import { toast } from 'svelte-sonner';
 	import Html from './html.svelte';
-	import { keyboardListeners } from '../viewport/deriv/derivC.svelte';
 	import { safeParseJSON } from '$lib/utils';
+	import { keyboardListeners } from '../viewport/listeners';
 
 	const placeholder = "Untitled Project";
 	let nameInput = $state("");
