@@ -98,6 +98,7 @@
   --color-deriv-bg-success-hover: black;
   --color-deriv-bg-danger: hsl(0 72.2% 50.6%);
   --color-deriv-bg-danger-hover: hsl(2, 92%, 66%);
+  --color-deriv-selection: hsla(219, 89%, 48%, 0.50);
 
   /* --- FONT --- */
   --font-math: 'M PLUS 1p', var(--font-sans);

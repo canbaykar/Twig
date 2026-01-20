@@ -137,9 +137,11 @@
 			<div class="ProseMirror">{deriv.conc}</div>
 		{/if}
 	</div>
+
+	<!-- Outline element -->
 	{#if editorAwake}
 		<div
-			class="top-0 left-0 origin-top-left pointer-events-none outline-1 outline-fg -outline-offset-1 outline-dashed rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
+			class="top-0 left-0 origin-top-left pointer-events-none border-2 border-focus-outline ring-focus-outline/50 ring-[3px] rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
 			class:opacity-0={!r.editorFocused}
 			style="
 			height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
@@ -161,7 +163,7 @@
 		:global(.caret-left)::after,
 		:global(.caret-right)::before {
 			content: '';
-			outline: 10px solid;
+			outline: 10px solid currentColor;
 			/* Firefox sometimes leaves a gap between outlines and backgound dowsn't fix it */
 			box-shadow: 0px 0px 0 5px currentColor;
 			pointer-events: none;
