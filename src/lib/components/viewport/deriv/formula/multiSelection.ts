@@ -285,7 +285,7 @@ function deselectOtherViewsSelections(view: EditorView) {
 
 /**
  * (Intentionally) deselects on blur unless the focus recieving element classList has
- * "multiSelection-prevent-blur" class. See forceFocus.
+ * "multiSelection-prevent-blur" class. See forceFocus. Use with customCaretsPlugin.
  */
 export const multiSelectionPlugin: Plugin = new Plugin({
 	state: {
@@ -427,30 +427,6 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 		// https://discuss.prosemirror.net/t/simulate-keypress-event/2939/3 states otherwise.
 		handleKeyPress(view, e) {
 			broadcast(view, e);
-		},
-
-		// See CSS style in formula component
-		decorations(state) {
-			const selections = state.selection instanceof MultiSelection
-				? state.selection.selections
-				: [state.selection];
-			
-			// Using only widget to render caret doesn't work in Chrome. Starting selection with
-			// from left side of a letter (with mouse) doesn't work when you try it.
-			// So here it's rendered with ::before and ::after.
-			return DecorationSet.create(state.doc, selections.map(s => {
-				if (!s.empty)
-					return Decoration.inline(s.from, s.to, { class: (s.head < s.anchor ? "caret-right" : "caret-left"), style: 'background: var(--color-focus-outline);' });
-				return s.from !== 0
-					? Decoration.inline(s.from - 1, s.from, { class: "caret-left" })
-					: state.doc.content.size !== 0
-						? Decoration.inline(0, 1, { class: "caret-right" })
-						: Decoration.widget(s.head, () => {
-							const caret = document.createElement('span');
-							caret.style = "outline: 10px solid";
-							return caret;
-						});
-			}).flat());
 		},
 	},
 });

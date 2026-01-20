@@ -17,6 +17,7 @@
 	import { tick } from 'svelte';
 	import { paste } from '$lib/components/menubar/menubar.svelte';
 	import { safeParseJSON } from '$lib/utils';
+	import { customCaretsPlugin } from './customCarets';
 
 	const textSchema = new Schema({
 		nodes: {
@@ -72,6 +73,7 @@
 					doc,
 					plugins: [
 						multiSelectionPlugin,
+						customCaretsPlugin,
 						symbolInputPlugin,
 					],
 				}),
@@ -155,7 +157,7 @@
 		outline: none;
 		white-space: nowrap;
 		
-		/* For multiSelection.ts */
+		/* For customCarets.ts */
 		:global(.caret-left)::after,
 		:global(.caret-right)::before {
 			content: '';
@@ -163,6 +165,10 @@
 			/* Firefox sometimes leaves a gap between outlines and backgound dowsn't fix it */
 			box-shadow: 0px 0px 0 5px currentColor;
 			pointer-events: none;
+		}
+		&:global(.caret-off .caret-left)::after,
+		&:global(.caret-off .caret-right)::before {
+			opacity: 0;
 		}
 	}
 </style>
