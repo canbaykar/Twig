@@ -195,6 +195,8 @@
 						</Menubar.Shortcut>
 					{/if}
 				</Menubar.IconItem>
+			</div>
+			<div title={fallbackMode ? "Not supperted by this browser" : ""}>
 				<Menubar.IconItem onclick={() => saveAs} disabled={fallbackMode}>
 					Save As…
 				</Menubar.IconItem>
@@ -225,6 +227,8 @@
 					{/snippet}
 					Undo
 				</Menubar.IconItem>
+			</div>
+			<div title="Work in progress">
 				<Menubar.IconItem disabled>
 					{#snippet icon()}
 						<Icon icon="lucide:redo" />
@@ -232,6 +236,8 @@
 					Redo
 				</Menubar.IconItem>
 				<Menubar.Separator />
+			</div>
+			<div title="Work in progress">
 				<Menubar.IconItem disabled>
 					{#snippet icon()}
 						<Icon icon="lucide:search" />
