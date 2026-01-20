@@ -154,6 +154,16 @@
 		padding-inline: var(--DERIV-X-PADDING);
 		outline: none;
 		white-space: nowrap;
+		
+		/* For multiSelection.ts */
+		:global(.caret-left)::after,
+		:global(.caret-right)::before {
+			content: '';
+			outline: 10px solid;
+			/* Firefox sometimes leaves a gap between outlines and backgound dowsn't fix it */
+			box-shadow: 0px 0px 0 5px currentColor;
+			pointer-events: none;
+		}
 	}
 </style>
 

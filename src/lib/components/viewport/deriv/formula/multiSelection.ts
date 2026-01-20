@@ -340,24 +340,24 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 					setAltState(view, { alt: false, feature: false, fresh: false, deselectMode: false });
 			},
 
-			blur(view, e) {
-				const rt = e.relatedTarget; // Focus recieving element
-				if (rt instanceof Element) {
-					if (activeViews.find(v => v.dom === rt)) return;
-					// Exception elements feature (e.g. panzoom; so that you can pan without losing
-					// selection. On single click on panzoom, it removes ProseMirror elements, so it 
-					// doesn't need to lose ProseMirror selection manually.)
-					if (rt.classList.contains("multiSelection-prevent-blur"))
-						return restoreProseMirrorFocus();
-				}
+			// blur(view, e) {
+			// 	const rt = e.relatedTarget; // Focus recieving element
+			// 	if (rt instanceof Element) {
+			// 		if (activeViews.find(v => v.dom === rt)) return;
+			// 		// Exception elements feature (e.g. panzoom; so that you can pan without losing
+			// 		// selection. On single click on panzoom, it removes ProseMirror elements, so it 
+			// 		// doesn't need to lose ProseMirror selection manually.)
+			// 		if (rt.classList.contains("multiSelection-prevent-blur"))
+			// 			return restoreProseMirrorFocus();
+			// 	}
 
-				// For some reason sometimes alt+click blurs with rt null and for some reason this
-				// fixed it without breaking other stuff. (?)
-				if (rt === null && getAltState(view).alt) 
-					return restoreProseMirrorFocus();
+			// 	// For some reason sometimes alt+click blurs with rt null and for some reason this
+			// 	// fixed it without breaking other stuff. (?)
+			// 	if (rt === null && getAltState(view).alt) 
+			// 		return restoreProseMirrorFocus();
 
-				deselectAllSelections();
-			}
+			// 	deselectAllSelections();
+			// }
 		},
 
 		createSelectionBetween(view, $anchor, $head) {
@@ -429,22 +429,22 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 			broadcast(view, e);
 		},
 
+		// See CSS style in formula component
 		decorations(state) {
 			const selections = state.selection instanceof MultiSelection
 				? state.selection.selections
 				: [state.selection];
-
-			const caretCSS = (left = false) => `
-			box-shadow: ${left ? '-' : ''}10px 0 0 var(--color-fg), ${left ? '' : '-'}10px 0 0 var(--color-fg) inset
-			`;
 			
+			// Using only widget to render caret doesn't work in Chrome. Starting selection with
+			// from left side of a letter (with mouse) doesn't work when you try it.
+			// So here it's rendered with ::before and ::after.
 			return DecorationSet.create(state.doc, selections.map(s => {
 				if (!s.empty)
-					return Decoration.inline(s.from, s.to, { style: 'background: RoyalBlue;' + caretCSS(s.head < s.anchor) });
+					return Decoration.inline(s.from, s.to, { class: (s.head < s.anchor ? "caret-right" : "caret-left"), style: 'background: var(--color-focus-outline);' });
 				return s.from !== 0
-					? Decoration.inline(s.from - 1, s.from, { style: caretCSS() })
+					? Decoration.inline(s.from - 1, s.from, { class: "caret-left" })
 					: state.doc.content.size !== 0
-						? Decoration.inline(0, 1, { style: caretCSS(true) })
+						? Decoration.inline(0, 1, { class: "caret-right" })
 						: Decoration.widget(s.head, () => {
 							const caret = document.createElement('span');
 							caret.style = "outline: 10px solid";
