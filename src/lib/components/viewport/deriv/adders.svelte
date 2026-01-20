@@ -78,8 +78,8 @@
 	{/if}
 
 	<!-- Bottom (when dragging, this moves in the position of ConnectionPopup) -->
-	{#if !deriv.derivParent || deriv.render.dragged}
-		{@const d = +deriv.render.dragged}
+	{#if !deriv.derivParent || deriv.render.bodyDragged}
+		{@const d = +deriv.render.bodyDragged}
 		<div
 			class:opacity-0={opacityCondition(deriv, "adder_bottom")}
 			class="w-2 h-2 bg-fg rounded-full pointer-events-none"
