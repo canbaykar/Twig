@@ -63,7 +63,6 @@
 	<!-- Right Extension (when hovered and has right neighbor) -->
 	{#if deriv.render.hoveredPart === "adder_right" && deriv.derivParent && deriv.childIndex < deriv.derivParent.children.length - 1}
 		{@const rnl = getRightNeighborLeft(deriv)}
-		{@const borderWidth = DT.UNIT / viewport.render.scale}
 		<!-- Right neighbor's point -->
 		<div
 			class="w-2 h-2 bg-fg rounded-full pointer-events-none"
@@ -71,10 +70,10 @@
 		></div>
 		<!-- Connecting line -->
 		<div
-			class="pointer-events-none origin-top-left connecting"
-			style:translate="{rightX + adderRadius}px {deriv.render.y - DT.derivLineHeightN/ 2 - 0.5}px"
-			style:width="{(rnl - DT.derivBgPaddingN - adderDiameter - rightX) / DT.UNIT * viewport.render.scale}px"
-			style:scale={DT.UNIT / viewport.render.scale}
+			class="pointer-events-none origin-top-left"
+			style:translate="{rightX + adderRadius}px {deriv.render.y - (DT.derivLineHeightN + DT.UNIT) / 2 - 0.5}px"
+			style:width="{rnl - DT.derivBgPaddingN - adderDiameter - rightX}px"
+			style="border-top: var(--UNITPX) dashed"
 		></div>
 	{/if}
 
@@ -97,12 +96,6 @@
 		></div>
 	{/if}
 {/if}
-
-<style>
-	.connecting {
-		border-top: dashed 1px;
-	}
-</style>
 
 {#snippet addersBg(deriv: Deriv, type: BgType)}
 	{@const rightX = deriv.render.width / 2 + gripWidth}
