@@ -111,6 +111,7 @@
 			if (r.editorView) {
 				r.editorView.destroy();
 				r.editorView = null;
+				r.editorFocused = false;
 			}
 			// If there was a focused element in the if clause that's removed, focus goes
 			// to body, without firing focus event on body. Pass it on to viewport instead.
@@ -139,18 +140,16 @@
 	</div>
 
 	<!-- Outline element -->
-	{#if editorAwake}
-		<div
-			class="top-0 left-0 origin-top-left pointer-events-none border-2 border-focus-outline ring-focus-outline/50 ring-[3px] rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
-			class:opacity-0={!r.editorFocused}
-			style="
-			height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
-				width: {deriv.render.baseWidth / DT.UNIT * viewport.render.scale}px;
-				font-size: {DT.derivSizeN / DT.UNIT * viewport.render.scale}px;
-				scale: {DT.UNIT / viewport.render.scale};
-        	"
-		></div>
-	{/if}
+	<div
+		class:focused={r.editorFocused}
+		class="top-0 left-0 origin-top-left pointer-events-none transition-[color,box-shadow] [.focused]:border-2 [.focused]:border-focus-outline! [.focused]:ring-focus-outline/50 [.focused]:ring-[3px] rounded-[calc(var(--DERIV-BG-PADDING)/16)]"
+		style="
+		height: {DT.derivLineHeightN / DT.UNIT * viewport.render.scale}px;
+			width: {deriv.render.baseWidth / DT.UNIT * viewport.render.scale}px;
+			font-size: {DT.derivSizeN / DT.UNIT * viewport.render.scale}px;
+			scale: {DT.UNIT / viewport.render.scale};
+		"
+	></div>
 </div>
 
 <style>
