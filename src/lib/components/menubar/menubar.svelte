@@ -132,6 +132,7 @@
 		URL.revokeObjectURL(link.href); // Clean-up
 	}
 
+	const selectionEmpty = $derived(!viewport.render.selection.length);
 	// These clipboard events only care about text data
 	function cut(e: Event) {
 		copy(e, "cut");
@@ -246,30 +247,34 @@
 				</Menubar.IconItem>
 			</div>
 			<Menubar.Separator />
-			<Menubar.IconItem onclick={cut}>
-				{#snippet icon()}
-					<Icon icon="lucide:scissors" />
-				{/snippet}
-				Cut
-				<Menubar.Shortcut>
-					<Kbd.Group hidden={isMobile}>
-						<Kbd.Root>{CtrlCommand}</Kbd.Root>
-						<Kbd.Root>X</Kbd.Root>
-					</Kbd.Group>
-				</Menubar.Shortcut>
-			</Menubar.IconItem>
-			<Menubar.IconItem onclick={copy}>
-				{#snippet icon()}
-					<Icon icon="lucide:clipboard-copy" />
-				{/snippet}
-				Copy
-				<Menubar.Shortcut>
-					<Kbd.Group hidden={isMobile}>
-						<Kbd.Root>{CtrlCommand}</Kbd.Root>
-						<Kbd.Root>C</Kbd.Root>
-					</Kbd.Group>
-				</Menubar.Shortcut>
-			</Menubar.IconItem>
+			<div title={selectionEmpty ? "Selection empty" : ""}>
+				<Menubar.IconItem onclick={cut} disabled={selectionEmpty}>
+					{#snippet icon()}
+						<Icon icon="lucide:scissors" />
+					{/snippet}
+					Cut
+					<Menubar.Shortcut>
+						<Kbd.Group hidden={isMobile}>
+							<Kbd.Root>{CtrlCommand}</Kbd.Root>
+							<Kbd.Root>X</Kbd.Root>
+						</Kbd.Group>
+					</Menubar.Shortcut>
+				</Menubar.IconItem>
+			</div>
+			<div title={selectionEmpty ? "Selection empty" : ""}>
+				<Menubar.IconItem onclick={copy} disabled={selectionEmpty}>
+					{#snippet icon()}
+						<Icon icon="lucide:clipboard-copy" />
+					{/snippet}
+					Copy
+					<Menubar.Shortcut>
+						<Kbd.Group hidden={isMobile}>
+							<Kbd.Root>{CtrlCommand}</Kbd.Root>
+							<Kbd.Root>C</Kbd.Root>
+						</Kbd.Group>
+					</Menubar.Shortcut>
+				</Menubar.IconItem>
+			</div>
 			<Menubar.IconItem onclick={paste} title={isFirefox ? "May be buggy in this browser" : ""}>
 				{#snippet icon()}
 					<Icon icon="lucide:clipboard-paste" />
