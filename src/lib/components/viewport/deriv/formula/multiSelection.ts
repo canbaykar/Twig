@@ -340,24 +340,24 @@ export const multiSelectionPlugin: Plugin = new Plugin({
 					setAltState(view, { alt: false, feature: false, fresh: false, deselectMode: false });
 			},
 
-			// blur(view, e) {
-			// 	const rt = e.relatedTarget; // Focus recieving element
-			// 	if (rt instanceof Element) {
-			// 		if (activeViews.find(v => v.dom === rt)) return;
-			// 		// Exception elements feature (e.g. panzoom; so that you can pan without losing
-			// 		// selection. On single click on panzoom, it removes ProseMirror elements, so it 
-			// 		// doesn't need to lose ProseMirror selection manually.)
-			// 		if (rt.classList.contains("multiSelection-prevent-blur"))
-			// 			return restoreProseMirrorFocus();
-			// 	}
+			blur(view, e) {
+				const rt = e.relatedTarget; // Focus recieving element
+				if (rt instanceof Element) {
+					if (activeViews.find(v => v.dom === rt)) return;
+					// Exception elements feature (e.g. panzoom; so that you can pan without losing
+					// selection. On single click on panzoom, it removes ProseMirror elements, so it 
+					// doesn't need to lose ProseMirror selection manually.)
+					if (rt.classList.contains("multiSelection-prevent-blur"))
+						return restoreProseMirrorFocus();
+				}
 
-			// 	// For some reason sometimes alt+click blurs with rt null and for some reason this
-			// 	// fixed it without breaking other stuff. (?)
-			// 	if (rt === null && getAltState(view).alt) 
-			// 		return restoreProseMirrorFocus();
+				// For some reason sometimes alt+click blurs with rt null and for some reason this
+				// fixed it without breaking other stuff. (?)
+				if (rt === null && getAltState(view).alt) 
+					return restoreProseMirrorFocus();
 
-			// 	deselectAllSelections();
-			// }
+				deselectAllSelections();
+			}
 		},
 
 		createSelectionBetween(view, $anchor, $head) {
