@@ -1,8 +1,7 @@
 <script module lang="ts">
 	import { DT } from "../../../../DT";
 	import Deriv from "$lib/state/deriv.svelte";
-	import { hitboxBgType, type BgType } from "./bg.svelte";
-	import viewport from "$lib/state/viewport.svelte";
+	import { hitboxBgType, outlinedBgType, type BgType } from "./bg.svelte";
 	export { addersBg };
 
 	// -- Temp constants --
@@ -102,9 +101,9 @@
 	{@const rightWidth = getRightHitboxWidth(deriv, rightX)}
 	{@const rx = (type === hitboxBgType) ? 0 : hitboxRx}
 
-	<g class="cursor-pointer">
+	<g class="cursor-pointer" fill={type === outlinedBgType ? 'var(--color-deriv-bg-hover)' : 'transparent'}>
 		<!-- Left -->
-		{#if !deriv.derivParent || !deriv.childIndex}
+		{#if (!deriv.derivParent || !deriv.childIndex) && (type !== outlinedBgType || deriv.render.hoveredPart === 'adder_left')}
 			<rect
 				x={deriv.render.x - rightX - defaultHitboxWidth}
 				y={deriv.render.y + hitboxTop}
@@ -113,10 +112,10 @@
 				{rx}
 				data-uid={deriv.uid}
 				data-part="adder_left"
-				fill={hitboxFill(deriv, "adder_left")}
 			/>
 		{/if}
 		<!-- Right -->
+		{#if type !== outlinedBgType || deriv.render.hoveredPart === 'adder_right'}
 		<rect
 			x={deriv.render.x + rightX}
 			y={deriv.render.y + hitboxTop}
@@ -125,10 +124,10 @@
 			{rx}
 			data-uid={deriv.uid}
 			data-part="adder_right"
-			fill={hitboxFill(deriv, "adder_right")}
 		/>
+		{/if}
 		<!-- Bottom -->
-		{#if !deriv.derivParent}
+		{#if !deriv.derivParent && (type !== outlinedBgType || deriv.render.hoveredPart === 'adder_bottom')}
 			<rect
 				x={deriv.render.x - defaultHitboxWidth / 2}
 				y={deriv.render.y + DT.derivBgPaddingN}
@@ -137,11 +136,10 @@
 				{rx}
 				data-uid={deriv.uid}
 				data-part="adder_bottom"
-				fill={hitboxFill(deriv, "adder_bottom")}
 			/>
 		{/if}
 		<!-- Top -->
-		{#if !deriv.children.length}
+		{#if !deriv.children.length && (type !== outlinedBgType || deriv.render.hoveredPart === 'adder_top')}
 			<rect
 				x={deriv.render.xBar - defaultHitboxWidth / 2}
 				y={deriv.render.yBar - DT.derivBgPaddingN - defaultHitboxWidth}
@@ -150,7 +148,6 @@
 				{rx}
 				data-uid={deriv.uid}
 				data-part="adder_top"
-				fill={hitboxFill(deriv, "adder_top")}
 			/>
 		{/if}
 	</g>
