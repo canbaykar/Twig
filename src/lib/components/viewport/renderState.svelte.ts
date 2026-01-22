@@ -137,6 +137,8 @@ export default class ViewportRenderState {
 	}
 	deselect(entries: { deriv: Deriv, bar?: boolean }[]) {
 		const sel = this.selection;
+		// sel will be modified so copy entries to avoid modifying it
+		if (entries === sel) entries = [...entries];
 		for (const { deriv, bar } of entries) {
 			const i = sel.findIndex(({ deriv: d, bar: b }) => deriv === d || bar === b);
 			if (i > -1) sel.splice(i, 1); 
