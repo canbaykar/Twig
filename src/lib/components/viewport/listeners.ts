@@ -15,9 +15,18 @@ export const keyboardListeners: KeyboardListeners = {
 		// Edge case: Keyboard use while dragging
 		if (viewport.render.dragging) return;
 
-		if (e.key === 'Delete') {
-			if (e.shiftKey) viewport.render.shiftDeleteSelection();
-			else viewport.render.deleteSelection();
+		switch (e.key) {
+			case 'Delete':
+				if (e.shiftKey) viewport.render.shiftDeleteSelection();
+				else viewport.render.deleteSelection();
+				break;
+
+			case 'Escape':
+				viewport.render.deselectAll();
+				break;
+		
+			default:
+				break;
 		}
 	},
 	copy(e, clipboardData = e.clipboardData) {

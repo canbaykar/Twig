@@ -103,7 +103,9 @@
 						// This element has multiSelection-prevent-blur to prevent text 
 						// selections being lost while navigating. So we have to manually 
 						// focus it with a function from multiSelection.
-						forceFocus(viewport.render.element);
+						// Also if I do it without r.A.F., Escape keydown event is passed
+						// to viewport.
+						requestAnimationFrame(() => forceFocus(viewport.render.element));
 				},
 			});
 		} else {
