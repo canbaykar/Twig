@@ -18,6 +18,7 @@
   /* Foreground */
   --color-fg: hsl(210 40% 98%);
   --color-fg-muted: hsl(214, 30%, 73%);
+  --color-fg-disabled: hsl(215, 18%, 52%);
   --color-fg-onEmphasis: hsl(210 40% 98%);
   --color-fg-link: black;
 
@@ -70,7 +71,7 @@
   --color-control-fg: var(--color-fg);
   --color-control-fg-hover: var(--color-fg);
   --color-control-fg-muted: var(--color-fg-muted); /* e.g. Input placeholder */ 
-  --color-control-fg-disabled: hsl(215, 20%, 56%);
+  --color-control-fg-disabled: var(--color-fg-disabled);
   /* Control > Overlay (control-transparent-bgColor in Primer) */
   --color-control-overlay: transparent;
   --color-control-overlay-hover: hsla(210, 95%, 85%, 0.10);

@@ -36,7 +36,7 @@
 </script>
 
 <div
-    class="{render.inferred ? "bg-fg" : "bg-fg/25"} h-1 translate-x-[-50%] rounded-full select-none cursor-all-scroll"
+    class="{render.inferred ? "bg-fg" : "bg-fg-disabled"} h-1 translate-x-[-50%] rounded-full select-none cursor-all-scroll"
 	style:translate="{deriv.render.xBar - deriv.render.barWidth / 2}px {deriv.render.yBar}px"
     style:width="{render.barWidth}px"
     class:bg-transparent={deriv.render.barHidden}
@@ -57,7 +57,7 @@
     {/if}
     <!-- Rule -->
 	<div
-		class="{render.ruleHidden ? "text-fg/25" : "text-fg"} left-(--DERIV-LABEL-RIGHT) {deriv.render.discharged ? 'labelBase' : 'ruleBase'}"
+		class="{render.ruleHidden ? "text-fg-disabled" : "text-fg"} left-(--DERIV-LABEL-RIGHT) {deriv.render.discharged ? 'labelBase' : 'ruleBase'}"
     	class:text-transparent={deriv.render.barHidden}
 		bind:this={ruleElement}
 	>

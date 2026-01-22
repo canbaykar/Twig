@@ -133,7 +133,7 @@
 	<div 
 		bind:this={editorElement}
 		class="relative! **:relative! caret-transparent selection:bg-transparent overflow-hidden"
-		class:opacity-25={deriv.render.bodyMuted}
+		class:text-fg-disabled={deriv.render.bodyMuted}
 		data-part="body_formula"
 	>
 		{#if !editorAwake}
