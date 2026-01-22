@@ -190,7 +190,7 @@
 		width={deriv.render.width + pad2 + (+type.extended(deriv)) * handlePad2}
 		height={DT.derivLineHeightN + pad2}
 		rx={Math.min((DT.derivBgPaddingN * 4) / viewport.render.scale, minRx)}
-		fill={type.formulaFill(deriv)}
+		fill={type.bodyFill(deriv)} stroke={type.bodyStroke(deriv)}
 		data-uid={deriv.uid}
 		data-part="body_"
 	/>

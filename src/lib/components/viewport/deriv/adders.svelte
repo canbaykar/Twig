@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import { DT } from "../../../../DT";
 	import Deriv from "$lib/state/deriv.svelte";
-	import { hitboxBgType, outlinedBgType, type BgType } from "./bg.svelte";
+	import { hitboxBgType, activeBgType, type BgType } from "./bg.svelte";
 	export { addersBg };
 
 	// -- Temp constants --
@@ -101,9 +101,9 @@
 	{@const rightWidth = getRightHitboxWidth(deriv, rightX)}
 	{@const rx = (type === hitboxBgType) ? 0 : hitboxRx}
 
-	<g class="cursor-pointer" fill={type === outlinedBgType ? 'var(--color-deriv-bg-hover)' : 'transparent'}>
+	<g class="cursor-pointer" fill={type.adderFill} stroke={type.adderStroke}>
 		<!-- Left -->
-		{#if (!deriv.derivParent || !deriv.childIndex) && (type !== outlinedBgType || deriv.render.hoveredPart === 'adder_left')}
+		{#if (!deriv.derivParent || !deriv.childIndex) && (!type.active || deriv.render.hoveredPart === 'adder_left')}
 			<rect
 				x={deriv.render.x - rightX - defaultHitboxWidth}
 				y={deriv.render.y + hitboxTop}
@@ -115,7 +115,7 @@
 			/>
 		{/if}
 		<!-- Right -->
-		{#if type !== outlinedBgType || deriv.render.hoveredPart === 'adder_right'}
+		{#if !type.active || deriv.render.hoveredPart === 'adder_right'}
 		<rect
 			x={deriv.render.x + rightX}
 			y={deriv.render.y + hitboxTop}
@@ -127,7 +127,7 @@
 		/>
 		{/if}
 		<!-- Bottom -->
-		{#if !deriv.derivParent && (type !== outlinedBgType || deriv.render.hoveredPart === 'adder_bottom')}
+		{#if !deriv.derivParent && (!type.active || deriv.render.hoveredPart === 'adder_bottom')}
 			<rect
 				x={deriv.render.x - defaultHitboxWidth / 2}
 				y={deriv.render.y + DT.derivBgPaddingN}
@@ -139,7 +139,7 @@
 			/>
 		{/if}
 		<!-- Top -->
-		{#if !deriv.children.length && (type !== outlinedBgType || deriv.render.hoveredPart === 'adder_top')}
+		{#if !deriv.children.length && (!type.active || deriv.render.hoveredPart === 'adder_top')}
 			<rect
 				x={deriv.render.xBar - defaultHitboxWidth / 2}
 				y={deriv.render.yBar - DT.derivBgPaddingN - defaultHitboxWidth}

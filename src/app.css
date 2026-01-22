@@ -89,15 +89,15 @@
   --color-focus-outline: hsl(219, 89%, 48%);
 
   /* Deriv (use at 75% opacity) */
-  --color-deriv-bg-hover: hsl(219, 35%, 16%);
-  --color-deriv-bg-accent: black;
-  --color-deriv-bg-accent-hover: black;
-  --color-deriv-bg-warning: black;
-  --color-deriv-bg-warning-hover: black;
-  --color-deriv-bg-success: black;
-  --color-deriv-bg-success-hover: black;
-  --color-deriv-bg-danger: hsl(0 72.2% 50.6%);
-  --color-deriv-bg-danger-hover: hsl(2, 92%, 66%);
+  --color-deriv-bg-neutral-1: var(--color-bg);
+  --color-deriv-bg-neutral-2: hsl(219, 35%, 16%);
+  --color-deriv-bg-neutral-3: hsl(219, 35%, 26%);
+  --color-deriv-bg-warning-1: black;
+  --color-deriv-bg-warning-2: black;
+  --color-deriv-bg-warning-3: black;
+  --color-deriv-bg-danger-1: hsl(0 72.2% 50.6%);
+  --color-deriv-bg-danger-2: hsl(2, 92%, 66%);
+  --color-deriv-bg-danger-3: hsl(2, 100%, 77%);
   --color-deriv-selection: hsla(219, 89%, 48%, 0.50);
 
   /* --- FONT --- */

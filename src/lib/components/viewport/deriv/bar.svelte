@@ -108,7 +108,7 @@
 	{@const ruleOffY = DT.derivRuleBottomN + (DT.derivRuleHeightN - DT.derivLabelHeightN) / 2 - DT.derivBgPaddingN}
 	{@const rulePad = 2 * (DT.derivBgPaddingN - DT.derivRuleParanthesisGapN)}
 
-	<g fill={type.barFill(deriv)} data-uid={deriv.uid} data-part="bar_">
+	<g fill={type.barFill(deriv)} stroke={type.barStroke(deriv)} data-uid={deriv.uid} data-part="bar_">
 		<rect
 			x={deriv.render.xBar - deriv.render.barWidth / 2 - DT.derivBgPaddingN}
 			y={deriv.render.yBar - DT.derivBgPaddingN}

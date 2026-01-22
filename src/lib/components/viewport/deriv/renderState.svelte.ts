@@ -8,6 +8,7 @@ import Rule from "$lib/state/logic/rule";
 import { Hover } from "../renderState.svelte";
 import type { EditorView } from "prosemirror-view";
 import { focusEditor } from "./formula/formula.svelte";
+import type { BgState } from "./bg.svelte";
 
 // Exported below as DerivRenderData.displayed
 const displayed = $derived(flatten(viewport.children));
@@ -179,12 +180,17 @@ export default class DerivRenderState {
 	bodyMuted = $state(false);
 
     // --- Background colors ---
+    /** ($derived) Determines background color for the formula */
+	readonly bodyBg: BgState = $derived.by(() => this.deriv.logic.conc instanceof Error ? "danger" : "neutral");
+    /** ($derived) Determines background color for the bar */
+	readonly barBg: BgState = $derived.by(() => this.deriv.logic.rule instanceof Error ? "danger" : "neutral");
+
     /** ($derived) Background color for the formula element */
-    readonly formulaBg: string | null = $derived.by(() => 
+    readonly formulaBg_: string | null = $derived.by(() => 
 		this.bgColor(this.deriv.logic.conc, this.barSelected || this.bodySelected || (!!this.hoveredSection && this.hoveredSection !== 'adder'))
 	);
     /** ($derived) Background color for the bar */
-    readonly barBg: string | null = $derived.by(() => 
+    readonly barBg_: string | null = $derived.by(() => 
 		this.bgColor(this.deriv.logic.rule, this.barSelected || this.bodySelected || (!!this.hoveredSection && this.hoveredSection !== 'adder'))
 	);
     // The logic

@@ -4,58 +4,98 @@
 	import { formulaBg } from './formula/formula.svelte';
 	import { barBg } from './bar.svelte';
 	import { addersBg } from "./adders.svelte";
+	import { DT } from '../../../../DT';
+	import viewport from '$lib/state/viewport.svelte';
 
 	// Bg System:
 	// Implement bg snippets in respective components and place their render blocks
 	// in this file. See already implemented ones and BgType.
-	// Don't use the Bg component directly! Instead render bgDependency at least 
-	// once on the page and render bgRoot only on root nodes.
-	export { bgDependency, bgRoot };
+	// Don't use the Bg component directly! Instead render bgRoot only on root nodes.
+	export { bgRoot };
 
-	// const saturate = 2;
-	// const lighten = 0.3;
-	// const lighten_ = 1 - lighten;
+	// --- Enum for different states a Bg can signal (all props are colors)
+	export type BgState = 'neutral' | 'danger' | 'warning';
 
-	// const matrix = `
-    // ${(0.213 + 0.787 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
-    // ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 + 0.285 * saturate) * lighten_} ${(0.072 - 0.072 * saturate) * lighten_} 0 ${lighten}
-    // ${(0.213 - 0.213 * saturate) * lighten_} ${(0.715 - 0.715 * saturate) * lighten_} ${(0.072 + 0.928 * saturate) * lighten_} 0 ${lighten}
-    // 0 0 0 1 0`;
-
-	// --- Props for the three types of bg ---
+	// --- Props for the 4 types of svg elements making up Bg ---
+	// TODO: Optimize this, reduce types
 	export interface BgType {
-		showFormulaBg: (data: Deriv) => boolean;
+		showBodyBg: (data: Deriv) => boolean;
 		showBarBg: (data: Deriv) => boolean;
-		formulaFill: (data: Deriv) => string;
+		bodyFill: (data: Deriv) => string;
 		barFill: (data: Deriv) => string;
+		adderFill: string;
+		bodyStroke: (data: Deriv) => string;
+		barStroke: (data: Deriv) => string;
+		adderStroke: string;
 		// Are the sides extended for the grip handles?
 		extended: (data: Deriv) => boolean;
+		// Used by adders, activeBg or activeOutline hide adders unless hovered
+		active: boolean,
 	};
 
-	// Non-outlined
-	export const nonOutlinedBgType: BgType = {
-		showFormulaBg: (data) => !data.render.formulaBg,
-		showBarBg: (data) => !data.render.barBg && !data.render.barHidden,
-		formulaFill: () => `var(--color-bg)`,
-		barFill: () => `var(--color-bg)`,
+	// Passive
+	export const passiveBgType: BgType = {
+		showBodyBg: (data) => !data.render.formulaBg_,
+		showBarBg: (data) => !data.render.barBg_ && !data.render.barHidden,
+		bodyFill: () => `var(--color-deriv-bg-neutral-1)`,
+		barFill: () => `var(--color-deriv-bg-neutral-1)`,
+		adderFill: 'transparent',
+		bodyStroke: () => ``,
+		barStroke: () => ``,
+		adderStroke: '',
 		extended: () => false,
+		active: false,
 	};
-	// Outlined
-	export const outlinedBgType: BgType = {
-		showFormulaBg: (data) => !!data.render.formulaBg,
-		showBarBg: (data) => !!data.render.barBg && !data.render.barHidden,
-		formulaFill: (data) => `${data.render.formulaBg}`,
-		barFill: (data) => `${data.render.barBg}`,
+	// Active
+	export const activeBgType: BgType = {
+		showBodyBg: (data) => !!data.render.formulaBg_,
+		showBarBg: (data) => !!data.render.barBg_ && !data.render.barHidden,
+		bodyFill: (data) => `var(--color-deriv-bg-${data.render.bodyBg}-${1 + +data.render.awake})`,
+		barFill: (data) => `var(--color-deriv-bg-${data.render.barBg}-${1 + +data.render.awake})`,
+		adderFill: 'var(--color-deriv-bg-neutral-2)',
+		bodyStroke: () => ``,
+		barStroke: () => ``,
+		adderStroke: '',
 		extended: (data) => data.render.hoveredSection === 'body',
+		active: true,
+	};
+	// Outline
+	export const activeOutlineType: BgType = {
+		showBodyBg: (data) => !!data.render.formulaBg_,
+		showBarBg: (data) => !!data.render.barBg_ && !data.render.barHidden,
+		bodyFill: () => `transparent`,
+		barFill: () => `transparent`,
+		adderFill: 'transparent',
+		bodyStroke: (data) => `var(--color-deriv-bg-${data.render.bodyBg}-${2 + +data.render.awake})`,
+		barStroke: (data) => `var(--color-deriv-bg-${data.render.barBg}-${2 + +data.render.awake})`,
+		adderStroke: 'var(--color-deriv-bg-neutral-3)',
+		extended: (data) => data.render.hoveredSection === 'body',
+		active: true,
 	};
 	// Hitbox
 	export const hitboxBgType: BgType = {
-		showFormulaBg: () => true,
+		showBodyBg: () => true,
 		showBarBg: () => true,
-		formulaFill: () => ``,
+		bodyFill: () => ``,
 		barFill: () => ``,
+		adderFill: '',
+		bodyStroke: () => ``,
+		barStroke: () => ``,
+		adderStroke: '',
 		extended: () => true,
+		active: false,
 	};
+
+	// For tailwind to load these colors
+	'--color-deriv-bg-neutral-1';
+	'--color-deriv-bg-neutral-2';
+	'--color-deriv-bg-neutral-3';
+	'--color-deriv-bg-warning-1';
+	'--color-deriv-bg-warning-2';
+	'--color-deriv-bg-warning-3';
+	'--color-deriv-bg-danger-1';
+	'--color-deriv-bg-danger-2';
+	'--color-deriv-bg-danger-3';
 </script>
 
 <script lang="ts">
@@ -79,33 +119,18 @@
 	let { deriv, type, _showOnlyFormula = false }: Props = $props();
 </script>
 
-<!-- Not used right now bc outlines are disabled. Called in viewport comp. -->
-{#snippet bgDependency()}
-	<!-- <svg class=" invisible absolute">
-		<filter id="outlineFilter" color-interpolation-filters="sRGB">
-			<feColorMatrix in="SourceGraphic" result="lightened" type="matrix" values={matrix} />
-			<feMorphology
-				operator="dilate"
-				in="lightened"
-				result="morphed"
-				radius={(1.1 * DT.UNIT) / viewport.render.scale}
-			/>
-			<feComposite in="SourceGraphic" />
-		</filter>
-	</svg> -->
-{/snippet}
-
 {#snippet bgRoot(deriv: Deriv)}
 	<svg
-		class="h-[1px] w-[1px] overflow-visible opacity-75 select-none cursor-all-scroll"
+		class="h-px w-px overflow-visible opacity-75 select-none cursor-all-scroll"
 		viewBox="0 0 1 1"
 		class:z-1={deriv.render.dragged}
 	>
 		<g class="pointer-events-none">
-			<Bg {deriv} type={nonOutlinedBgType}/>
-			<!-- <g filter="url(#outlineFilter)"> -->
-				<Bg {deriv} type={outlinedBgType} />
-			<!-- </g> -->
+			<Bg {deriv} type={passiveBgType}/>
+			<g stroke-width={3 * DT.UNIT / viewport.render.scale}>
+				<Bg {deriv} type={activeOutlineType} />
+			</g>
+			<Bg {deriv} type={activeBgType} />
 		</g>
 		<g class="opacity-0">
 			<Bg {deriv} type={hitboxBgType}/>
@@ -114,7 +139,7 @@
 {/snippet}
 
 <!-- For formula (for the second part, see comment above Props) -->
-{#if type.showFormulaBg(deriv) && (!deriv.render.barDragged || deriv.root === deriv || _showOnlyFormula)}
+{#if type.showBodyBg(deriv) && (!deriv.render.barDragged || deriv.root === deriv || _showOnlyFormula)}
 	{@render formulaBg(deriv, type)}
 {/if}
 

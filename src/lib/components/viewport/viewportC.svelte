@@ -6,7 +6,6 @@
 	import DerivRenderState from "./deriv/renderState.svelte";
 	import Panzoom from "./panzoom/panzoom.svelte";
 	import { mouse } from "$lib/utils/interact/mouse.svelte";
-	import { bgDependency } from "./deriv/bg.svelte";
 	import { DraggableType, Hover } from "./renderState.svelte";
 	import { DT } from "../../../DT";
 	import { keyboardListeners, partListeners } from "./listeners";
@@ -126,8 +125,6 @@
 	// Probably some svelte reactivity bug that'll be fixed soon.
 	$effect(() => { viewport.render.mouse.x });
 </script>
-
-{@render bgDependency()}
 
 <!-- The :global(.hover) class is used to determine when non-DND hover effects should happen -->
 <!-- See deriv.renderData.lookup for data-part -->
