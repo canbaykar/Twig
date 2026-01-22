@@ -124,6 +124,13 @@
 	// is probably responsible for it. (Not even package.json! If I didn't miss anything.)
 	// Probably some svelte reactivity bug that'll be fixed soon.
 	$effect(() => { viewport.render.mouse.x });
+
+	// Sometimes formula fields overflowing screen trigger autoscroll on this.
+	// I don't know why it's specifically this element.
+	// TODO: Implement auto-scroll
+	function onscroll(e: Event) {
+		viewport.render.outerElement!.scrollLeft = 0;
+	}
 </script>
 
 <!-- The :global(.hover) class is used to determine when non-DND hover effects should happen -->
@@ -136,6 +143,7 @@
     class:hover={!viewport.render.dragging}
 	role="presentation"
 	data-part="viewport"
+	{onscroll}
 >
     <Panzoom
         state={viewport.render}
