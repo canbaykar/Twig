@@ -100,6 +100,7 @@
   --color-deriv-bg-danger-2: hsl(2, 92%, 66%);
   --color-deriv-bg-danger-3: hsl(2, 100%, 77%);
   --color-deriv-selection: hsla(219, 89%, 48%, 0.50);
+  --color-grid: hsl(219, 49%, 14%);
 
   /* --- FONT --- */
   --font-math: 'M PLUS 1p', var(--font-sans);
