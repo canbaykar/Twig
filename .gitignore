@@ -25,3 +25,7 @@ vite.config.ts.timestamp-*
 
 # Certificate
 _cert.pem
+
+# Storybook
+*storybook.log
+storybook-static

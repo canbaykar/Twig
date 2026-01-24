@@ -13,7 +13,9 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.1",
@@ -49,7 +51,18 @@
 		"unplugin-icons": "^23.0.1",
 		"vite": "^7.2.6",
 		"vite-plugin-peggy-loader": "^2.0.1",
-		"vitest": "^4.0.15"
+		"vitest": "^4.0.15",
+		"storybook": "^10.2.0",
+		"@storybook/sveltekit": "^10.2.0",
+		"@storybook/addon-svelte-csf": "^5.0.10",
+		"@chromatic-com/storybook": "^5.0.0",
+		"@storybook/addon-vitest": "^10.2.0",
+		"@storybook/addon-a11y": "^10.2.0",
+		"@storybook/addon-docs": "^10.2.0",
+		"eslint-plugin-storybook": "^10.2.0",
+		"playwright": "^1.58.0",
+		"@vitest/browser-playwright": "^4.0.15",
+		"@vitest/coverage-v8": "^4.0.15"
 	},
 	"dependencies": {
 		"@tailwindcss/container-queries": "^0.1.1",

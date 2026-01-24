@@ -1,6 +1,6 @@
 @import '../static/fonts/MPLUS1p/MPLUS1p';
 @import 'tailwindcss';
-
+@plugin "@tailwindcss/typography";
 @config '../tailwind.config.ts';
 
 @theme {
