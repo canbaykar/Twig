@@ -1,0 +1,11 @@
+:global(.prose) {
+	max-width: unset;
+}
+
+:global(h1, h2, h3, h4) {
+	margin: 0.5rem;
+}
+
+:global(body) {
+	background: var(--color-bg-inset);
+}

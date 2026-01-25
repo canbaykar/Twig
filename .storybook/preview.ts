@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/sveltekit';
 import { themes } from 'storybook/theming';
+import '../src/app.css';
 
 const preview: Preview = {
 	parameters: {

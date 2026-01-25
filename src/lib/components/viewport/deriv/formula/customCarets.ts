@@ -71,7 +71,7 @@ export const customCaretsPlugin: Plugin = new Plugin({
 				if (!s.empty)
 					return Decoration.inline(s.from, s.to, {
 						class: s.head < s.anchor ? "caret-right" : "caret-left",
-						style: 'background: var(--color-deriv-selection);'
+						style: 'background: var(--color-selection);'
 					});
 				return s.from !== 0
 					? Decoration.inline(s.from - 1, s.from, { class: "caret-left" })

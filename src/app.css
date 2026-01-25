@@ -20,12 +20,12 @@
   --color-fg-muted: hsl(214, 30%, 73%);
   --color-fg-disabled: hsl(215, 18%, 52%);
   --color-fg-onEmphasis: hsl(210 40% 98%);
-  --color-fg-link: black;
+  --color-fg-link: hsl(214, 30%, 73%);
 
   /* Border */
   --color-border: hsl(217.2 32.6% 17.5%);
   --color-border-muted: hsl(219, 28%, 24%);
-  --color-border-emphasis: hsl(210, 44%, 74%);
+  --color-border-emphasis: hsl(210, 29%, 42%);
 
   /* SEMANTIC */
   /* Accent */
@@ -54,7 +54,7 @@
   --color-bg-danger-emphasis: hsl(0 72.2% 50.6%);
   --color-bg-danger-muted: hsl(0, 48%, 18%);
   --color-border-danger-emphasis: hsl(0 72.2% 50.6%);
-  --color-border-danger-muted: hsl(0 72.2% 50.6%);
+  --color-border-danger-muted: hsl(0, 63%, 40%);
 
   /* --- PATTERN --- */
   /* Control > Bg */
@@ -75,31 +75,34 @@
   /* Control > Overlay (control-transparent-bgColor in Primer) */
   --color-control-overlay: transparent;
   --color-control-overlay-hover: hsla(210, 95%, 85%, 0.10);
-  --color-control-overlay-active: hsla(211, 33%, 69%, 0.15);
-  --color-control-overlay-disabled: hsla(211, 33%, 69%, 0.15);
+  --color-control-overlay-active: hsla(211, 33%, 69%, 0.25);
+  --color-control-overlay-disabled: hsla(211, 33%, 69%, 0.25);
   /* Control > Inverted (not in Primer) */
   --color-control-inverted: var(--color-fg);
-  --color-control-inverted-hover: hsl(215, 32%, 72%);
-  --color-control-inverted-active: var(--color-fg-muted);
-  --color-control-inverted-disabled: var(--color-fg-muted);
+  --color-control-inverted-hover: var(--color-fg-muted);
+  --color-control-inverted-active: var(--color-fg-disabled);
+  --color-control-inverted-disabled: var(--color-fg-disabled);
   --color-control-inverted-fg: var(--color-bg);
-  --color-control-inverted-fg-muted: var(--color-bg-muted);
-  --color-control-inverted-fg-disabled: var(--color-bg-emphasis);
+  --color-control-inverted-fg-hover: var(--color-bg);
+  --color-control-inverted-fg-muted: hsl(220, 25%, 39%);
+  --color-control-inverted-fg-disabled: hsl(220, 23%, 52%);
 
   /* Focus */
   --color-focus-outline: hsl(219, 89%, 48%);
+  --color-selection: hsla(219, 100%, 61%, 0.50);
 
   /* Deriv (use at 75% opacity) */
   --color-deriv-bg-neutral-1: var(--color-bg);
   --color-deriv-bg-neutral-2: hsl(219, 35%, 16%);
   --color-deriv-bg-neutral-3: hsl(219, 35%, 26%);
+  --color-deriv-bg-neutral-4: hsl(220, 33%, 34%);
   --color-deriv-bg-warning-1: black;
   --color-deriv-bg-warning-2: black;
   --color-deriv-bg-warning-3: black;
   --color-deriv-bg-danger-1: hsl(0 72.2% 50.6%);
   --color-deriv-bg-danger-2: hsl(2, 92%, 66%);
-  --color-deriv-bg-danger-3: hsl(2, 100%, 77%);
-  --color-deriv-selection: hsla(219, 89%, 48%, 0.50);
+  --color-deriv-bg-danger-3: hsl(2, 90%, 73%);
+  --color-deriv-bg-danger-4: hsl(2, 100%, 81%);
   --color-grid: hsl(219, 49%, 14%);
 
   /* --- FONT --- */

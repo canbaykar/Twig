@@ -1,34 +1,49 @@
 <script lang="ts">
 	import { cn } from '$lib/utils/shadcn';
 	import type { Snippet } from 'svelte';
+	import PreviewInner from './previewInner.svelte';
 
 	interface Props {
+		title?: string;
 		class?: string;
-		caption?: string;
 		outerClass?: string;
+		full?: boolean;
+		showClass?: boolean;
 		children?: Snippet;
 		[key: string]: any;
 	}
 
-	const { class: class_, outerClass, children, ...restProps }: Props = $props();
+	const {
+		title,
+		class: class_,
+		outerClass,
+		full,
+		showClass = false,
+		children,
+		...restProps
+	}: Props = $props();
 </script>
 
-<figure class='prose prose-invert m-0! w-40'>
+<figure class="prose prose-invert m-0! flex flex-col {full ? 'w-full' : 'w-min'}">
 	<div
-		class={cn('flex h-20 w-40 items-center justify-center rounded border', outerClass)}
-		{...restProps}
+		class={cn('flex items-center justify-center rounded border px-12 py-3 bg-bg', outerClass)}
+		title={outerClass}
 	>
-		<div class={cn('flex h-13 w-13 items-center justify-center rounded border', class_)}>
-			Aa
-		</div>
+		<PreviewInner class={class_} {...restProps}>
+			{@render children?.()}
+		</PreviewInner>
 	</div>
 	<figcaption class="m-1!">
-		<p class="my-1! prose prose-invert">
-			{@render children?.()}
-		</p>
-		{#if children}
-			<div class="w-full border-t my-1"></div>
+		{#if title}
+			<p class="prose prose-invert my-0! text-center">
+				{title}
+			</p>
+			{#if showClass}
+				<div class="my-1 w-auto border-t"></div>
+			{/if}
 		{/if}
-		{class_}
+		{#if showClass}
+			{class_}
+		{/if}
 	</figcaption>
 </figure>
