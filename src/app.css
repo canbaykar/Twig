@@ -4,28 +4,98 @@
 @config '../tailwind.config.ts';
 
 @theme {
+  /* --- BASE --- */
+  --color-primary-50:  #FCFFE7;
+  --color-primary-100: #DCE5CE;
+  --color-primary-200: #BECDB5;
+  --color-primary-300: #9FB59A;
+  --color-primary-400: #7B9A7D;
+  --color-primary-500: #5B7C65;
+  --color-primary-600: #3B584B;
+  --color-primary-700: #1E3230;
+  --color-primary-800: #101E21;
+  --color-primary-900: #070F15;
+  --color-primary-950: #030A12;
+  
+  --color-danger-100: #FEA4CD;
+  --color-danger-200: #FF79B4;
+  --color-danger-300: #F6599C;
+  --color-danger-400: #E93A83;
+  --color-danger-500: #D71967;
+  --color-danger-600: #C1135F;
+  --color-danger-700: #A70D55;
+  --color-danger-800: #840845;
+  --color-danger-900: #570330;
+
+  /* Not tested, may change later */
+  --color-info-100: #9FF0FF;
+  --color-info-200: #69DBFF;
+  --color-info-300: #4CC3FF;
+  --color-info-400: #33A9FF;
+  --color-info-500: #1E8CFF;
+  --color-info-600: #1371F3;
+  --color-info-700: #0D58E7;
+  --color-info-800: #0535BA;
+  --color-info-900: #02137A;
+
+  /* Not tested, may change later */
+  --color-warning-100: #FEF1CD;
+  --color-warning-200: #FDE09B;
+  --color-warning-300: #FBC869;
+  --color-warning-400: #F8B143;
+  --color-warning-500: #F48D07;
+  --color-warning-600: #D16F05;
+  --color-warning-700: #AF5503;
+  --color-warning-800: #8D3E02;
+  --color-warning-900: #752E01;
+
+  /* Not tested, may change later */
+  --color-success-100: #CBF9CD;
+  --color-success-200: #9AF4A6;
+  --color-success-300: #64E081;
+  --color-success-400: #0C9949;
+  --color-success-500: #0C9949;
+  --color-success-600: #08834A;
+  --color-success-700: #066E47;
+  --color-success-800: #035841;
+  --color-success-900: #02493D;
+
+  /* GENERATED */
+  /* Half opacity */
+  --color-info-500-50: #1E8CFF80;
+  /* Produces 800 on 900 (it's transparent)... */
+  --color-900-800-75: #132325bf;
+  --color-900-800-15: #43736527;
+  --color-900-500-50: #AFE9B580;
+  --color-900-600-50: #6FA18180;
+  /* Opaque versions */
+  --color-900-800-75-opaque: #132325;
+  --color-900-700-75-opaque: #263E39;
+  --color-900-600-75-opaque: #4C705D;
+  --color-900-500-75-opaque: #77A080;
+
   /* The theme design is heavily inspired by Github Primer */
 
   /* --- FUNCTIONAL --- */
   /* NEUTRAL */
   /* Background */
-  --color-bg: hsl(222.2 84% 4.9%);
-  --color-bg-muted: hsl(219, 39%, 13%);
-  --color-bg-emphasis: hsl(220, 30%, 26%);
-  --color-bg-inset: hsl(223, 88%, 3%);
-  --color-bg-overlay: hsla(219, 35%, 16%, 0.75);
+  --color-bg: var(--color-primary-900);
+  --color-bg-muted: var(--color-primary-800);
+  --color-bg-emphasis: var(--color-primary-500);
+  --color-bg-inset: var(--color-primary-950);
+  --color-bg-overlay: var(--color-900-800-75);
 
   /* Foreground */
-  --color-fg: hsl(210 40% 98%);
-  --color-fg-muted: hsl(214, 30%, 73%);
-  --color-fg-disabled: hsl(215, 18%, 52%);
-  --color-fg-onEmphasis: hsl(210 40% 98%);
-  --color-fg-link: hsl(214, 30%, 73%);
+  --color-fg: var(--color-primary-50);
+  --color-fg-muted: var(--color-primary-200);
+  --color-fg-disabled: var(--color-primary-300);
+  --color-fg-onEmphasis: var(--color-primary-50);
+  --color-fg-link: var(--color-primary-200);
 
   /* Border */
-  --color-border: hsl(217.2 32.6% 17.5%);
-  --color-border-muted: hsl(219, 28%, 24%);
-  --color-border-emphasis: hsl(210, 29%, 42%);
+  --color-border: var(--color-primary-700);
+  --color-border-muted: var(--color-primary-600);
+  --color-border-emphasis: var(--color-primary-500);
 
   /* SEMANTIC */
   /* Accent */
@@ -50,60 +120,60 @@
   --color-border-success-muted: black;
 
   /* Danger */
-  --color-fg-danger: hsl(0, 86%, 60%);
-  --color-bg-danger-emphasis: hsl(0 72.2% 50.6%);
-  --color-bg-danger-muted: hsl(0, 48%, 18%);
-  --color-border-danger-emphasis: hsl(0 72.2% 50.6%);
-  --color-border-danger-muted: hsl(0, 63%, 40%);
+  --color-fg-danger: var(--color-danger-300);
+  --color-bg-danger-emphasis: var(--color-danger-600);
+  --color-bg-danger-muted: var(--color-danger-900);
+  --color-border-danger-emphasis: var(--color-danger-600);
+  --color-border-danger-muted: var(--color-danger-600);
 
   /* --- PATTERN --- */
   /* Control > Bg */
-  --color-control-bg: hsl(219, 39%, 13%);
-  --color-control-bg-hover: hsl(220, 32%, 28%);
-  --color-control-bg-active: hsl(220, 29%, 30%);
-  --color-control-bg-disabled: hsl(220, 29%, 30%);
+  --color-control-bg: var(--color-primary-800);
+  --color-control-bg-hover: var(--color-primary-600);
+  --color-control-bg-active: var(--color-primary-500);
+  --color-control-bg-disabled: var(--color-primary-700);
   /* Control > Border */
-  --color-control-border: hsl(220, 32%, 24%);
-  --color-control-border-hover: hsl(220, 32%, 24%);
-  --color-control-border-active: hsl(220, 33%, 61%);
-  --color-control-border-disabled: hsl(221, 23%, 24%);
+  --color-control-border: var(--color-primary-600);
+  --color-control-border-hover: transparent;
+  --color-control-border-active: var(--color-primary-400);
+  --color-control-border-disabled: transparent;
   /* Control > Fg */
   --color-control-fg: var(--color-fg);
-  --color-control-fg-hover: var(--color-fg);
+  --color-control-fg-hover: var(--color-fg-muted);
   --color-control-fg-muted: var(--color-fg-muted); /* e.g. Input placeholder */ 
   --color-control-fg-disabled: var(--color-fg-disabled);
   /* Control > Overlay (control-transparent-bgColor in Primer) */
   --color-control-overlay: transparent;
-  --color-control-overlay-hover: hsla(210, 95%, 85%, 0.10);
-  --color-control-overlay-active: hsla(211, 33%, 69%, 0.25);
-  --color-control-overlay-disabled: hsla(211, 33%, 69%, 0.25);
+  --color-control-overlay-hover: var(--color-900-600-50);
+  --color-control-overlay-active: var(--color-900-500-50);
+  --color-control-overlay-disabled: transparent;
   /* Control > Inverted (not in Primer) */
-  --color-control-inverted: var(--color-fg);
-  --color-control-inverted-hover: var(--color-fg-muted);
-  --color-control-inverted-active: var(--color-fg-disabled);
-  --color-control-inverted-disabled: var(--color-fg-disabled);
-  --color-control-inverted-fg: var(--color-bg);
-  --color-control-inverted-fg-hover: var(--color-bg);
-  --color-control-inverted-fg-muted: hsl(220, 25%, 39%);
-  --color-control-inverted-fg-disabled: hsl(220, 23%, 52%);
+  --color-control-inverted: var(--color-primary-50);
+  --color-control-inverted-hover: var(--color-primary-300);
+  --color-control-inverted-active: var(--color-primary-400);
+  --color-control-inverted-disabled: var(--color-primary-200);
+  --color-control-inverted-fg: var(--color-primary-950);
+  --color-control-inverted-fg-hover: var(--color-primary-600);
+  --color-control-inverted-fg-muted: var(--color-primary-600);
+  --color-control-inverted-fg-disabled: var(--color-primary-600);
 
   /* Focus */
-  --color-focus-outline: hsl(219, 89%, 48%);
-  --color-selection: hsla(219, 100%, 61%, 0.50);
+  --color-focus-outline: var(--color-info-500);
+  --color-selection: var(--color-info-500-50);
 
   /* Deriv (use at 75% opacity) */
   --color-deriv-bg-neutral-1: var(--color-bg);
-  --color-deriv-bg-neutral-2: hsl(219, 35%, 16%);
-  --color-deriv-bg-neutral-3: hsl(219, 35%, 26%);
-  --color-deriv-bg-neutral-4: hsl(220, 33%, 34%);
+  --color-deriv-bg-neutral-2: var(--color-900-800-75-opaque);
+  --color-deriv-bg-neutral-3: var(--color-900-700-75-opaque);
+  --color-deriv-bg-neutral-4: var(--color-900-600-75-opaque);
   --color-deriv-bg-warning-1: black;
   --color-deriv-bg-warning-2: black;
   --color-deriv-bg-warning-3: black;
-  --color-deriv-bg-danger-1: hsl(0 72.2% 50.6%);
-  --color-deriv-bg-danger-2: hsl(2, 92%, 66%);
-  --color-deriv-bg-danger-3: hsl(2, 90%, 73%);
-  --color-deriv-bg-danger-4: hsl(2, 100%, 81%);
-  --color-grid: hsl(219, 49%, 14%);
+  --color-deriv-bg-danger-1: var(--color-danger-900);
+  --color-deriv-bg-danger-2: var(--color-danger-800);
+  --color-deriv-bg-danger-3: var(--color-danger-700);
+  --color-deriv-bg-danger-4: var(--color-danger-600);
+  --color-grid: var(--color-primary-700);
 
   /* --- FONT --- */
   --font-math: 'M PLUS 1p', var(--font-sans);

@@ -14,10 +14,10 @@
 
 {#snippet commonTestsInline()}
 	<span class="extra-word-spacing">
-		<PreviewInline class="text-fg" />,
-		<PreviewInline class="text-fg-muted" />,
-		<PreviewInline class="text-fg-disabled" />,
-		<PreviewInline class="text-fg-link font-bold underline" content="fg-link" />,
+		<PreviewInline class="text-fg" />
+		<PreviewInline class="text-fg-muted" />
+		<PreviewInline class="text-fg-disabled" />
+		<PreviewInline class="text-fg-link font-bold underline" content="fg-link" />
 		<PreviewInline class="text-fg-danger" />
 	</span>
 {/snippet}
@@ -34,24 +34,28 @@
 {/snippet}
 
 {#snippet controlTestsInline(
-	/** @type {boolean} */ inverted
+	/** @type {boolean} */ inverted,
+	/** @type {boolean} */ includeDisabled,
 )}
 	<span class="extra-word-spacing">
-		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg" />,
-		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg-hover" />,
-		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg-muted" />,
-		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg-disabled" />
+		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg" />
+		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg-hover" />
+		<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg-muted" />
+		{#if includeDisabled}
+			<PreviewInline class="text-control{inverted ? "-inverted" : ""}-fg-disabled" />
+		{/if}
 	</span>
 {/snippet}
 
 {#snippet controlTests(
 	/** @type {string} */ title, 
 	/** @type {string} */ class_, 
-	/** @type {boolean} */ inverted
+	/** @type {boolean} */ inverted,
+	/** @type {boolean} */ includeDisabled,
 )}
 	<Swatch>
 		<Preview {title} class={class_} full showClass>
-			{@render controlTestsInline(inverted)}
+			{@render controlTestsInline(inverted, includeDisabled)}
 		</Preview>
 	</Swatch>
 {/snippet}
@@ -63,9 +67,9 @@
 	<Swatch>
 		<Preview {title} class={class_} full showClass>
 			<span class="extra-word-spacing">
-				<PreviewInline class="text-fg" />,
-				<PreviewInline class="text-fg-muted" />,
-				<PreviewInline class="text-fg-disabled" />,
+				<PreviewInline class="text-fg" />
+				<PreviewInline class="text-fg-muted" />
+				<PreviewInline class="text-fg-disabled" />
 			</span>
 		</Preview>
 	</Swatch>
@@ -107,31 +111,41 @@
 		
 		<Part>
 			<h2>Control</h2>
-			{@render controlTests("control-bg", "bg-control-bg border-control-border", false)}
-			{@render controlTests("control-bg-hover", "bg-control-bg-hover border-control-border-hover", false)}
-			{@render controlTests("control-bg-active", "bg-control-bg-active border-control-border-active", false)}
-			{@render controlTests("control-bg-disabled", "bg-control-bg-disabled border-control-border-disabled", false)}
+			{@render controlTests("control-bg", "bg-control-bg border-control-border", false, false)}
+			<!-- {@render controlTests("control-bg-hover", "bg-control-bg-hover border-control-border-hover", false, false)}
+			{@render controlTests("control-bg-active", "bg-control-bg-active border-control-border-active", false, false)} -->
+			{@render controlTests("control-bg-disabled", "bg-control-bg-disabled border-control-border-disabled", false, true)}
 		</Part>
 
 		<Part>
 			<h2>Control-Inverted</h2>
 			<Swatch>
-				{@render controlTests("control-inverted", "bg-control-inverted", true)}
-				{@render controlTests("control-inverted-hover", "bg-control-inverted-hover", true)}
-				{@render controlTests("control-inverted-active", "bg-control-inverted-active", true)}
-				{@render controlTests("control-inverted-disabled", "bg-control-inverted-disabled", true)}
+				{@render controlTests("control-inverted", "bg-control-inverted", true, false)}
+				<!-- {@render controlTests("control-inverted-hover", "bg-control-inverted-hover", true, false)}
+				{@render controlTests("control-inverted-active", "bg-control-inverted-active", true, false)} -->
+				{@render controlTests("control-inverted-disabled", "bg-control-inverted-disabled", true, true)}
+			</Swatch>
+		</Part>
+
+		<Part>
+			<h2>Control-Overlay</h2>
+			<Swatch>
+				{@render controlTests("control-overlay", "bg-control-overlay", false, false)}
+				<!-- {@render controlTests("control-overlay-hover", "bg-control-overlay-hover", false, false)}
+				{@render controlTests("control-overlay-active", "bg-control-overlay-active", false, false)} -->
+				{@render controlTests("control-overlay-disabled", "bg-control-overlay-disabled", false, true)}
 			</Swatch>
 		</Part>
 		
 		<Part>
 			<h2>Deriv</h2>
-			{@render commonTests("deriv-bg-neutral-1", "bg-deriv-bg-neutral-1/75")}
-			{@render commonTests("deriv-bg-neutral-1", "bg-deriv-bg-neutral-2/75 border-deriv-bg-neutral-3/75")}
-			{@render commonTests("deriv-bg-neutral-1", "bg-deriv-bg-neutral-3/75 border-deriv-bg-neutral-4/75")}
+			{@render derivTests("deriv-bg-neutral-1", "bg-deriv-bg-neutral-1/75")}
+			{@render derivTests("deriv-bg-neutral-1", "bg-deriv-bg-neutral-2/75 border-deriv-bg-neutral-3/75")}
+			{@render derivTests("deriv-bg-neutral-1", "bg-deriv-bg-neutral-3/75 border-deriv-bg-neutral-4/75")}
 
-			{@render commonTests("deriv-bg-danger-1", "bg-deriv-bg-danger-1/75 border-deriv-bg-danger-2/75")}
-			{@render commonTests("deriv-bg-danger-1", "bg-deriv-bg-danger-2/75 border-deriv-bg-danger-3/75")}
-			{@render commonTests("deriv-bg-danger-1", "bg-deriv-bg-danger-3/75 border-deriv-bg-danger-4/75")}
+			{@render derivTests("deriv-bg-danger-1", "bg-deriv-bg-danger-1/75 border-deriv-bg-danger-2/75")}
+			{@render derivTests("deriv-bg-danger-1", "bg-deriv-bg-danger-2/75 border-deriv-bg-danger-3/75")}
+			{@render derivTests("deriv-bg-danger-1", "bg-deriv-bg-danger-3/75 border-deriv-bg-danger-4/75")}
 		</Part>
 	</article>
 </Story>

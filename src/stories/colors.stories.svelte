@@ -80,7 +80,6 @@
 				<Part>
 					<h3>Border</h3>
 					<Swatch>
-						<Preview title="control-bg" class="bg-control-bg" />
 						<Preview title="control-border" class="border-control-border" />
 						<Preview title="control-border-hover" class="border-control-border-hover" />
 						<Preview title="control-border-active" class="border-control-border-active" />
