@@ -22,27 +22,23 @@
 
 <label
 	class="inline-grid font-medium text-sm" 
-	data-value={placeholder} 
-	data-placeholder={placeholder}
+	data-value={placeholder}
 	bind:this={label}
 >
 	<Input 
 		class="bg-transparent border-transparent h-7 inline-grid text-sm" 
 		{placeholder}
-		style="grid-area: 1 / 3" size={1}
+		style="grid-area: 1 / 2" size={1}
 		bind:value
 	/>
 </label>
 
 <style>
-	label::before, label::after {
-		content: attr(data-placeholder) ' ';
+	label::after {
+		content: attr(data-value) ' ';
 		visibility: hidden;
 		white-space: pre-wrap;
 		padding-inline: calc(var(--spacing) * 3);
-		grid-area: 1 / 3;
-	}
-	label::after {
-		content: attr(data-value) ' ';
+		grid-area: 1 / 2;
 	}
 </style>
