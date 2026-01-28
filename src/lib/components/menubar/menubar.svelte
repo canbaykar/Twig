@@ -9,6 +9,7 @@
 	import Html from './html.svelte';
 	import { safeParseJSON } from '$lib/utils';
 	import { keyboardListeners } from '../viewport/listeners';
+	import Submark from '$lib/branding/submark.svelte';
 
 	const placeholder = "Untitled Project";
 	let nameInput = $state("");
@@ -165,6 +166,8 @@
 <svelte:document {onkeydown} />
 
 <Menubar.Root class="absolute border-t-0 border-l-0 rounded-none rounded-br-md">
+	<Submark class="ml-1 shrink-0" />
+
 	<Menubar.Menu>
 		<Menubar.Trigger>File</Menubar.Trigger>
 		<Menubar.Content>
