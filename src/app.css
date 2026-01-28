@@ -16,7 +16,27 @@
   --color-primary-800: #101E21;
   --color-primary-900: #070F15;
   --color-primary-950: #030A12;
+
+  --color-accent-100: #CDFFCF;
+  --color-accent-200: #88E695;
+  --color-accent-300: #51CC6E;
+  --color-accent-400: #25B354;
+  --color-accent-500: #0C9949;
+  --color-accent-600: #057D45;
+  --color-accent-700: #01613E;
+  --color-accent-800: #004532;
+  --color-accent-900: #002922;
   
+  --color-success-100: #D9FFA8;
+  --color-success-200: #B9F284;
+  --color-success-300: #94E161;
+  --color-success-400: #6FD042;
+  --color-success-500: #4BBF27;
+  --color-success-600: #269F11;
+  --color-success-700: #0D7906;
+  --color-success-800: #035305;
+  --color-success-900: #022E07;
+
   --color-danger-100: #FEA4CD;
   --color-danger-200: #FF79B4;
   --color-danger-300: #F6599C;
@@ -27,7 +47,7 @@
   --color-danger-800: #840845;
   --color-danger-900: #570330;
 
-  /* Not tested, may change later */
+  /* Not tested at all, may change completely later */
   --color-info-100: #9FF0FF;
   --color-info-200: #69DBFF;
   --color-info-300: #4CC3FF;
@@ -38,7 +58,7 @@
   --color-info-800: #0535BA;
   --color-info-900: #02137A;
 
-  /* Not tested, may change later */
+  /* Not tested at all, may change completely later */
   --color-warning-100: #FEF1CD;
   --color-warning-200: #FDE09B;
   --color-warning-300: #FBC869;
@@ -48,17 +68,6 @@
   --color-warning-700: #AF5503;
   --color-warning-800: #8D3E02;
   --color-warning-900: #752E01;
-
-  /* Not tested, may change later */
-  --color-success-100: #CBF9CD;
-  --color-success-200: #9AF4A6;
-  --color-success-300: #64E081;
-  --color-success-400: #0C9949;
-  --color-success-500: #0C9949;
-  --color-success-600: #08834A;
-  --color-success-700: #066E47;
-  --color-success-800: #035841;
-  --color-success-900: #02493D;
 
   /* GENERATED */
   /* Half opacity */
