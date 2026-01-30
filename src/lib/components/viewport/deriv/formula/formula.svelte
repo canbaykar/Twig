@@ -133,7 +133,7 @@
 	<div 
 		bind:this={editorElement}
 		class:focused={r.editorFocused}
-		class="[.focused]:bg-bg/50 relative! **:relative! caret-transparent selection:bg-transparent overflow-hidden"
+		class="[.focused]:bg-bg/25 relative! **:relative! caret-transparent selection:bg-transparent overflow-hidden"
 		class:text-fg-disabled={deriv.render.bodyMuted}
 		data-part="body_formula"
 	>
