@@ -1,6 +1,5 @@
 @import '../static/fonts/MPLUS1p/MPLUS1p';
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
 @config '../tailwind.config.ts';
 
 @theme {
@@ -207,6 +206,63 @@
   }
   body {
     @apply bg-bg text-fg selection:bg-selection;
+  }
+
+  /* Typography, taken from shadcn */
+  .prose {
+    h1 {
+		@apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+	}
+	h2 {
+		@apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
+	}
+	h3 {
+		@apply scroll-m-20 text-2xl font-semibold tracking-tight;
+	}
+	h4 {
+		@apply scroll-m-20 text-xl font-semibold tracking-tight;
+	}
+	p {
+		@apply leading-7 not-first:mt-6;
+	}
+	blockquote {
+		@apply mt-6 border-s-2 ps-6 italic;
+	}
+	ul {
+		@@apply my-6 ms-6 list-disc [&>li]:mt-2;
+	}
+	code {
+		@apply bg-bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+	}
+	.lead {
+		@apply text-fg-muted text-xl;
+	}
+	.large {
+		@apply text-lg font-semibold;
+	}
+	small {
+		@apply text-sm leading-none font-medium;
+	}
+	.muted {
+		@apply text-fg-muted text-sm;
+	}
+
+	/* Table */
+	.table-wrapper {
+		@apply my-6 w-full overflow-y-auto;
+	}
+	table {
+		@apply w-full;
+	}
+	tr {
+		@apply even:bg-bg-muted m-0 border-t p-0;
+	}
+	th {
+		@apply border px-4 py-2 text-start font-bold [[align=center]]:text-center [[align=right]]:text-end;
+	}
+	td {
+		@apply border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end;
+	}
   }
 }
 
