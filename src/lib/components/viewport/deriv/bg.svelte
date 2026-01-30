@@ -33,23 +33,11 @@
 		active: boolean,
 	};
 
-	// Passive
-	export const passiveBgType: BgType = {
-		showBodyBg: (data) => !data.render.formulaBg_,
-		showBarBg: (data) => !data.render.barBg_ && !data.render.barHidden,
-		bodyFill: () => `var(--color-deriv-bg-neutral-1)`,
-		barFill: () => `var(--color-deriv-bg-neutral-1)`,
-		adderFill: 'transparent',
-		bodyStroke: () => ``,
-		barStroke: () => ``,
-		adderStroke: '',
-		extended: () => false,
-		active: false,
-	};
 	// Active
+	const showBarBg = (data: Deriv) => data.render.barBg !== 'neutral' || data.render.awake;
 	export const activeBgType: BgType = {
-		showBodyBg: (data) => !!data.render.formulaBg_,
-		showBarBg: (data) => !!data.render.barBg_ && !data.render.barHidden,
+		showBodyBg: (data) => data.render.bodyBg !== 'neutral' || data.render.awake,
+		showBarBg: (data) => showBarBg(data) && !data.render.barHidden,
 		bodyFill: (data) => `var(--color-deriv-bg-${data.render.bodyBg}-${1 + +data.render.awake})`,
 		barFill: (data) => `var(--color-deriv-bg-${data.render.barBg}-${1 + +data.render.awake})`,
 		adderFill: 'var(--color-deriv-bg-neutral-2)',
@@ -59,10 +47,11 @@
 		extended: (data) => data.render.hoveredSection === 'body',
 		active: true,
 	};
+
 	// Outline
 	export const activeOutlineType: BgType = {
-		showBodyBg: (data) => !!data.render.formulaBg_,
-		showBarBg: (data) => !!data.render.barBg_ && !data.render.barHidden,
+		showBodyBg: activeBgType.showBodyBg,
+		showBarBg: activeBgType.showBarBg,
 		bodyFill: () => `transparent`,
 		barFill: () => `transparent`,
 		adderFill: 'transparent',
@@ -72,6 +61,21 @@
 		extended: (data) => data.render.hoveredSection === 'body',
 		active: true,
 	};
+
+	// Passive
+	export const passiveBgType: BgType = {
+		showBodyBg: (data) => !activeBgType.showBodyBg(data),
+		showBarBg: (data) => !showBarBg(data) && !data.render.barHidden,
+		bodyFill: () => `var(--color-deriv-bg-neutral-1)`,
+		barFill: () => `var(--color-deriv-bg-neutral-1)`,
+		adderFill: 'transparent',
+		bodyStroke: () => ``,
+		barStroke: () => ``,
+		adderStroke: '',
+		extended: () => false,
+		active: false,
+	};
+
 	// Hitbox
 	export const hitboxBgType: BgType = {
 		showBodyBg: () => true,

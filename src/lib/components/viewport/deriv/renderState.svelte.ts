@@ -185,25 +185,6 @@ export default class DerivRenderState {
     /** ($derived) Determines background color for the bar */
 	readonly barBg: BgState = $derived.by(() => this.deriv.logic.rule instanceof Error ? "danger" : "neutral");
 
-    /** ($derived) Background color for the formula element */
-    readonly formulaBg_: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.conc, this.barSelected || this.bodySelected || (!!this.hoveredSection && this.hoveredSection !== 'adder'))
-	);
-    /** ($derived) Background color for the bar */
-    readonly barBg_: string | null = $derived.by(() => 
-		this.bgColor(this.deriv.logic.rule, this.barSelected || this.bodySelected || (!!this.hoveredSection && this.hoveredSection !== 'adder'))
-	);
-    // The logic
-    private bgColor(val: any, awake: boolean): string | null {
-        return val instanceof Error 
-            ? awake
-                ? 'var(--color-deriv-bg-danger-hover)'
-                : 'var(--color-deriv-bg-danger)'
-            : awake
-                ? 'var(--color-deriv-bg-hover)'
-                : null;
-    }
-
     /** If s has selection state, make sure resulting selected derivs' roots are attached to viewport! */
     constructor(deriv: Deriv, s: Serial<DerivRenderState> = {}) {
         this.deriv = deriv;
