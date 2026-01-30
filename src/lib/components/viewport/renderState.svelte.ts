@@ -30,6 +30,8 @@ export class Hover {
 	get bar() { return this.section === 'bar'; }
 }
 
+export type DerivSelection = { deriv: Deriv, bar: boolean }[];
+
 export default class ViewportRenderState {
     x = $state(0);
     y = $state(0);
@@ -112,7 +114,7 @@ export default class ViewportRenderState {
 	// --- Selection ---
 	/** ($raw) DO NOT modify directly! Use related methods instead.
 	 *  Partially implemented in viewportC and deriv.render */
-	selection: { deriv: Deriv, bar: boolean }[] = $state.raw([]);
+	selection: DerivSelection = $state.raw([]);
 	selectOnly(deriv?: Deriv | null, bar = false) {
 		for (const { deriv } of viewport.render.selection) {
 			deriv.render.bodySelected = false;              
@@ -154,46 +156,70 @@ export default class ViewportRenderState {
 	deselectAll() {
 		this.deselect(this.selection);
 	}
-	setSelection(sel: { deriv: Deriv, bar: boolean }[]) {
+	setSelection(sel: DerivSelection) {
 		this.deselectAll();
 		for (const s of sel) this.addToSelection(s.deriv, s.bar);
 	}
 	/** Use this or (or deriv.render.delete) instead of detach, detaches and deselects! */
-	delete(derivs: Deriv[]) {
-		this.deselectPairs(derivs);
-		derivs.forEach(d => d.detach());
+	delete(sel: DerivSelection) {
+		if (sel === this.selection) sel = [...sel];
+		this.deselect(sel);
+		for (const entry of sel)
+			if (entry.bar) {
+				entry.deriv.detachAll();
+				entry.deriv.render.resetBar();
+			}
+			else entry.deriv.detach();
 	}
-	/** Re-adds not-in-array children of derivs in array */
-	shiftDelete(derivs: Deriv[]) {
-		const set = new Set(derivs);
+	/** Re-adds not-in-array children of derivs in array.
+	 * Displacement feature offsets any duplicated derivs if there's a deriv in it's original location. */
+	shiftDelete(sel: DerivSelection, displacement = true) {
+		if (sel === this.selection) sel = [...sel];
+
+		// Derivs that will be directly removed (and not re-attached)
+		const deleted = new Set();
+		for (const entry of sel) if (!entry.bar) deleted.add(entry.deriv);
+
+		// Derivs that will be indirectly removed but re-attached
 		const orphans = new Set<Deriv>();
-		function addOrphan(deleted: Deriv) {
-			for (const child of deleted.children)
-				if (!set.has(child)) orphans.add(child);
-				else addOrphan(child);
-		}
-		for (const deriv of set) addOrphan(deriv);
+		// Derivs that lose their bar (these get duplicated)
+		const barless = new Set<Deriv>();
+		for (const entry of sel) 
+			if (entry.bar) barless.add(entry.deriv);
+			else for (const child of entry.deriv.children)
+				if (!deleted.has(child)) orphans.add(child);
 
 		// Record positions to place orphans to when re-adding
-		const pos: [Deriv, [number, number]][] = [];
-		orphans.forEach(orp => pos.push([orp, orp.render.xy]));
+		const orpdata: [Deriv, [number, number]][] = [];
+		orphans.forEach(orp => orpdata.push([orp, orp.render.xy]));
+		// Record barless data to use when re-adding
+		const brlData: [Deriv, [number, number], Deriv[]][] = [];
+		barless.forEach(brl => brlData.push([brl, brl.render.xy, [...brl.children]]));
 
 		// Remove the selected
-		this.delete(derivs);
+		this.delete(sel);
 
 		// Re-add
-		for (const [orp, [x, y]] of pos) {
+		for (const [orp, [x, y]] of orpdata) {
 			orp.attach(viewport);
 			orp.render.moveTo(x, y);
+		}
+		for (const [brl, [x, y], children] of brlData) {
+			const clone = new Deriv(brl);
+			clone.attach(viewport);
+			const offset = displacement ? getDisplacementOffset(x, y) : 0;
+			clone.render.moveTo(x + offset, y - offset);
+			clone.attachChildren(children);
+			clone.render.bodyMuted = true;
 		}
 	}
 	/** Delete selection with all their children */
 	deleteSelection() {
-		this.delete(this.selection.map(({ deriv }) => deriv));
+		this.delete(this.selection);
 	}
 	/** Deletes selection but re-adds non-selected children of selected */
 	shiftDeleteSelection() {
-		this.shiftDelete(this.selection.map(({ deriv }) => deriv));
+		this.shiftDelete(this.selection);
 	}
 	/** Don't forget to reattach the output to viewport if manually deserializing to prevent selected-but-detached derivs. */
 	serializeSelection(): Serial<Deriv>[] {
@@ -216,6 +242,9 @@ export default class ViewportRenderState {
 				s.render!.xTranslate = d.render.x;
 				s.render!.yTranslate = d.render.y;
 			}
+			// If bar is selected but body isn't, mute body to give the effect that it wasn't included...
+			if (d.render.barSelected && !d.render.bodySelected)
+				s.render!.bodyMuted = true;
 			return s;
 		});
 	}
@@ -228,10 +257,7 @@ export default class ViewportRenderState {
 			const d = new Deriv(sd);
 			const [x, y] = d.render.xy;
 			if (displacement) { // If offset location is also occupied, offset more, repeat
-				let offset = 0, limit = 10;
-				while (occupied(x + offset, y - offset, viewport.children, oldLen) || limit === 0) {
-					offset += 100; limit--;
-				}
+				const offset = getDisplacementOffset(x, y, oldLen);
 				if (offset) d.render.moveTo(x + offset, y - offset);
 			}
 			d.attach(viewport);
@@ -240,6 +266,15 @@ export default class ViewportRenderState {
 			return d;
 		});
 	}
+}
+
+/** Utility to find empty place to put deriv. Only consider upto length... */
+function getDisplacementOffset(x: number, y: number, length = viewport.children.length, limit = 10) {
+	let offset = 0;
+	while (occupied(x + offset, y - offset, viewport.children, length) || limit === 0) {
+		offset += 100; limit--;
+	}
+	return offset;
 }
 
 /** Utility to check if there's a deriv at x, y. Only consider upto length... */

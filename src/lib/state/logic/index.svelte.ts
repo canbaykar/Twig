@@ -106,6 +106,8 @@ export class LogicState {
 	serialize(): Serial<LogicState> {
 		return {};
 	}
+	// For consistency for now, logic will have state to reset later
+	reset() {}
 }
 
 // Will consider preferences when choosing in the future
