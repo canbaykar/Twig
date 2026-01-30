@@ -25,7 +25,7 @@
 		bind:this={ref}
 		data-slot={dataSlot}
 		class={cn(
-			"selection:bg-control-fg selection:text-control-bg border-b-control-border ring-offset-bg placeholder:text-control-fg-muted flex h-9 w-full min-w-0 rounded-md border bg-control-bg px-3 pt-1.5 text-sm font-medium shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50",
+			"border-b-control-border ring-offset-bg placeholder:text-control-fg-muted flex h-9 w-full min-w-0 rounded-md border bg-control-bg px-3 pt-1.5 text-sm font-medium shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50",
 			"focus-visible:border-focus-outline focus-visible:ring-focus-outline/50 focus-visible:ring-[3px]",
 			"aria-invalid:ring-border-danger-emphasis/20 aria-invalid:border-border-danger-emphasis",
 			className
@@ -40,7 +40,7 @@
 		bind:this={ref}
 		data-slot={dataSlot}
 		class={cn(
-			"border-b-control-border bg-control-bg selection:bg-control-fg selection:text-control-bg ring-offset-bg placeholder:text-control-fg-muted flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+			"border-b-control-border bg-control-bg ring-offset-bg placeholder:text-control-fg-muted flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
 			"focus-visible:border-focus-outline focus-visible:ring-focus-outline/50 focus-visible:ring-[3px]",
 			"aria-invalid:ring-border-danger-emphasis/20 aria-invalid:border-border-danger-emphasis",
 			className
