@@ -132,7 +132,8 @@
 	<!-- Prosemirror element -->
 	<div 
 		bind:this={editorElement}
-		class="relative! **:relative! caret-transparent selection:bg-transparent overflow-hidden"
+		class:focused={r.editorFocused}
+		class="[.focused]:bg-bg/50 relative! **:relative! caret-transparent selection:bg-transparent overflow-hidden"
 		class:text-fg-disabled={deriv.render.bodyMuted}
 		data-part="body_formula"
 	>
