@@ -71,6 +71,8 @@
   /* GENERATED */
   /* Half opacity */
   --color-info-500-50: #1E8CFF80;
+  /* For grid */
+  --color-primary-750: #16292A;
   /* Produces 800 on 900 (it's transparent)... */
   --color-900-800-75: #132325bf;
   --color-900-800-15: #43736527;
@@ -182,7 +184,7 @@
   --color-deriv-bg-danger-2: var(--color-danger-800);
   --color-deriv-bg-danger-3: var(--color-danger-700);
   --color-deriv-bg-danger-4: var(--color-danger-600);
-  --color-grid: var(--color-primary-700);
+  --color-grid: var(--color-primary-750);
 
   /* --- FONT --- */
   --font-math: 'M PLUS 1p', var(--font-sans);
