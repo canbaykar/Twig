@@ -34,9 +34,10 @@
 	};
 
 	// Active
-	const showBarBg = (data: Deriv) => data.render.barBg !== 'neutral' || data.render.awake && data.render.hoveredSection !== 'adder';
+	const awake = (data: Deriv) => data.render.anySelected || (!!data.render.hoveredPart && data.render.hoveredSection !== 'adder');
+	const showBarBg = (data: Deriv) => data.render.barBg !== 'neutral' || awake(data);
 	export const activeBgType: BgType = {
-		showBodyBg: (data) => data.render.bodyBg !== 'neutral' || data.render.awake && data.render.hoveredSection !== 'adder',
+		showBodyBg: (data) => data.render.bodyBg !== 'neutral' || awake(data),
 		showBarBg: (data) => showBarBg(data) && !data.render.barHidden,
 		bodyFill: (data) => `var(--color-deriv-bg-${data.render.bodyBg}-${1 + +data.render.awake + +data.render.bodySelected})`,
 		barFill: (data) => `var(--color-deriv-bg-${data.render.barBg}-${1 + +data.render.awake + +data.render.barSelected})`,
