@@ -34,9 +34,9 @@
 	};
 
 	// Active
-	const showBarBg = (data: Deriv) => data.render.barBg !== 'neutral' || data.render.awake;
+	const showBarBg = (data: Deriv) => data.render.barBg !== 'neutral' || data.render.awake && data.render.hoveredSection !== 'adder';
 	export const activeBgType: BgType = {
-		showBodyBg: (data) => data.render.bodyBg !== 'neutral' || data.render.awake,
+		showBodyBg: (data) => data.render.bodyBg !== 'neutral' || data.render.awake && data.render.hoveredSection !== 'adder',
 		showBarBg: (data) => showBarBg(data) && !data.render.barHidden,
 		bodyFill: (data) => `var(--color-deriv-bg-${data.render.bodyBg}-${1 + +data.render.awake + +data.render.bodySelected})`,
 		barFill: (data) => `var(--color-deriv-bg-${data.render.barBg}-${1 + +data.render.awake + +data.render.barSelected})`,
