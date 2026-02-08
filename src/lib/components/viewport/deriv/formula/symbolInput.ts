@@ -3,11 +3,11 @@ import { InputRule, inputRules } from "prosemirror-inputrules";
 const rules: [string, RegExp][] = [
 	// Logic symbols
 	['∧', /(?:\.and|\^|\&)$/],
-    ['∨', /\.or$/],
+    ['∨', /\.(?:or|v)$/],
     ['¬', /\.not$/],
     ['→', /(?:\.imp|->|↔f)$/],
     ['←', /(?:\.if|<-|→f)$/],
-    ['↔', /←f$/],
+    ['↔', /(?:←f|<->)$/],
     ['(', /(?:\.ll|\)f|\[)$/],
     [')', /(?:\.rr|\(f|\])$/],
     ['⊤', /\.(?:top|true)$/],
