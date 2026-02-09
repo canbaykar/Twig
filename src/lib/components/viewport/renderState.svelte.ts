@@ -36,12 +36,14 @@ export default class ViewportRenderState {
     x = $state(0);
     y = $state(0);
     scale = $state(1);
+	showDotGrid = $state(true);
 
 	serialize(): Serial<ViewportRenderState> {
 		return {
 			x: this.x,
 			y: this.y,
 			scale: this.scale,
+			showDotGrid: this.showDotGrid,
 		};
 	}
 	deserialize(s: Serial<ViewportRenderState>) {
@@ -51,6 +53,8 @@ export default class ViewportRenderState {
 			this.y = s.y;
         if (typeof s.scale === "number" && isFinite(s.scale) && s.scale > 0) 
 			this.scale = s.scale;
+		if (typeof s.showDotGrid === "boolean")
+			this.showDotGrid = s.showDotGrid;
 	}
 	reset() {
 		this.deserialize({});

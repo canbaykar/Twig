@@ -221,6 +221,7 @@
 			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
+
 	<Menubar.Menu>
 		<Menubar.Trigger>Edit</Menubar.Trigger>
 		<Menubar.Content>
@@ -295,6 +296,16 @@
 			</Menubar.IconItem>
 		</Menubar.Content>
 	</Menubar.Menu>
+
+	<Menubar.Menu>
+		<Menubar.Trigger>View</Menubar.Trigger>
+		<Menubar.Content>
+			<Menubar.CheckboxItem bind:checked={viewport.render.showDotGrid}>
+				Dot Grid
+			</Menubar.CheckboxItem>
+		</Menubar.Content>
+	</Menubar.Menu>
+
 	<Menubar.Menu>
 		<Menubar.Trigger>Help</Menubar.Trigger>
 		<Menubar.Content>

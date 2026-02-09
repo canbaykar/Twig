@@ -34,11 +34,12 @@
     const MIN_SCALE = 0.25;
     const MAX_SCALE = 10;
 
-    /** All properties has to be reactive! */
+    /** All properties have to be reactive! */
     interface State {
         x: number;
         y: number;
         scale: number;
+		showDotGrid: boolean;
         /** Convert client (px) to panzoom (px) */
         cl2pz: Converter;
         /** Convert panzoom (px) to client (px) */
@@ -159,7 +160,7 @@
     use:draggable={draggableOptions}
 >
     <!-- Has .dnd to not be disabled on drag and drop, see viewport.svelte -->
-    <div class="panzoom-background dnd w-full h-full cursor-grab"></div>
+    <div class="bg-bg dnd w-full h-full cursor-grab" class:panzoom-background={stt.showDotGrid}></div>
     <div class="origin w-0 h-0 top-2/4 left-2/4">
         {@render children?.()}
     </div>
