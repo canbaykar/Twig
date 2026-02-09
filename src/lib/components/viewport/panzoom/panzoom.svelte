@@ -160,7 +160,7 @@
     use:draggable={draggableOptions}
 >
     <!-- Has .dnd to not be disabled on drag and drop, see viewport.svelte -->
-    <div class="bg-bg dnd w-full h-full cursor-grab" class:panzoom-background={stt.showDotGrid}></div>
+    <div class="panzoom-background bg-bg dnd w-full h-full cursor-grab" class:bg-none!={!stt.showDotGrid}></div>
     <div class="origin w-0 h-0 top-2/4 left-2/4">
         {@render children?.()}
     </div>
@@ -178,7 +178,7 @@
     }
 
     .panzoom-background {
-        background: radial-gradient(circle, var(--color-grid) 1px, var(--color-bg) 1.5px);
+        background-image: radial-gradient(circle, var(--color-grid) 1px, var(--color-bg) 1.5px);
         --panzoom-bg-size: calc(var(--DERIV-ROW-OFFSET) * var(--panzoom-gs));
 		background-size: var(--panzoom-bg-size) var(--panzoom-bg-size);
         background-position: calc(50% + var(--panzoom-x)) calc(50% + var(--panzoom-y));
