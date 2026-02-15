@@ -11,7 +11,7 @@ const rules: [string, RegExp][] = [
     ['(', /(?:\.ll|\)f|\[)$/],
     [')', /(?:\.rr|\(f|\])$/],
     ['⊤', /\.(?:top|true)$/],
-    ['⊥', /\.(?:bottom|false)$/],
+    ['⊥', /\.(?:bottom|false|absurdity)$/],
 	['∀', /\.(?:A|all|forall)$/],
 	['∃', /\.(?:E|exists)$/],
 

@@ -195,6 +195,17 @@ export const ruleData: RuleData = [
         children: [['[1]→[2]', '[2]→[1]']],
         conclusion: ['[1]↔[2]', '[2]↔[1]'],
     },
+	// --- Top & Bottom ---
+    {
+        name: '⊤I',
+        children: [[]],
+        conclusion: ['⊤'],
+    },
+    {
+        name: '⊥I',
+        children: [[]],
+        conclusion: ['¬⊥'],
+    },
     // --- Axiom rule ---
     {
         name: 'axiom rule',
