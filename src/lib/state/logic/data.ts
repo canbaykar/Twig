@@ -39,6 +39,8 @@ export interface RuleDatum {
     text?: string;
     /**
      * Array of array of metaformulas (MFs) to match children.
+	 * (The example below is old: ← is parsed as → now
+	 * but still keeping this multiple-child-lists feature.)
      * @example [['[1]', '[1]→[2]'], ['[1]', '[2]←[1]']] // For →E
      */
     children: string[][];
@@ -46,7 +48,7 @@ export interface RuleDatum {
      * MF string array to match conclusion. To allow
      * multiple deductions from the children. All 
      * combinations apply (all conclusions are deducable
-     * from all children sets).
+     * from all children lists).
      */
     conclusion: string[];
     downPropagateAttrs?(
@@ -95,7 +97,7 @@ export const ruleData: RuleData = [
     {
         name: '→I',
         children: [['[2]']],
-        conclusion: ['[1]→[2]', '[2]←[1]'],
+        conclusion: ['[1]→[2]'],
         downPropagateAttrs(childAttrs, meta) {
             const m1 = meta[1].toString();
             const assumptions = new Set(childAttrs[0].assumptions);
@@ -175,10 +177,7 @@ export const ruleData: RuleData = [
     },
     {
         name: '→E',
-        children: [
-            ['[1]', '[1]→[2]'],
-            ['[1]', '[2]←[1]'],
-        ],
+        children: [['[1]', '[1]→[2]']],
         conclusion: ['[2]'],
     },
     {
@@ -189,16 +188,11 @@ export const ruleData: RuleData = [
     {
         name: '↔E',
         children: [['[1]↔[2]']],
-        conclusion: ['[1]→[2]', '[2]→[1]', '[1]←[2]', '[2]←[1]'],
+        conclusion: ['[1]→[2]', '[2]→[1]'],
     },
     {
         name: '↔I',
-        children: [
-            ['[1]→[2]', '[2]→[1]'],
-            ['[1]→[2]', '[1]←[2]'],
-            ['[2]←[1]', '[2]→[1]'],
-            ['[2]←[1]', '[1]←[2]'],
-        ],
+        children: [['[1]→[2]', '[2]→[1]']],
         conclusion: ['[1]↔[2]', '[2]↔[1]'],
     },
     // --- Axiom rule ---

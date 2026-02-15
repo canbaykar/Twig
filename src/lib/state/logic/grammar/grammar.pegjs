@@ -12,7 +12,7 @@ Bionditional
 LeftImplication
   = head:Implication tail:(_ "←" _ Implication)* {
       return tail.reduce(function(result, element) {
-        return new BinaryFormula("←", result, element[3]);
+        return new BinaryFormula("→", element[3], result);
       }, head);
     }
 
