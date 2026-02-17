@@ -13,7 +13,7 @@ Educational Proof Assistant
 Twig aims to provide learners with a means to *interact with formal mathematics without needing to have studied logic beforehand*; to support a *learning-through-interaction* approach to teaching natural deduction. Derivations are represented in an intuitive, tree-shaped form (Gentzen-style) and continuously verified.
 
 > [!NOTE]
-> This project is currently at a very early stage and it is still missing some important features, such as Undo/Redo. See [upcoming features](#upcoming-features).
+> This project is currently at a very early stage, and it is still missing some important features, such as Undo/Redo. See [upcoming features](#upcoming-features).
 
 ---
 
@@ -56,7 +56,7 @@ Let's go through the steps to make a simple derivation while exploring the curre
 	- A vertical bar and the text `(Ax)` appear on top of it. This means that the formula `A∧B` is derived from *"Axiom Rule" (Ax)*. What you have created is not just a formula, but also a trivial derivation using it. The derivation states that `A∧B` is a consequence of `A∧B`, or `{ A∧B } ⊢ A∧B` for short. The viewport always contains derivations (or invalid derivations), never bare formulas. The rule `(Ax)` automatically hides itself when `A∧B` is deselected and not hovered.
 	- Press `Esc` twice, or click outside the derivation to deselect.
   
-3. Create another blank derivation and type just `A` in it. Now carry this derivation using the handles on it's side (these will become visible once you hover over it). Carry `A` above the bar of `A∧B`, drop it once the line connecting them becomes visible.
+3. Create another blank derivation and type just `A` in it. Now carry this derivation using the handles on its side (these will become visible once you hover over it). Carry `A` above the bar of `A∧B`, drop it once the line connecting them becomes visible.
    
 	<img alt=" " src="/docs/images/ui3.svg" height="191">
 
@@ -73,23 +73,23 @@ Let's go through the steps to make a simple derivation while exploring the curre
    
 	<img alt=" " src="/docs/images/ui5.svg" height="211">
 
-	- Now a *label* `1` should appear at the left side of the new *"→ Introduction Rule" (→I)*. The rule of `A` also appears to change from the hidden `(Ax)` rule to the new label `1`. Here the actual rule of `A` is still `(Ax)`, but `A` is *discharged by the step labelled `1`*.
-	- Our final derivation has the *(undischarged) assumption* `B` and the conclusion `A→A∧B`. Hence it's a proof of `{ B } ⊢ A→A∧B` ("`A→A∧B` is a consequence of `B`."). Think of `A` here as a temporary assumption.
+ - Now a *label* `1` should appear at the left side of the new *"→ Introduction Rule" (→I)*. The rule of `A` also appears to change from the hidden `(Ax)` rule to the new label `1`. Here, the actual rule of `A` is still `(Ax)`, but `A` is *discharged by the step labelled `1`*.
+ - Our final derivation has the *(undischarged) assumption* `B` and the conclusion `A→A∧B`. Hence, it's a proof of `{ B } ⊢ A→A∧B` ("`A→A∧B` is a consequence of `B`."). Think of `A` here as a temporary assumption.
 
 6. In addition to the features presented, you should also try;
    - Select `A→A∧B` by clicking on its handle. Then do `Ctrl` `V` and `Ctrl` `C` to duplicate it. Use the `Delete` key to delete the duplicate.
   
 		<img alt=" " src="/docs/images/ui6.svg" height="226">
 
-   - Bars of derivations can be selected separately from formulas, this interacts differently with the Copy/Paste and Delete features.
+ - Bars of derivations can be selected separately from formulas; this interacts differently with the Copy/Paste and Delete features.
   
 		<img alt=" " src="/docs/images/ui7.svg" height="204">
 
-   - We've seen dragging a derivation with it's handle, but you can also drag the bar. Drag the bar on top of `A∧B` to remove its children. This will make a duplicate of `A∧B`, you can drag it back into place by dragging the bar again. the formula of the duplicate is faded out, this signals that you can drag its bar without duplicating the formula. If you want a faded out formula to become a normal one, just click on it.
+ - We've seen dragging a derivation with its handle, but you can also drag the bar. Drag the bar on top of `A∧B` to remove its children. This will make a duplicate of `A∧B`, you can drag it back into place by dragging the bar again. The formula of the duplicate is faded out; this signals that you can drag its bar without duplicating the formula. If you want a faded-out formula to become a normal one, just click on it.
   
 		<img alt=" " src="/docs/images/ui8.svg" height="232">
 
-Currently the way to use Twig, is to write down all the formulas and connect them in to a tree shaped structure, what rules are used between them is automatically inferred. The rule-driven derivation interface feature will add a better way to add formulas when it's added. It will also allow for choosing the rule in cases where multiple rules apply, i.e. rule collisions.
+Currently, the way to use Twig is to write down all the formulas and connect them into a tree-shaped structure, and the rules used between them are automatically inferred. The rule-driven derivation interface feature will add a better way to add formulas when it's added. It will also allow for choosing the rule in cases where multiple rules apply, i.e., rule collisions.
 
 ### (2/2) The Mathematics
 
@@ -110,7 +110,7 @@ The *atomic formulas* are any combination of letters and numbers starting with a
 - To demonstrate the difference between left-associative and right-associative operations;
   - `A∧B∧C∧D` is interpreted as `((A∧B)∧C)∧D` (left-assoc.),
   - `A→B→C→D` is interpreted as `A→(B→(C→D))` (right-assoc.).
-- You can write the expressions in the **Codes** column into the formula fields in Twig to produce the corresponding symbol, e.g. write `.not` to get `¬`.
+- You can write the expressions in the **Codes** column into the formula fields in Twig to produce the corresponding symbol, e.g., write `.not` to get `¬`.
 - There are also codes for the special atomic formulas:
   - `⊤`: `.true` `.top`
   - `⊥`: `.false` `.bottom` `.absurdity`
@@ -143,13 +143,13 @@ Primary = "(" Formula ")" / "¬" Primary / Atom
 Atom = [A-Z] [a-zA-Z0-9]* / [⊤⊥]
 ```
 
-It doesn't show up here clearly that all binary connectors except `→` are left-associative, since that's partially handled by the JavaScript code that's omitted. Although notice that `Implication` is defined recursively while the other binary operators aren't, i.e. it uses itself in its definition. Also it uses `?` instead of `*`.
+It doesn't show up here clearly that all binary connectors except `→` are left-associative, since that's partially handled by the JavaScript code that's omitted. Although notice that `Implication` is defined recursively, while the other binary operators aren't, i.e., it uses itself in its definition. Also, it uses `?` instead of `*`.
 
 A natural thing to try for defining a left-associative operator is:
 ```peggy
 Disjunction = (Disjunction "∨")? Conjunction
 ```
-But this *left-recursion* pattern causes infinite loops by our kind of parser. So instead they are treated as an operator that takes an arbitrary number of operands, and the parsed chain is turned into the left-recursive tree afterwards…
+But this *left-recursion* pattern causes infinite loops in our kind of parser. So instead they are treated as an operator that takes an arbitrary number of operands, and the parsed chain is turned into the left-recursive tree afterwards…
 
 
 In the full version used by the application, whitespaces are added under the name `_`. The whitespace definition also takes into account the non-breaking whitespace `\xC2\xA0`, tab `\t`, newline `\n` and carriage return `\r`.
@@ -217,7 +217,7 @@ flowchart
     Sub --->|"(→I)"| AiAnB["A→(A∧B)"]
     classDef empty height:0;
 ```
-Assume `B`, then temporarily assume `A`. Then `A∧B`. Since temporarily assuming `A` gave us `A∧B`, `A` implies `A∧B`, notated `A→(A∧B)`. Here you can think `(→I)` as taking a derivation, rather than a formula as its input; a proof of `A∧B` assuming `A`. This sub-derivation is shown as a box containing `A`, `B` and `A∧B`.
+Assume `B`, then temporarily assume `A`. Then `A∧B`. Since temporarily assuming `A` gave us `A∧B`, `A` implies `A∧B`, notated `A→(A∧B)`. Here you can think `(→I)` as taking a derivation, rather than a formula as its input; a proof of `A∧B` assuming `A`. This sub-derivation is shown as a box containing `A`, `B`, and `A∧B`.
 
 This diagram doesn't explicitly show the difference between temporary assumptions and non-temporary ones. In order to do so, we can use the box slightly differently. Instead of having it represent a derivation, let's try having it represent an *environment* where we are allowed to assume `A`:
 
@@ -234,31 +234,31 @@ flowchart
     classDef empty height:0;
 ```
 
-Here `(→I)` takes the formula `A∧B` instead of a derivation with conclusion `A∧B`, but you're free to use `A` above `(→I)`. Formulas that depend on `A`, such as `A∧B`, are drawn inside the box. We can think of the `(→I)` rule here as the step that allows us to *discharge* `A`. Now finally we`re ready to see how this looks Gentzen-style!
+Here `(→I)` takes the formula `A∧B` instead of a derivation with conclusion `A∧B`, but you're free to use `A` above `(→I)`. Formulas that depend on `A`, such as `A∧B`, are drawn inside the box. We can think of the `(→I)` rule here as the step that allows us to *discharge* `A`. Now finally, we`re ready to see how this looks Gentzen-style!
 
 <div align="center"><img alt=" " src="/docs/images/math2.svg" height="172"></div>
 
-`A` is indicated to be discharged by the step labelled `1` which is the `(→I)` step. Note that the rule of `A` did not change! It's still deduced by axiom rule `(Ax)` just like `B`. (This rule is usually hidden in Twig.)
+`A` is indicated to be discharged by the step labelled `1`, which is the `(→I)` step. Note that the rule of `A` did not change! It's still deduced by Axiom Rule `(Ax)` just like `B`. (This rule is usually hidden in Twig.)
 
 Now you're ready for the actual introduction.
 
 ##### First Steps Towards Formalization <!-- omit in toc -->
 
-*Derivation* is defined inductively/recursively. Each derivation has a *conclusion* and *assumptions*, these are also defined inductively. For clarification, you can think of the definition of;
+*Derivation* is defined inductively/recursively. Each derivation has a *conclusion* and *assumptions*, which are also defined inductively. For clarification, you can think of the definition of;
 - **derivation**, as answering the question "Is this diagram a derivation?" for each diagram in a pre-determined space of diagrams. So it can be formalized as a subset of that space.
-- **conclusion**, as defining a function from the set of all derivation to the set of all formulas. This answers "What formula is the conclusion of this derivation?".
-- **assumption**, as defining a function from the set of all derivations to the *set of all sets of formulas*. It answers "What formulas are the assumptions of this derivation?".
+- **conclusion**, as defining a function from the set of all derivations to the set of all formulas. This answers "What formula is the conclusion of this derivation?".
+- **assumption**, as defining a function from the set of all derivations to the *set of all sets of formulas*. It answers "What formulas are the assumptions of this derivation?"
 
 Each clause of the definition of derivation (along with corresponding clauses for conclusion and assumptions) will be referred to as a *rule*. 
 
 > [!IMPORTANT]
-> These descriptions aren't completely accurate as there's one simplification: Instead of using formulas, we are actually using their syntax trees in conclusion and assumptions. So for example, if a derivation appears to have the assumptions `A∧B∧C`, `(A∧B)∧C`, `(((A∧B))∧(C))`, `A∧(B∧C)` and `B∧(A∧C)`; it actually has only three assumptions because the first three formulas have the same syntax tree. We'll pretend that we are still using formulas themselves instead of their trees, but this pretend-speak is only meant as an abbreviation!
+> These descriptions aren't completely accurate, as there's one simplification: Instead of using formulas, we are actually using their syntax trees in conclusions and assumptions. So for example, if a derivation appears to have the assumptions `A∧B∧C`, `(A∧B)∧C`, `(((A∧B))∧(C))`, `A∧(B∧C)` and `B∧(A∧C)`; it actually has only three assumptions because the first three formulas have the same syntax tree. We'll pretend that we are still using formulas themselves instead of their trees, but this pretend-speak is only meant as an abbreviation!
 
 <details><summary><strong>Optional technical notes</strong></summary>
 
-- We won't be very formal here; considering that these definition should hold up on their own in plain English, i.e. not relying on any formal mathematical system like set theory. Those formal systems are themselves deductive systems like these. So consider the reference to "sets" as just referencing the regular, informal idea of a collection; apply the same treatment to functions, etc… 
+- We won't be very formal here; considering that these definitions should hold up on their own in plain English, i.e., not relying on any formal mathematical system like set theory. Those formal systems are themselves deductive systems like these. So consider the reference to "sets" as just referencing the regular, informal idea of a collection; apply the same treatment to functions, etc… 
 
-- Notice that we are also taking for granted the idea that we can draw diagrams, talk about a space of all diagrams and many similar ambiguous tasks. We leave it up to the reader to fill-in these philosophical gaps, or die trying.
+- Notice that we are also taking for granted the idea that we can draw diagrams, talk about a space of all diagrams, and many similar, ambiguous tasks. We leave it up to the reader to fill in these philosophical gaps, or die trying.
 
 </details>
 
@@ -268,7 +268,7 @@ Let's look at some rules before we present the full list of rules.
 >
 > Each formula is a derivation. The conclusion and only assumption of this derivation is the formula itself.
 
-You may call this a base case of the induction. If you're not familiar with induction it might look weird, but it makes sense right? Either way, moving on.
+You may call this a base case of the induction. If you're not familiar with induction, it might look weird, but it makes sense, right? Either way, moving on.
 
 > **∧ Introduction Rule `(∧I)`**
 >
@@ -280,13 +280,13 @@ You may call this a base case of the induction. If you're not familiar with indu
 >
 > produces a derivation with the conclusion `ϕ∧β`. Its assumptions are the assumptions of D and E together. (Recall set union.)
 
-(Again don't forget that the conclusion and assumptions are actually syntax trees, so formulas with same trees are interchangeable everywhere. We won't bug you with any more of these reminders.)
+(Again, don't forget that the conclusion and assumptions are actually syntax trees, so formulas with the same trees are interchangeable everywhere. We won't bug you with any more of these reminders.)
 
 Most rules look like this. 
 
-From now on, we'll use the word *node* to mean a formula and the bar immediately over it together with its right and left annotations (the rule name and label), if there is a bar at all; otherwise the formula by itself is the node. 
+From now on, we'll use the word *node* to mean a formula and the bar immediately over it together with its right and left annotations (the rule name and label), if there is a bar at all; otherwise, the formula by itself is the node. 
 
-Because rules have a lot in common, there's a lot to shave of for a more compact representation of the rule definition, which carries us to the next chapter.
+Because rules have a lot in common, there's a lot to shave off for a more compact representation of the rule definition, which carries us to the next chapter.
 
 ##### Sequents & Shorthand <!-- omit in toc -->
 
@@ -296,32 +296,32 @@ Consider this derivation.
 
 Carefully reading the definitions of `(Ax)` and `(∧I)`, you would deduce:
 - It's conclusion is `(A∧B)∧(C∧D)`.
-- It's assumptions are `A`, `B`, `C` and `D`.
+- Its assumptions are `A`, `B`, `C`, and `D`.
 
-In this case we say that:
+In this case, we say that:
 > There's a derivation *of* `(A∧B)∧(C∧D)` *from* `A`, `B`, `C` and `D`.
 
 Or equivalently:
-> `(A∧B)∧(C∧D)` *is derivable from* `A`, `B`, `C` and `D`.
+> `(A∧B)∧(C∧D)` *is derivable from* `A`, `B`, `C`, and `D`.
 
 This sentence is shortened with the notation:
 > `{ A, B, C, D } ⊢ (A∧B)∧(C∧D)`
 
-This sentence is called a *sequent*. Furthermore, we say that the derivation is a *proof of* the sequent. Basically we prefer to use the words derivation and proof differently: Derivation is the primary word. Proof is used when talking about sequents. They interact differently with the prepositions "from" and "of". Don't worry about it too much.
+This sentence is called a *sequent*. Furthermore, we say that the derivation is a *proof of* the sequent. Basically, we prefer to use the words derivation and proof differently: Derivation is the primary word. Proof is used when talking about sequents. They interact differently with the prepositions "from" and "of". Don't worry about it too much.
 
-When there are no assumptions, we'll write just `⊢ A` instead `∅ ⊢ A`.
+When there are no assumptions, we'll write just `⊢ A` instead of `∅ ⊢ A`.
 
 > [!IMPORTANT]
-> We are actually use the sentence `Γ ⊢ ϕ` to mean "There is a proof of `ϕ` with the assumption set `Γ` *or some subset of it*." So `Γ ⊢ ϕ` implies `Γ ∪ Δ ⊢ ϕ` for any `Δ`. So for example `{ A, B, C, D, E, F, G, H∧I } ⊢ (A∧B)∧(C∧D)` is also true because `{ A, B, C, D } ⊢ (A∧B)∧(C∧D)` is true.
+> We are actually using the sentence `Γ ⊢ ϕ` to mean "There is a proof of `ϕ` with the assumption set `Γ` *or some subset of it*." So `Γ ⊢ ϕ` implies `Γ ∪ Δ ⊢ ϕ` for any `Δ`. So, for example, `{ A, B, C, D, E, F, G, H∧I } ⊢ (A∧B)∧(C∧D)` is also true because `{ A, B, C, D } ⊢ (A∧B)∧(C∧D)` is true.
 
 Now we can rewrite `(Ax)` a bit shorter:
 > **∧ Introduction Rule `(∧I)`**
 >
-> (For all formula syntax tree sets `Γ`, `Δ` and formulas `ϕ`, `β`)
+> (For all formula syntax tree sets `Γ`, `Δ`, and formulas `ϕ`, `β`)
 >
 > Given some proofs of `Γ ⊢ ϕ` and `Δ ⊢ β`, you can make a proof of `Γ ∪ Δ ⊢ ϕ∧β`.
 >
-> (By writing them next to each other bottom-aligned and in-order, slapping on the bar and rule name `(∧I)` under them, and finally a syntax tree equivalent of `ϕ∧β` under that.)
+> (By writing them next to each other, bottom-aligned and in-order, slapping on the bar and rule name `(∧I)` under them, and finally a syntax tree equivalent of `ϕ∧β` under that.)
 
 Further shorten it to:
 
@@ -339,7 +339,7 @@ And further:
 ∴ ⊢ ϕ∧β
 ```
 
-The assumption sets (in this case `Γ` and `Δ`) are unioned. This is the same for all the rules except for the cases where an assumption gets discharged. `⊢` isn't shortened away as it will be useful in those special cases. For now we're done with our shortening spree and can start discussing those cases right away.
+The assumption sets (in this case, `Γ` and `Δ`) are unioned. This is the same for all the rules except for the cases where an assumption gets discharged. `⊢` isn't shortened away as it will be useful in those special cases. For now, we're done with our shortening spree and can start discussing those cases right away.
 
 ##### Discharging <!-- omit in toc -->
 
@@ -351,15 +351,15 @@ Let's examine the simplest discharging rule.
 >
 > Given some proof of `Γ ⊢ ϕ`, you can make a proof of `Γ / { β } ⊢ β→ϕ`.
 >
-> (By doing the usual shtick of writing them together with the bar, rule name and `ϕ∧β`…)
+> (By doing the usual shtick of writing them together with the bar, rule name, and `ϕ∧β`…)
 >
-> Draw a bar on top of all instances of `β` in the derivation without a bar on top. Label the right sides of these bars and the left side of the new `(→I)` bar with the same number. The label should look like the number with a circle or round shape around it. This is called *discharging*. This number should be different from any pre-existing labels. Additionally if you encounter an instance of `β` that's already discharged, you can leave it as is or change its label to the new one. (Twig chooses to leave them.)
+> Draw a bar on top of all instances of `β` in the derivation without a bar on top. Label the right sides of these bars and the left side of the new `(→I)` bar with the same number. The label should look like the number with a circle or round shape around it. This is called *discharging*. This number should be different from any pre-existing labels. Additionally, if you encounter an instance of `β` that's already discharged, you can leave it as is or change its label to the new one. (Twig chooses to leave them.)
 
-Discharged instances of formulas are still considered to have the rule `(Ax)` even though its never written explicitly.
+Discharged instances of formulas are still considered to have the rule `(Ax)` even though it's never written explicitly.
 
-By this point you might have realized that our assumptions have been formulas of the leaf nodes, i.e. formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but its not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`) we cover its top with a bar. *This way we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
+By this point, you might have realized that our assumptions have been formulas of the leaf nodes, i.e., formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but it's not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`), we cover its top with a bar. *This way, we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
 
-In alternative definitions of Gentzen-style proofs, drawing which assumption nodes are discharged are sometimes considered a non-essential, cosmetic part of the proof diagram. Even if the discharging marks are omitted, they can be deduced later by analyzing the proof…
+In alternative definitions of Gentzen-style proofs, drawing which assumption nodes are discharged is sometimes considered a non-essential, cosmetic part of the proof diagram. Even if the discharging marks are omitted, they can be deduced later by analyzing the proof…
 
 You may shorten the definition of `(→I)` like:
 ```
@@ -367,15 +367,15 @@ You may shorten the definition of `(→I)` like:
 ∴ Γ / { β } ⊢ β→ϕ
 ```
 
-But we'll use a slightly round-about approach. To understand this, see this more complicated rule:
+But we'll use a slightly roundabout approach. To understand this, see this more complicated rule:
 
 > **∨ Elimination Rule `(∨E)`**
 >
-> Given some proofs of `Γ ⊢ ϕ∨β`, `Δ ⊢ ε` and `Θ ⊢ ε`, you can make a proof of `Γ ∪ (Δ / { ϕ }) ∪ (Θ / { β }) ⊢ ε`.
+> Given some proofs of `Γ ⊢ ϕ∨β`, `Δ ⊢ ε`, and `Θ ⊢ ε`, you can make a proof of `Γ ∪ (Δ / { ϕ }) ∪ (Θ / { β }) ⊢ ε`.
 >
-> See that `ϕ` is only discharged from the branch of our final derivation that comes from the proof of `Δ ⊢ ε` (because it's excluded from just `Δ`, not the whole union `Γ ∪ Δ ∪ Θ`). And similarly `β` is only discharged from the branch of `Θ ⊢ ε`.
+> See that `ϕ` is only discharged from the branch of our final derivation that comes from the proof of `Δ ⊢ ε` (because it's excluded from just `Δ`, not the whole union `Γ ∪ Δ ∪ Θ`). And similarly, `β` is only discharged from the branch of `Θ ⊢ ε`.
 
-This means that if `Γ` has `ϕ` for example, our final derivation will still have `ϕ` as an (undischarged) assumption; we won't have been able to effectively discharge it out of our proof.
+This means that if `Γ` has `ϕ`, for example, our final derivation will still have `ϕ` as an (undischarged) assumption; we won't have been able to effectively discharge it out of our proof.
 
 We would attempt to start shortening this like:
 ```
@@ -384,7 +384,7 @@ We would attempt to start shortening this like:
 Θ ⊢ ε
 ∴ Γ ∪ (Δ / { ϕ }) ∪ (Θ / { β }) ⊢ ε
 ```
-But there's a better way. We can restate this as the following, even though it may not be obvious why we can do so.
+But there's a better way. We can restate this as follows, even though it may not be obvious why we can do so.
 ```
 Γ ⊢ ϕ∨β
 Δ ∪ { ϕ } ⊢ ε
@@ -393,7 +393,7 @@ But there's a better way. We can restate this as the following, even though it m
 ```
 Let's leave it as an exercise to figure out why this implies the same rule even when you don't assume that `ϕ ∉ Δ` and `ε ∉ Θ`.
 
-Now finally omitting `Γ`, `Δ` and `Θ`, and the curly braces `{}`, we use the following to represent `(∨E)`:
+Now finally, omitting `Γ`, `Δ`, and `Θ`, and the curly braces `{}`, we use the following to represent `(∨E)`:
 ```
 ⊢ ϕ∨β
 ϕ ⊢ ε
@@ -408,12 +408,12 @@ And here's what `(→I)` becomes:
 ∴ ⊢ β→ϕ
 ```
 
-Finally you are ready to see the full list of rules. Note that some rules are presented with two lines prefixed `∴`, this means it allows you deduce two conclusions (but you still pick one; if you want both, duplicate the derivation with copy/paste). For an example check out `(∧E)`.
+Finally, you are ready to see the full list of rules. Note that some rules are presented with two lines prefixed `∴`, which means it allows you to deduce two conclusions (but you still pick one; if you want both, duplicate the derivation with copy/paste). For an example, check out `(∧E)`.
 
 #### Rule List
 
 > [!NOTE]
-> In case of a rule collision (when two rules can apply for given assumptions and conclusion of a single step), what rule applies is based on rule priority. All you need to know is, discharging rules have higher priority and `(¬I)` has priority over `(¬E)`. At this time, you can't choose to switch to a lower priority rule. This capability will be added later as a part of the rule-driven derivation interface feature.
+> In case of a rule collision (when two rules can apply for given assumptions and conclusion of a single step), what rule applies is based on rule priority. All you need to know is that discharging rules have higher priority and `(¬I)` has priority over `(¬E)`. At this time, you can't choose to switch to a lower priority rule. This capability will be added later as a part of the rule-driven derivation interface feature.
 
 
 ##### Axioms <!-- omit in toc -->
@@ -601,7 +601,7 @@ Finally you are ready to see the full list of rules. Note that some rules are pr
 
 #### Downsides to Gentzen Notation
 
-Working with tree shaped derivations can be less practical compared to of linear ones. Twig is made to just accompany someone learning logic for a short time, not to be a tool where actual mathematical research is carried out (even in the future when more advanced logics are supported). That said, it's very easy to turn these derivations to linear ones, and this is an upcoming feature. You also have to learn very little extra to turn the understanding of this deductive system to any other; natural deduction isn't quite about specific notations anyway.
+Working with tree-shaped derivations can be less practical compared to linear ones. Twig is made to just accompany someone learning logic for a short time, not to be a tool where actual mathematical research is carried out (even in the future, when more advanced logics are supported). That said, it's very easy to turn these derivations into linear ones, and this is an upcoming feature. You also have to learn very little extra to turn the understanding of this deductive system to any other; natural deduction isn't quite about specific notations anyway.
 
 One annoying issue about Gentzen notation is that whenever you need to use some information multiple times, you have to duplicate its derivation. There's an upcoming feature called "Custom rules" that eliminates this issue.
 
@@ -625,7 +625,7 @@ See [Twig Project Board](https://github.com/users/canbaykar/projects/2) for more
 
 ## Running Locally
 
-Install a recent LTS version of [Node.js](https://nodejs.org/) and [Git](https://git-scm.com/). You may need to restart your computer in order for these to work correctly. Then execute the following commands in a terminal to set up Twig:
+Install a recent LTS version of [Node.js](https://nodejs.org/) and [Git](https://git-scm.com/). You may need to restart your computer for these to work correctly. Then execute the following commands in a terminal to set up Twig:
 
 ```bash
 git clone https://github.com/canbaykar/Twig.git
@@ -643,7 +643,7 @@ npm run start:open
 And stop the server using `Ctrl` `C` while the terminal is focused. Keep the terminal window open while the app is running.
 
 > [!TIP]
-> When you want to start Twig server again after closing the original terminal window you used for setup, don't forget to navigate to the correct directory with the `cd` command beforehand. If the Twig folder created during setup has path `C:/X/Y/Z/Twig`, then execute `cd C:/X/Y/Z/Twig` to navigate into the project directory before `npm run start:open`.
+> When you want to start the Twig server again after closing the original terminal window you used for setup, don't forget to navigate to the correct directory with the `cd` command beforehand. If the Twig folder created during setup has the path `C:/X/Y/Z/Twig`, then execute `cd C:/X/Y/Z/Twig` to navigate into the project directory before `npm run start:open`.
 
 ### Troubleshooting
 
