@@ -66,7 +66,7 @@ Let's go through the steps to make a simple derivation while exploring the curre
    
 	<img alt=" " src="/docs/images/ui4.svg" height="164">
 
-   - These two steps demostrated different ways to expand a derivation.
+   - These two steps demonstrated different ways to expand a derivation.
    - Now you should have a valid derivation that demonstrates `{ A, B } ⊢ A∧B`. No parts of the derivation should appear red at this point.
 
 5. Using the adder (dot) at the bottom of `A∧B`, add `A→A∧B` by typing `A.impA.andB`.
@@ -114,7 +114,7 @@ The *atomic formulas* are any combination of letters and numbers starting with a
 - There are also codes for the special atomic formulas:
   - `⊤`: `.true` `.top`
   - `⊥`: `.false` `.bottom` `.absurdity`
-- The connector `←` is only a conveniance feature. Instances of `ϕ←β` in formulas are effectively turned into `β→ϕ` because they are parsed into the same syntax tree. They can be used interchangably.
+- The connector `←` is only a convenience feature. Instances of `ϕ←β` in formulas are effectively turned into `β→ϕ` because they are parsed into the same syntax tree. They can be used interchangeably.
 
 > [!IMPORTANT]
 > You may know that the connectors `∧`("and") and `∨`("or") are commutative and associative, so for example: `(A∧B)∧C` is equivalent, in a sense, to `A∧(B∧C)` and `B∧(A∧C)` (as in, each can be proved from any other), but that doesn't mean they are *equal*, so you can't use them interchangably. You have to actually prove that they are equivalent whenever you need that information. On the other hand, `A∧B∧C`, `(A∧B)∧C` and `(((A∧B))∧(C))` are treated as if they are the exact same formula always, because they are parsed to the same syntax tree.
@@ -357,7 +357,7 @@ Let's examine the simplest discharging rule.
 
 Discharged instances of formulas are still considered to have the rule `(Ax)` even though its never written explicitly.
 
-By this point you might have realised that are assumptions have been formulas of the leaf nodes, i.e. formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but its not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`) we cover its top with a bar. *This way we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
+By this point you might have realised that our assumptions have been formulas of the leaf nodes, i.e. formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but its not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`) we cover its top with a bar. *This way we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
 
 In alternative definitions of Gentzen-style proofs, drawing which assumption nodes are discharged are sometimes considered a non-essential, cosmetic part of the proof diagram. Even if the discharging marks are omitted, they can be deduced later by analyzing the proof…
 
@@ -373,7 +373,7 @@ But we'll use a slightly round-about approach. To understand this, see this more
 >
 > Given some proofs of `Γ ⊢ ϕ∨β`, `Δ ⊢ ε` and `Θ ⊢ ε`, you can make a proof of `Γ ∪ (Δ / { ϕ }) ∪ (Θ / { β }) ⊢ ε`.
 >
-> See that `ϕ` is only discharged from the branch of our final derivation that comes fro m the proof of `Δ ⊢ ε` (because it's excluded from just `Δ`, not the whole union `Γ ∪ Δ ∪ Θ`). And similarly `β` is only discharged from the branch of `Θ ⊢ ε`.
+> See that `ϕ` is only discharged from the branch of our final derivation that comes from the proof of `Δ ⊢ ε` (because it's excluded from just `Δ`, not the whole union `Γ ∪ Δ ∪ Θ`). And similarly `β` is only discharged from the branch of `Θ ⊢ ε`.
 
 This means that if `Γ` has `ϕ` for example, our final derivation will still have `ϕ` as an (undischarged) assumption; we won't have been able to effectively discharge it out of our proof.
 
