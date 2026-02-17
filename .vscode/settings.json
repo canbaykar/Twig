@@ -2,5 +2,15 @@
     "conventionalCommits.scopes": [
         "ui",
         "state"
-    ]
+	],
+	"cSpell.words": [
+		"Abbrv",
+		"aining",
+		"Biconditional",
+		"Gentzen",
+		"leep",
+		"nside",
+		"Ponens",
+		"unioned"
+	]
 }

@@ -117,7 +117,7 @@ The *atomic formulas* are any combination of letters and numbers starting with a
 - The connector `←` is only a convenience feature. Instances of `ϕ←β` in formulas are effectively turned into `β→ϕ` because they are parsed into the same syntax tree. They can be used interchangeably.
 
 > [!IMPORTANT]
-> You may know that the connectors `∧`("and") and `∨`("or") are commutative and associative, so for example: `(A∧B)∧C` is equivalent, in a sense, to `A∧(B∧C)` and `B∧(A∧C)` (as in, each can be proved from any other), but that doesn't mean they are *equal*, so you can't use them interchangably. You have to actually prove that they are equivalent whenever you need that information. On the other hand, `A∧B∧C`, `(A∧B)∧C` and `(((A∧B))∧(C))` are treated as if they are the exact same formula always, because they are parsed to the same syntax tree.
+> You may know that the connectors `∧`("and") and `∨`("or") are commutative and associative, so for example: `(A∧B)∧C` is equivalent, in a sense, to `A∧(B∧C)` and `B∧(A∧C)` (as in, each can be proved from any other), but that doesn't mean they are *equal*, so you can't use them interchangeably. You have to actually prove that they are equivalent whenever you need that information. On the other hand, `A∧B∧C`, `(A∧B)∧C` and `(((A∧B))∧(C))` are treated as if they are the exact same formula always, because they are parsed to the same syntax tree.
 
 The language is defined using something called a *parsing expression grammar* (PEG). If you already know about PEGs, you can optionally check out the details below:
 
@@ -143,7 +143,7 @@ Primary = "(" Formula ")" / "¬" Primary / Atom
 Atom = [A-Z] [a-zA-Z0-9]* / [⊤⊥]
 ```
 
-It doesn't show up here clearly that all binary connectors except `→` are left-associtative, since that's partially handled by the JavaScript code that's omitted. Although notice that `Implication` is defined recursively while the other binary operators aren't, i.e. it uses itself in its definition. Also it uses `?` instead of `*`.
+It doesn't show up here clearly that all binary connectors except `→` are left-associative, since that's partially handled by the JavaScript code that's omitted. Although notice that `Implication` is defined recursively while the other binary operators aren't, i.e. it uses itself in its definition. Also it uses `?` instead of `*`.
 
 A natural thing to try for defining a left-associative operator is:
 ```peggy
@@ -258,7 +258,7 @@ Each clause of the definition of derivation (along with corresponding clauses fo
 
 - We won't be very formal here; considering that these definition should hold up on their own in plain English, i.e. not relying on any formal mathematical system like set theory. Those formal systems are themselves deductive systems like these. So consider the reference to "sets" as just referencing the regular, informal idea of a collection; apply the same treatment to functions, etc… 
 
-- Notice that we are also taking for granted the idea that we can draw diagrams, talk about a space of all diagrams and many similar ambiguous tasks. We leave it upto the reader to fill-in these philosophical gaps, or die trying.
+- Notice that we are also taking for granted the idea that we can draw diagrams, talk about a space of all diagrams and many similar ambiguous tasks. We leave it up to the reader to fill-in these philosophical gaps, or die trying.
 
 </details>
 
@@ -280,7 +280,7 @@ You may call this a base case of the induction. If you're not familiar with indu
 >
 > produces a derivation with the conclusion `ϕ∧β`. Its assumptions are the assumptions of D and E together. (Recall set union.)
 
-(Again don't forget that the conclusion and assumptions are actually syntax trees, so formulas with same trees are interchangable everywhere. We won't bug you with any more of these reminders.)
+(Again don't forget that the conclusion and assumptions are actually syntax trees, so formulas with same trees are interchangeable everywhere. We won't bug you with any more of these reminders.)
 
 Most rules look like this. 
 
@@ -321,7 +321,7 @@ Now we can rewrite `(Ax)` a bit shorter:
 >
 > Given some proofs of `Γ ⊢ ϕ` and `Δ ⊢ β`, you can make a proof of `Γ ∪ Δ ⊢ ϕ∧β`.
 >
-> (By writing them next to each other bottom-alinged and in-order, slapping on the bar and rule name `(∧I)` under them, and finally a syntax tree equivalent of `ϕ∧β` under that.)
+> (By writing them next to each other bottom-aligned and in-order, slapping on the bar and rule name `(∧I)` under them, and finally a syntax tree equivalent of `ϕ∧β` under that.)
 
 Further shorten it to:
 
@@ -339,7 +339,7 @@ And further:
 ∴ ⊢ ϕ∧β
 ```
 
-The assumption sets (in this case `Γ` and `Δ`) are unioned. This is the same for all the rules except for the cases where an assumption gets dischaged. `⊢` isn't shortened away as it will be useful in those special cases. For now we're done with our shortening spree and can start discussing those cases right away.
+The assumption sets (in this case `Γ` and `Δ`) are unioned. This is the same for all the rules except for the cases where an assumption gets discharged. `⊢` isn't shortened away as it will be useful in those special cases. For now we're done with our shortening spree and can start discussing those cases right away.
 
 ##### Discharging <!-- omit in toc -->
 
@@ -357,7 +357,7 @@ Let's examine the simplest discharging rule.
 
 Discharged instances of formulas are still considered to have the rule `(Ax)` even though its never written explicitly.
 
-By this point you might have realised that our assumptions have been formulas of the leaf nodes, i.e. formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but its not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`) we cover its top with a bar. *This way we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
+By this point you might have realized that our assumptions have been formulas of the leaf nodes, i.e. formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but its not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`) we cover its top with a bar. *This way we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
 
 In alternative definitions of Gentzen-style proofs, drawing which assumption nodes are discharged are sometimes considered a non-essential, cosmetic part of the proof diagram. Even if the discharging marks are omitted, they can be deduced later by analyzing the proof…
 
@@ -618,7 +618,7 @@ One annoying issue about Gentzen notation is that whenever you need to use some 
 - Gentzen notation to linear notation conversion
 - Custom rules
 - SVG and $\LaTeX$ export
-- Different color themes, inluding light and high-contrast themes
+- Different color themes, including light and high-contrast themes
 - Many other quality-of-life improvements and accessibility features… 
 
 See [Twig Project Board](https://github.com/users/canbaykar/projects/2) for more complete information on upcoming features.
