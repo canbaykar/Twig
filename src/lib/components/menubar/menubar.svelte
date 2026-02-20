@@ -310,6 +310,15 @@
 		<Menubar.Trigger>Help</Menubar.Trigger>
 		<Menubar.Content>
 			<Menubar.IconItem>
+				{#snippet child({ props })}
+					<a 
+						href="https://github.com/canbaykar/Twig"
+						target="_blank" rel="noopener noreferrer"
+						{...props}
+					>
+						{@render (props.childrenProp as any)?.()}
+					</a>
+				{/snippet}
 				{#snippet icon()}
 					<Icon icon="lucide:github" />
 				{/snippet}
