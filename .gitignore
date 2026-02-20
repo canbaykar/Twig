@@ -29,3 +29,6 @@ _cert.pem
 # Storybook
 *storybook.log
 storybook-static
+
+# Affinity
+*.af~lock~
