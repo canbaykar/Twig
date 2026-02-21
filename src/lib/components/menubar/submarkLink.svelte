@@ -18,6 +18,7 @@
 	a {
 		/* outline: none; */
 		outline-offset: 4px;
+		border-radius: 4px;
 		&:focus-visible {
 			outline: 2px solid;
 			animation: focused 2s forwards;
