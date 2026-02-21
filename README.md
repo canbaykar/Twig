@@ -1,6 +1,5 @@
 <h1 align="center">
-<img alt="Twig" src="/static/branding/banner.png" style="margin-bottom: -1em"><br>
-Educational Proof Assistant
+<img alt="Twig: Educational proof assistant" src="/static/branding/banner.png" style="margin-bottom: -1em"><br>
 </h1>
 
 <p align="center">
