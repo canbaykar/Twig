@@ -2,6 +2,8 @@ import ViewportRenderState from "$lib/components/viewport/renderState.svelte";
 import { Parent } from "$lib/utils/parent.svelte";
 import Deriv from "./deriv.svelte";
 
+export const FILE_NAME_PLACEHOLDER = "Untitled Project";
+export const FILE_EXTENSION = ".json";
 
 // (RecursivePartial) Thanks to stackoverflow.com/a/51365037/13217729
 /** 
@@ -20,6 +22,15 @@ export type { Viewport };
 /** Works as the root element of everything in panzoom, like document in HTML */
 class Viewport extends Parent {
     declare readonly children: Deriv[];
+
+	// The name aren't serialized bc they are stored in the file name, not inside
+	// the file.
+	/** ($state) File name specified by user */
+	givenName: string = $state("");
+	/** ($derived) Displayed file name without extension */
+	firstName: string = $derived(this.givenName || FILE_NAME_PLACEHOLDER);
+	/** ($derived) */
+	fullName = $derived(this.firstName + FILE_EXTENSION);
 
     /** Render state */
     render = new ViewportRenderState();

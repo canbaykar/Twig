@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import * as Menubar from '$lib/components/ui/menubar';
 	import * as Kbd from "$lib/components/ui/kbd/index.js";
-	import viewport from '$lib/state/viewport.svelte';
+	import viewport, { FILE_NAME_PLACEHOLDER } from '$lib/state/viewport.svelte';
 	import Icon from '@iconify/svelte';
 	import MenubarInput from './menubarInput.svelte';
 	import { browser } from '$app/environment';
@@ -10,11 +10,6 @@
 	import { safeParseJSON } from '$lib/utils';
 	import { keyboardListeners } from '../viewport/listeners';
     import SubmarkLink from './submarkLink.svelte';
-
-	const placeholder = "Untitled Project";
-	let nameInput = $state("");
-	let firstName = $derived(nameInput || placeholder);
-	let fullName = $derived(firstName + ".json");
 
 	export function newProject() {
 		viewport.reset();
@@ -51,7 +46,7 @@
 		toast.promise(_open, {
 			loading: `Opening…`,
 			success: () => {
-				content = `Opened <span class="font-normal italic">${firstName}</span>.`;
+				content = `Opened <span class="font-normal italic">${viewport.firstName}</span>.`;
 				return Html
 			},
 			error: (err: any) => err?.name === 'AbortError' ? `Aborted open.` : `Failed to open file.`,
@@ -72,7 +67,7 @@
 			input.onchange = async e => {
 				try {
 					const file = input.files![0];
-					nameInput = file.name.replace(/\.json$/, '');
+					viewport.givenName = file.name.replace(/\.json$/, '');
 					viewport.deserialize(safeParseJSON(await file.text()));
 					res!();
 				} catch (err) { rej!(err) }
@@ -86,21 +81,21 @@
 		// @ts-expect-error
 		[handle] = await window.showOpenFilePicker(pickerOpt);
 		const file = await handle!.getFile();
-		nameInput = file.name.replace(/\.json$/, '');
+		viewport.givenName = file.name.replace(/\.json$/, '');
 		viewport.deserialize(safeParseJSON(await file.text()));
 	}
 
 	function saveWith<T>(f: () => Promise<T>) {
-		let content = $state(`Saving <span class="font-normal italic">${firstName}</span>…`);
+		let content = $state(`Saving <span class="font-normal italic">${viewport.firstName}</span>…`);
 		toast.promise(f, {
 			loading: () => Html,
 			success: () => {
-				content = `Saved <span class="font-normal italic">${firstName}</span> successfully.`;
+				content = `Saved <span class="font-normal italic">${viewport.firstName}</span> successfully.`;
 				return Html
 			},
 			error: (err: any) => { 
 				if (err?.name === 'AbortError') return `Aborted save.`;
-				content = `Failed to save <span class="font-normal italic">${firstName}</span>.`;
+				content = `Failed to save <span class="font-normal italic">${viewport.firstName}</span>.`;
 				return Html
 			},
 			...html(() => content),
@@ -108,14 +103,14 @@
 	}
 	async function _saveAs() {
 		// @ts-expect-error
-		handle = await window.showSaveFilePicker({ ...pickerOpt, suggestedName: fullName });
-		nameInput = handle!.name.replace(/\.json$/, '');
+		handle = await window.showSaveFilePicker({ ...pickerOpt, suggestedName: viewport.fullName });
+		viewport.givenName = handle!.name.replace(/\.json$/, '');
 		const stream = await handle!.createWritable();
 		await stream.write(getContent());
 		await stream.close();
 	}
 	async function _save() {
-		if (!handle || handle.name !== fullName) return _saveAs();
+		if (!handle || handle.name !== viewport.fullName) return _saveAs();
 		const stream = await handle.createWritable();
 		await stream.write(getContent());
 		await stream.close();
@@ -124,11 +119,11 @@
 	export async function save() { return saveWith(_save); }
 
 	export function download() {
-		toast.info(Html, html(`Downloading <span class="font-normal italic">${firstName}</span>…`));
+		toast.info(Html, html(`Downloading <span class="font-normal italic">${viewport.firstName}</span>…`));
 		const blob = new Blob([getContent()], { type: "application/json" });
 		const link = document.createElement("a");
 		link.href = URL.createObjectURL(blob);
-		link.download = fullName;
+		link.download = viewport.fullName;
 		link.click();
 		URL.revokeObjectURL(link.href); // Clean-up
 	}
@@ -331,5 +326,5 @@
 	<div class="bg-border w-px h-9"></div>
 
 	<!-- File name -->
-	<MenubarInput bind:value={nameInput} {placeholder} />
+	<MenubarInput bind:value={viewport.givenName} placeholder={FILE_NAME_PLACEHOLDER} />
 </Menubar.Root>

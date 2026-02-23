@@ -4,7 +4,14 @@
 	import { browser } from '$app/environment';
 	import Menubar from '$lib/components/menubar/menubar.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
+    import viewport from '$lib/state/viewport.svelte';
+
+	const title = $derived("Twig" + (!viewport.givenName ? "" : " | " + viewport.givenName));
 </script>
+
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
 
 <Toaster position="bottom-center" />
 
