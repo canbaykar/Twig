@@ -35,8 +35,8 @@ Twig aims to provide learners with a means to *interact with formal mathematics 
 
 ## How to Use
 
-Twig runs in the browser. Open the web app at:
-🚀 [canbaykar.github.io/Twig](https://canbaykar.github.io/Twig/)
+Twig runs in the browser. Open the web app at: <br>
+🚀 [canbaykar.github.io/Twig/](https://canbaykar.github.io/Twig/)
 
 The guide below is divided into two parts: [a quick UI walkthrough](#12-ui-tutorial), and [an intro to logic](#22-the-mathematics).
 
