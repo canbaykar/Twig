@@ -636,28 +636,32 @@ npm run build
 Now you can start the server:
 
 ```bash
-npm run start:open
+npm run preview:open
 ```
 
 And stop the server using `Ctrl` `C` while the terminal is focused. Keep the terminal window open while the app is running.
 
 > [!TIP]
-> When you want to start the Twig server again after closing the original terminal window you used for setup, don't forget to navigate to the correct directory with the `cd` command beforehand. If the Twig folder created during setup has the path `C:/X/Y/Z/Twig`, then execute `cd C:/X/Y/Z/Twig` to navigate into the project directory before `npm run start:open`.
+> When you want to start the Twig server again after closing the original terminal window you used for setup, don't forget to navigate to the correct directory with the `cd` command beforehand. If the Twig folder created during setup has the path `C:/X/Y/Z/Twig`, then execute `cd C:/X/Y/Z/Twig` to navigate into the project directory before `npm run preview:open`.
 
 ### Troubleshooting
 
 <details><summary><strong>I'm getting errors setting up.</strong></summary>
 
 - Try restarting your terminal.
-- If you're using Windows and running `npm` results in “command not found” (or a similar error), Node.js may not have been added to your PATH during installation. Reinstall Node.js and make sure any option like “Add to PATH” is enabled, then restart your computer.
+- If you're using Windows and running `npm` results in “command not found” (or a similar error), Node.js may not have been added to your PATH during installation. Reinstall Node.js and ensure any options like “Add to PATH” are enabled. Then restart your computer.
 
 </details>
 
-<details><summary><strong>I set up the server successfully but <code>npm run start:open</code> throws an error.</strong></summary>
+<details><summary><strong>I set up the server successfully but <code>npm run preview:open</code> throws an error.</strong></summary>
 
-- If the error includes `address already in use 0.0.0.0:3000`, try running `$env:PORT=3001; npm run start` (This is for Windows PowerShell. In MacOS or Linux, run `PORT=3001 npm run start` instead.) to start the server on port 3001 instead and go to http://localhost:3001 in a browser. If you again get the same error, try 3002 and so on.
+- If the error message includes `Could not read package.json`, you may not be in the correct directory in your terminal. See the tip about the `cd` command above.
 
-- If the error includes `Could not read package.json` instead, you may not be in the correct directory in your terminal. See the tip about the `cd` command above.
+</details>
+
+<details><summary><strong>I can't change the server port with <code>npm run preview:open -- --port=4000</code>.</strong></summary>
+
+- This may happen if you're using PowerShell, in which case you may see a warning that includes `npm warn Unknown cli config "--port"`. Just try `npm run preview:open -- -- --port=4000` or switch to another terminal application like Command Prompt. This happens because the `--` is used as a special token in PowerShell,; see [the documentation on the end-of-parameters token](https://learn.microsoft.com/et-ee/powershell/module/Microsoft.PowerShell.Core/about/about_parsing?view=powershell-7.4&utm_source=chatgpt.com#the-end-of-parameters-token) for more information.
 
 </details>
 
