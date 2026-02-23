@@ -153,7 +153,9 @@
 	function onkeydown(e: KeyboardEvent) {
 		if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
 			e.preventDefault();
-			isFirefox ? download() : save();
+			if (isFirefox) return download();
+			else if (e.shiftKey) saveAs();
+			else save();
 		}
 	}
 </script>
@@ -180,7 +182,7 @@
 			</Menubar.IconItem>
 			<Menubar.Separator />
 			<div title={fallbackMode ? "Not supperted by this browser" : ""}>
-				<Menubar.IconItem onclick={() => save} disabled={fallbackMode}>
+				<Menubar.IconItem onclick={() => save()} disabled={fallbackMode}>
 					{#snippet icon()}
 						<Icon icon="lucide:save" />
 					{/snippet}
@@ -196,8 +198,17 @@
 				</Menubar.IconItem>
 			</div>
 			<div title={fallbackMode ? "Not supperted by this browser" : ""}>
-				<Menubar.IconItem onclick={() => saveAs} disabled={fallbackMode}>
+				<Menubar.IconItem onclick={() => saveAs()} disabled={fallbackMode}>
 					Save As…
+					{#if !isFirefox}
+						<Menubar.Shortcut>
+							<Kbd.Group hidden={isMobile}>
+								<Kbd.Root>{CtrlCommand}</Kbd.Root>
+								<Kbd.Root>⇧</Kbd.Root>
+								<Kbd.Root>S</Kbd.Root>
+							</Kbd.Group>
+						</Menubar.Shortcut>
+					{/if}
 				</Menubar.IconItem>
 			</div>
 			<Menubar.IconItem onclick={download}>
