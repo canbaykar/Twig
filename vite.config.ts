@@ -76,6 +76,11 @@ export default defineConfig(({ mode }) => ({
 		]
 	},
 	define: {
-		'import.meta.vitest': 'undefined'
+		'import.meta.vitest': 'undefined',
+		// When prerendering (building = true), you can use this as url origin.
+		// This is added to prerender meta tags correctly so that browsers
+		// without JS still get correct tags even with adapter-static.
+		BASE_URL_ORIGIN: process.env.BASE_URL_ORIGIN || 
+		('http' + (process.argv.includes('dev') ? '' : 's') + '://sveltekit-prerender'),
 	}
 }));

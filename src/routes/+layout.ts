@@ -1,11 +1,14 @@
+import { building } from '$app/environment';
 import { base } from '$app/paths';
 import { defineBaseMetaTags } from 'svelte-meta-tags';
 
 export const prerender = true;
 
 export const load = ({ url }) => {
-	const href = new URL(url.pathname, url.origin).href;
-	const static_ = (path: string) => new URL(base + path, url.origin).href;
+	// See BASE_URL_ORIGIN in src/global.d.ts
+	const origin = building ? BASE_URL_ORIGIN : url.origin;
+	const href = new URL(url.pathname, origin).href;
+	const static_ = (path: string) => new URL(base + path, origin).href;
 
 	const baseTags = defineBaseMetaTags({
 		title: '404',
