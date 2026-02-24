@@ -18,10 +18,15 @@ const config = {
 			precompress: false,
 			strict: true
 		}),
+
 		paths: {
 			// This is for Github Pages which has to supply its own process.env.BASE_PATH
 			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
-		}
+		},
+
+		prerender: {
+			handleHttpError: 'warn',
+		},
 	}
 };
 
