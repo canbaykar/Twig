@@ -11,12 +11,11 @@ import peggyLoader from 'vite-plugin-peggy-loader';
 
 // These lines are added by Storybook and they throw typescript errors for some reason.
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
-// @ts-expect-error
-import path from 'node:path'; // @ts-expect-error
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
-const dirname = // @ts-expect-error
+const dirname =
 	typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => ({
@@ -40,7 +39,7 @@ export default defineConfig(({ mode }) => ({
 		})
 	],
 	server: {
-		https: false,
+		https: false as any,
 		allowedHosts:
 			mode === 'development'
 				? ['.ngrok-free.app']
