@@ -1,11 +1,11 @@
-import { resolve } from '$app/paths';
+import { base } from '$app/paths';
 import { defineBaseMetaTags } from 'svelte-meta-tags';
 
 export const prerender = true;
 
 export const load = ({ url }) => {
 	const href = new URL(url.pathname, url.origin).href;
-	const static_ = (path: string) => new URL(resolve(path as any), url.origin).href;
+	const static_ = (path: string) => new URL(base + path, url.origin).href;
 
 	const baseTags = defineBaseMetaTags({
 		title: '404',
