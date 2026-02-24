@@ -19,7 +19,7 @@ import { playwright } from '@vitest/browser-playwright';
 const dirname = // @ts-expect-error
 	typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	plugins: [
 		peggyLoader({
 			cache: false,
@@ -40,7 +40,11 @@ export default defineConfig({
 		})
 	],
 	server: {
-		https: false
+		https: false,
+		allowedHosts:
+			mode === 'development'
+				? ['.ngrok-free.app']
+				: []
 	},
 	test: {
 		// include: ['src/**/*.{test,spec}.{js,ts}']
@@ -75,4 +79,4 @@ export default defineConfig({
 	define: {
 		'import.meta.vitest': 'undefined'
 	}
-});
+}));
