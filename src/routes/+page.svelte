@@ -6,7 +6,7 @@
 	import { Toaster } from '$lib/components/ui/sonner';
     import viewport from '$lib/state/viewport.svelte';
 
-	const title = $derived((!viewport.givenName ? "" : viewport.givenName + " | ") + "Twig");
+	const title = $derived(!viewport.givenName ? "Twig | Educational Proof Assistant" : viewport.givenName + " | Twig");
 </script>
 
 <svelte:head>
