@@ -101,13 +101,13 @@ The *atomic formulas* are any combination of letters and numbers starting with a
 
 |Prec.|Name       |Symbols|Arity|Assoc.|Pattern        |Codes           |
 |-----|-----------|-------|-----|------|---------------|----------------|
-|7    |Parentheses|`()`   |1    |-     |`(…((ϕ))…)`    |                |
-|6    |Not        |`¬`    |1    |-     |`¬…¬¬ϕ`        |`.not`          |
-|5    |And        |`∧`    |2    |Left  |`ϕ∧β∧…∧ε`      |`.and` `.^` `.&`|
-|4    |Or         |`∨`    |2    |Left  |`ϕ∨β∨…∨ε`      |`.or` `.v`      |
-|3    |Implies    |`→`    |2    |Right |`ϕ→β→…→ε`      |`.imp` `->`     |
-|2    |If         |`←`    |2    |Left  |`ϕ←β←…←ε`      |`.if` `<-`      |
-|1    |Iff        |`↔`    |2    |Left  |`ϕ↔β↔…↔ε`      |`←f` `<->`      |
+|7    |Parentheses|`()`   |1    |-     |`(…((α))…)`    |                |
+|6    |Not        |`¬`    |1    |-     |`¬…¬¬α`        |`.not`          |
+|5    |And        |`∧`    |2    |Left  |`α∧β∧…∧ε`      |`.and` `.^` `.&`|
+|4    |Or         |`∨`    |2    |Left  |`α∨β∨…∨ε`      |`.or` `.v`      |
+|3    |Implies    |`→`    |2    |Right |`α→β→…→ε`      |`.imp` `->`     |
+|2    |If         |`←`    |2    |Left  |`α←β←…←ε`      |`.if` `<-`      |
+|1    |Iff        |`↔`    |2    |Left  |`α↔β↔…↔ε`      |`←f` `<->`      |
 
 - To demonstrate the difference between left-associative and right-associative operations;
   - `A∧B∧C∧D` is interpreted as `((A∧B)∧C)∧D` (left-assoc.),
@@ -116,7 +116,7 @@ The *atomic formulas* are any combination of letters and numbers starting with a
 - There are also codes for the special atomic formulas:
   - `⊤`: `.true` `.top`
   - `⊥`: `.false` `.bottom` `.absurdity`
-- The connector `←` is only a convenience feature. Instances of `ϕ←β` in formulas are effectively turned into `β→ϕ` because they are parsed into the same syntax tree. They can be used interchangeably.
+- The connector `←` is only a convenience feature. Instances of `α←β` in formulas are effectively turned into `β→α` because they are parsed into the same syntax tree. They can be used interchangeably.
 
 > [!IMPORTANT]
 > You may know that the connectors `∧`("and") and `∨`("or") are commutative and associative, so for example: `(A∧B)∧C` is equivalent, in a sense, to `A∧(B∧C)` and `B∧(A∧C)` (as in, each can be proved from any other), but that doesn't mean they are *equal*, so you can't use them interchangeably. You have to actually prove that they are equivalent whenever you need that information. On the other hand, `A∧B∧C`, `(A∧B)∧C` and `(((A∧B))∧(C))` are treated as if they are the exact same formula always, because they are parsed to the same syntax tree.
@@ -274,13 +274,13 @@ You may call this a base case of the induction. If you're not familiar with indu
 
 > **∧ Introduction Rule `(∧I)`**
 >
-> For all derivations D and E with formulas `ϕ` and `β` respectively; 
+> For all derivations D and E with formulas `α` and `β` respectively; 
 > - writing them next to each other (such that D is on the left and their bottoms align),
 > - drawing a horizontal bar immediately under them,
 > - writing `(∧I)` immediately to the right of the bar,
-> - writing `ϕ∧β` (or a formula with the same syntax tree) immediately under the bar,
+> - writing `α∧β` (or a formula with the same syntax tree) immediately under the bar,
 >
-> produces a derivation with the conclusion `ϕ∧β`. Its assumptions are the assumptions of D and E together. (Recall set union.)
+> produces a derivation with the conclusion `α∧β`. Its assumptions are the assumptions of D and E together. (Recall set union.)
 
 (Again, don't forget that the conclusion and assumptions are actually syntax trees, so formulas with the same trees are interchangeable everywhere. We won't bug you with any more of these reminders.)
 
@@ -314,31 +314,31 @@ This sentence is called a *sequent*. Furthermore, we say that the derivation is 
 When there are no assumptions, we'll write just `⊢ A` instead of `∅ ⊢ A`.
 
 > [!IMPORTANT]
-> We are actually using the sentence `Γ ⊢ ϕ` to mean "There is a proof of `ϕ` with the assumption set `Γ` *or some subset of it*." So `Γ ⊢ ϕ` implies `Γ ∪ Δ ⊢ ϕ` for any `Δ`. So, for example, `{ A, B, C, D, E, F, G, H∧I } ⊢ (A∧B)∧(C∧D)` is also true because `{ A, B, C, D } ⊢ (A∧B)∧(C∧D)` is true.
+> We are actually using the sentence `Γ ⊢ α` to mean "There is a proof of `α` with the assumption set `Γ` *or some subset of it*." So `Γ ⊢ α` implies `Γ ∪ Δ ⊢ α` for any `Δ`. So, for example, `{ A, B, C, D, E, F, G, H∧I } ⊢ (A∧B)∧(C∧D)` is also true because `{ A, B, C, D } ⊢ (A∧B)∧(C∧D)` is true.
 
 Now we can rewrite `(Ax)` a bit shorter:
 > **∧ Introduction Rule `(∧I)`**
 >
-> (For all formula syntax tree sets `Γ`, `Δ`, and formulas `ϕ`, `β`)
+> (For all formula syntax tree sets `Γ`, `Δ`, and formulas `α`, `β`)
 >
-> Given some proofs of `Γ ⊢ ϕ` and `Δ ⊢ β`, you can make a proof of `Γ ∪ Δ ⊢ ϕ∧β`.
+> Given some proofs of `Γ ⊢ α` and `Δ ⊢ β`, you can make a proof of `Γ ∪ Δ ⊢ α∧β`.
 >
-> (By writing them next to each other, bottom-aligned and in-order, slapping on the bar and rule name `(∧I)` under them, and finally a syntax tree equivalent of `ϕ∧β` under that.)
+> (By writing them next to each other, bottom-aligned and in-order, slapping on the bar and rule name `(∧I)` under them, and finally a syntax tree equivalent of `α∧β` under that.)
 
 Further shorten it to:
 
 ```
-Γ ⊢ ϕ
+Γ ⊢ α
 Δ ⊢ β
-∴ Γ ∪ Δ ⊢ ϕ∧β
+∴ Γ ∪ Δ ⊢ α∧β
 ```
 
 And further:
 
 ```
-⊢ ϕ
+⊢ α
 ⊢ β
-∴ ⊢ ϕ∧β
+∴ ⊢ α∧β
 ```
 
 The assumption sets (in this case, `Γ` and `Δ`) are unioned. This is the same for all the rules except for the cases where an assumption gets discharged. `⊢` isn't shortened away as it will be useful in those special cases. For now, we're done with our shortening spree and can start discussing those cases right away.
@@ -349,65 +349,65 @@ Let's examine the simplest discharging rule.
 
 > **→ Introduction Rule `(→I)`**
 >
-> (For all formula syntax tree set `Γ` and formulas `ϕ`, `β`)
+> (For all formula syntax tree set `Γ` and formulas `α`, `β`)
 >
-> Given some proof of `Γ ⊢ ϕ`, you can make a proof of `Γ / { β } ⊢ β→ϕ`.
+> Given some proof of `Γ ⊢ α`, you can make a proof of `Γ / { β } ⊢ β→α`.
 >
-> (By doing the usual shtick of writing them together with the bar, rule name, and `ϕ∧β`…)
+> (By doing the usual shtick of writing them together with the bar, rule name, and `α∧β`…)
 >
 > Draw a bar on top of all instances of `β` in the derivation without a bar on top. Label the right sides of these bars and the left side of the new `(→I)` bar with the same number. The label should look like the number with a circle or round shape around it. This is called *discharging*. This number should be different from any pre-existing labels. Additionally, if you encounter an instance of `β` that's already discharged, you can leave it as is or change its label to the new one. (Twig chooses to leave them.)
 
 Discharged instances of formulas are still considered to have the rule `(Ax)` even though it's never written explicitly.
 
-By this point, you might have realized that our assumptions have been formulas of the leaf nodes, i.e., formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but it's not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→ϕ`), we cover its top with a bar. *This way, we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
+By this point, you might have realized that our assumptions have been formulas of the leaf nodes, i.e., formulas that don't have a bar or any formulas drawn immediately above them.  Since `β` can be in the original derivation as assumption nodes (undischarged nodes with rule `(Ax)`), but it's not an assumption of the final derivation (proof of `Γ / { β } ⊢ β→α`), we cover its top with a bar. *This way, we can say that the assumptions of a derivation come from its formulas without a bar over them (which are always situated in leaf nodes by the way), and the conclusion comes from its root node (the lowest node in the diagram).*
 
 In alternative definitions of Gentzen-style proofs, drawing which assumption nodes are discharged is sometimes considered a non-essential, cosmetic part of the proof diagram. Even if the discharging marks are omitted, they can be deduced later by analyzing the proof…
 
 You may shorten the definition of `(→I)` like:
 ```
-Γ ⊢ ϕ
-∴ Γ / { β } ⊢ β→ϕ
+Γ ⊢ α
+∴ Γ / { β } ⊢ β→α
 ```
 
 But we'll use a slightly roundabout approach. To understand this, see this more complicated rule:
 
 > **∨ Elimination Rule `(∨E)`**
 >
-> Given some proofs of `Γ ⊢ ϕ∨β`, `Δ ⊢ ε`, and `Θ ⊢ ε`, you can make a proof of `Γ ∪ (Δ / { ϕ }) ∪ (Θ / { β }) ⊢ ε`.
+> Given some proofs of `Γ ⊢ α∨β`, `Δ ⊢ ε`, and `Θ ⊢ ε`, you can make a proof of `Γ ∪ (Δ / { α }) ∪ (Θ / { β }) ⊢ ε`.
 >
-> See that `ϕ` is only discharged from the branch of our final derivation that comes from the proof of `Δ ⊢ ε` (because it's excluded from just `Δ`, not the whole union `Γ ∪ Δ ∪ Θ`). And similarly, `β` is only discharged from the branch of `Θ ⊢ ε`.
+> See that `α` is only discharged from the branch of our final derivation that comes from the proof of `Δ ⊢ ε` (because it's excluded from just `Δ`, not the whole union `Γ ∪ Δ ∪ Θ`). And similarly, `β` is only discharged from the branch of `Θ ⊢ ε`.
 
-This means that if `Γ` has `ϕ`, for example, our final derivation will still have `ϕ` as an (undischarged) assumption; we won't have been able to effectively discharge it out of our proof.
+This means that if `Γ` has `α`, for example, our final derivation will still have `α` as an (undischarged) assumption; we won't have been able to effectively discharge it out of our proof.
 
 We would attempt to start shortening this like:
 ```
-Γ ⊢ ϕ∨β
+Γ ⊢ α∨β
 Δ ⊢ ε
 Θ ⊢ ε
-∴ Γ ∪ (Δ / { ϕ }) ∪ (Θ / { β }) ⊢ ε
+∴ Γ ∪ (Δ / { α }) ∪ (Θ / { β }) ⊢ ε
 ```
 But there's a better way. We can restate this as follows, even though it may not be obvious why we can do so.
 ```
-Γ ⊢ ϕ∨β
-Δ ∪ { ϕ } ⊢ ε
+Γ ⊢ α∨β
+Δ ∪ { α } ⊢ ε
 Θ ∪ { β } ⊢ ε
 ∴ Γ ∪ Δ ∪ Θ ⊢ ε
 ```
-Let's leave it as an exercise to figure out why this implies the same rule even when you don't assume that `ϕ ∉ Δ` and `ε ∉ Θ`.
+Let's leave it as an exercise to figure out why this implies the same rule even when you don't assume that `α ∉ Δ` and `ε ∉ Θ`.
 
 Now finally, omitting `Γ`, `Δ`, and `Θ`, and the curly braces `{}`, we use the following to represent `(∨E)`:
 ```
-⊢ ϕ∨β
-ϕ ⊢ ε
+⊢ α∨β
+α ⊢ ε
 β ⊢ ε
 ∴ ⊢ ε
 ```
-"If you know `ϕ∨β`, and you can prove `ε` in both cases (`ϕ` and `β`), then `ε` is true."
+"If you know `α∨β`, and you can prove `ε` in both cases (`α` and `β`), then `ε` is true."
 
 And here's what `(→I)` becomes:
 ```
-β ⊢ ϕ
-∴ ⊢ β→ϕ
+β ⊢ α
+∴ ⊢ β→α
 ```
 
 Finally, you are ready to see the full list of rules. Note that some rules are presented with two lines prefixed `∴`, which means it allows you to deduce two conclusions (but you still pick one; if you want both, duplicate the derivation with copy/paste). For an example, check out `(∧E)`.
@@ -431,7 +431,7 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> Axiom </td>
 			<td> <code>(Ax)</code> </td>
 			<td>
-<pre><code>∴ ϕ ⊢ ϕ</code></pre>
+<pre><code>∴ α ⊢ α</code></pre>
 			</td>
 		</tr> <!------------------------------------>
 		<tr>
@@ -464,17 +464,17 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> <code>∧</code> Introduction </td>
 			<td> <code>(∧I)</code> </td>
 			<td>
-<pre><code>⊢ ϕ
+<pre><code>⊢ α
 ⊢ β
-∴ ⊢ ϕ∧β</code></pre>
+∴ ⊢ α∧β</code></pre>
 			</td>
 		</tr> <!------------------------------------>
 		<tr>
 			<td> <code>∧</code> Elimination </td>
 			<td> <code>(∧E)</code> </td>
 			<td>
-<pre><code>⊢ ϕ∧β
-∴ ⊢ ϕ
+<pre><code>⊢ α∧β
+∴ ⊢ α
 ∴ ⊢ β</code></pre>
 			</td>
 		</tr> <!------------------------------------>
@@ -494,17 +494,17 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> <code>∨</code> Introduction </td>
 			<td> <code>(∨I)</code> </td>
 			<td>
-<pre><code>⊢ ϕ
-∴ ⊢ ϕ∨β
-∴ ⊢ β∨ϕ</code></pre>
+<pre><code>⊢ α
+∴ ⊢ α∨β
+∴ ⊢ β∨α</code></pre>
 			</td>
 		</tr> <!------------------------------------>
 		<tr>
 			<td> <code>∨</code> Elimination </td>
 			<td> <code>(∨E)</code> </td>
 			<td>
-<pre><code>⊢ ϕ∨β
-ϕ ⊢ ε
+<pre><code>⊢ α∨β
+α ⊢ ε
 β ⊢ ε
 ∴ ⊢ ε</code></pre>
 			</td>
@@ -525,16 +525,16 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> <code>→</code> Introduction </td>
 			<td> <code>(→I)</code> </td>
 			<td>
-<pre><code>β ⊢ ϕ
-∴ ⊢ β→ϕ</code></pre>
+<pre><code>β ⊢ α
+∴ ⊢ β→α</code></pre>
 			</td>
 		</tr> <!------------------------------------>
 		<tr>
 			<td> <code>→</code> Elimination </td>
 			<td> <code>(→E)</code> </td>
 			<td>
-<pre><code>⊢ ϕ
-⊢ ϕ→β
+<pre><code>⊢ α
+⊢ α→β
 ∴ ⊢ β</code></pre>
 			</td>
 		</tr> <!------------------------------------>
@@ -554,8 +554,8 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> <code>¬</code> Introduction </td>
 			<td> <code>(¬I)</code> </td>
 			<td>
-<pre><code>β ⊢ ϕ
-β ⊢ ¬ϕ
+<pre><code>β ⊢ α
+β ⊢ ¬α
 ∴ ⊢ ¬β</code></pre>
 			</td>
 		</tr> <!------------------------------------>
@@ -563,8 +563,8 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> <code>¬</code> Elimination </td>
 			<td> <code>(¬E)</code> </td>
 			<td>
-<pre><code>¬β ⊢ ϕ
-¬β ⊢ ¬ϕ
+<pre><code>¬β ⊢ α
+¬β ⊢ ¬α
 ∴ ⊢ β</code></pre>
 			</td>
 		</tr> <!------------------------------------>
@@ -584,18 +584,18 @@ Finally, you are ready to see the full list of rules. Note that some rules are p
 			<td> <code>↔</code> Introduction </td>
 			<td> <code>(↔I)</code> </td>
 			<td>
-<pre><code>⊢ ϕ→β
-⊢ β→ϕ
-∴ ⊢ ϕ↔β</code></pre>
+<pre><code>⊢ α→β
+⊢ β→α
+∴ ⊢ α↔β</code></pre>
 			</td>
 		</tr> <!------------------------------------>
 		<tr>
 			<td> <code>↔</code> Elimination </td>
 			<td> <code>(↔E)</code> </td>
 			<td>
-<pre><code>⊢ ϕ↔β
-∴ ⊢ ϕ→β
-∴ ⊢ β→ϕ</code></pre>
+<pre><code>⊢ α↔β
+∴ ⊢ α→β
+∴ ⊢ β→α</code></pre>
 			</td>
 		</tr> <!------------------------------------>
 	</tbody>
