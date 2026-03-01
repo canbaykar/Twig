@@ -36,7 +36,7 @@ export const load = ({ url }) => {
 
 		additionalMetaTags: [
 			{ // For Google Search Console
-				property: "google-site-verification",
+				name: "google-site-verification",
 				content: "WHmIHZna6NaNkLJp2G8GRQ10kFRWr_CaO0h-NisyZgw"
 			},
 			{ // OrcaScan suggestion
