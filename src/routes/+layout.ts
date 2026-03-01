@@ -9,6 +9,7 @@ export const load = ({ url }) => {
 	const origin = building ? BASE_URL_ORIGIN : url.origin;
 	const href = new URL(url.pathname, origin).href;
 	const static_ = (path: string) => new URL(base + path, origin).href;
+	const bannerURL = static_('/branding/banner.png');
 
 	const baseTags = defineBaseMetaTags({
 		title: '404',
@@ -24,14 +25,25 @@ export const load = ({ url }) => {
 			siteName: 'Twig',
 			images: [
 				{
-					url: static_('/branding/banner.png'),
+					url: bannerURL,
 					alt: 'Twig: Educational Proof Assistant',
 					width: 1280,
 					height: 640,
 					type: 'image/png'
 				}
 			]
-		}
+		},
+
+		additionalMetaTags: [
+			{ // For Google Search Console
+				property: "google-site-verification",
+				content: "WHmIHZna6NaNkLJp2G8GRQ10kFRWr_CaO0h-NisyZgw"
+			},
+			{ // OrcaScan suggestion
+				property: "og:logo",
+				content: bannerURL
+			},
+		],
 	});
 
 	return { ...baseTags };
