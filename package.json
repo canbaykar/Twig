@@ -3,6 +3,13 @@
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"//": [
+		"The build (and postbuild) scripts require BASE_PATH (e.g. '/Twig' or '/')",
+		"and BASE_URL_ORIGIN (e.g. 'https://user.github.io/Twig' or",
+		"'http://localhost:4000') as environment variables. But nothing major will",
+		"break if they aren't defined. See svelte, vite, and sitemap config files",
+		"in root."
+	],
 	"scripts": {
 		"dev": "vite dev",
 		"dev:open": "vite dev --open",
@@ -62,6 +69,7 @@
 		"svelte": "^5.45.6",
 		"svelte-check": "^4.3.4",
 		"svelte-meta-tags": "^4.5.0",
+		"svelte-sitemap": "^3.0.0",
 		"svelte-sonner": "^1.0.7",
 		"tailwind-merge": "^3.4.0",
 		"tailwind-variants": "^3.2.2",
