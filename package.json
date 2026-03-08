@@ -7,6 +7,7 @@
 		"dev": "vite dev",
 		"dev:open": "vite dev --open",
 		"build": "vite build",
+		"postbuild": "npx svelte-sitemap",
 		"preview": "vite preview",
 		"preview:open": "vite preview --open",
 		"licenses": "npx generate-license-file --input package.json --output LICENSE-3RD-PARTY.txt --overwrite",
